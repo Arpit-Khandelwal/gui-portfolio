@@ -1,11 +1,12 @@
 "use client"
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  Terminal, Shield, Zap, ExternalLink, Github, Linkedin, Twitter, 
-  Globe, Lock, Code, Mic, ChevronRight, Hash, Command, Server, Eye, Award,
-  Landmark, MessageCircle, Brain, Database, Video, Gamepad, Image as ImageIcon,
-  FileText, Music, Smartphone
-} from 'lucide-react';
+import
+  {
+    Terminal, Shield, Zap, ExternalLink, Github, Linkedin, Twitter,
+    Globe, Lock, Code, Mic, ChevronRight, Hash, Command, Server, Eye, Award,
+    Landmark, MessageCircle, Brain, Database, Video, Gamepad, Image as ImageIcon,
+    FileText, Music, Smartphone
+  } from 'lucide-react';
 
 /**
  * =========================================================================================
@@ -78,9 +79,9 @@ const RESUME_DATA = {
     },
   ],
   skills: [
-    "JavaScript", "TypeScript", "Python", "React/Next.js", "Node.js", 
-    "Solana", "AI/LLMs", "Vector DB", "Prisma", "Postgres", 
-    "Zod", "ffmpeg", "Playwright", "Web Scraping", "API Integration", 
+    "JavaScript", "TypeScript", "Python", "React/Next.js", "Node.js",
+    "Solana", "AI/LLMs", "Vector DB", "Prisma", "Postgres",
+    "Zod", "ffmpeg", "Playwright", "Web Scraping", "API Integration",
     "Docker", "Cloudflare Workers", "Rust"
   ],
   projects: [
@@ -264,10 +265,11 @@ const RESUME_DATA = {
 
 // --- Helpers to Map Data to UI ---
 
-const getIconForProject = (title: string, techStack: string[]) => {
+const getIconForProject = (title: string, techStack: string[]) =>
+{
   const t = title.toLowerCase();
   const stack = techStack.join(' ').toLowerCase();
-  
+
   if (t.includes('voting') || t.includes('vault') || t.includes('nft')) return Landmark;
   if (t.includes('gossip') || t.includes('chat') || t.includes('twitter') || t.includes('whatsapp')) return MessageCircle;
   if (t.includes('ai') || t.includes('sage') || t.includes('gpt') || stack.includes('llm')) return Brain;
@@ -280,15 +282,17 @@ const getIconForProject = (title: string, techStack: string[]) => {
 };
 
 // Data Transformation Adapter
-const usePortfolioData = () => {
-  return useMemo(() => {
+const usePortfolioData = () =>
+{
+  return useMemo(() =>
+  {
     // 1. Meta & Hero
     const meta = RESUME_DATA;
-    
+
     // 2. Cores (Split Work History)
     const hpeWork = RESUME_DATA.work.find(w => w.company.includes("Hewlett Packard"));
     const aviciWork = RESUME_DATA.work.find(w => w.company.includes("Avici"));
-    
+
     const cores = [
       {
         id: "security",
@@ -313,7 +317,7 @@ const usePortfolioData = () => {
     // 3. Selected Operations (Curated High Impact)
     // We manually pick the top projects to show in the "Magnum Opus" section
     const selectedTitles = ["Avici Money", "Gossip DAO", "Atlas", "Helius Indexer", "Ion Vault"];
-    
+
     const selectedOperations = [];
 
     // Add Avici (from Work) as a Project
@@ -450,7 +454,7 @@ const DualCoreSystem = ({ cores }: { cores: { id: string; icon: any; color: stri
 const MagnumOpus = ({ op }: { op: { date: string; title: string; role: string; stats?: { label: string; value: string }; icon: any; type: string; description: string; tags: string[]; link?: string } }) => (
   <div className="group relative bg-slate-950 border-b border-slate-800 py-12 md:py-16 hover:bg-slate-900/20 transition-colors">
     <div className="container mx-auto px-6 flex flex-col md:flex-row gap-8 md:gap-16">
-      
+
       {/* Left: Meta */}
       <div className="md:w-1/4 flex flex-col justify-between shrink-0">
         <div>
@@ -463,24 +467,24 @@ const MagnumOpus = ({ op }: { op: { date: string; title: string; role: string; s
           </span>
         </div>
         {op.stats && (
-           <div className="mt-6 p-4 bg-slate-900 rounded border border-slate-800 border-l-2 border-l-emerald-500">
-             <p className="text-xs text-slate-400 font-mono uppercase">{op.stats.label}</p>
-             <p className="text-xl font-bold text-white">{op.stats.value}</p>
-           </div>
+          <div className="mt-6 p-4 bg-slate-900 rounded border border-slate-800 border-l-2 border-l-emerald-500">
+            <p className="text-xs text-slate-400 font-mono uppercase">{op.stats.label}</p>
+            <p className="text-xl font-bold text-white">{op.stats.value}</p>
+          </div>
         )}
       </div>
 
       {/* Right: Content */}
       <div className="md:w-3/4">
         <div className="flex items-center gap-3 mb-4">
-           {/* Dynamic Icon */}
-           <op.icon className={`w-4 h-4 ${op.type.includes('Grant') ? 'text-yellow-400' : op.type.includes('Speaker') ? 'text-purple-400' : 'text-slate-500'}`} />
-           <span className="text-sm font-semibold text-slate-300">{op.type}</span>
+          {/* Dynamic Icon */}
+          <op.icon className={`w-4 h-4 ${op.type.includes('Grant') ? 'text-yellow-400' : op.type.includes('Speaker') ? 'text-purple-400' : 'text-slate-500'}`} />
+          <span className="text-sm font-semibold text-slate-300">{op.type}</span>
         </div>
         <p className="text-lg text-slate-400 leading-relaxed mb-8 max-w-3xl">
           {op.description}
         </p>
-        
+
         <div className="flex flex-wrap items-center gap-3 mb-8">
           {op.tags.map((tag, i) => <TechTag key={i} label={tag} />)}
         </div>
@@ -496,8 +500,8 @@ const MagnumOpus = ({ op }: { op: { date: string; title: string; role: string; s
 );
 
 const VaultItem = ({ item }: { item: { link: string; title: string; desc: string; stack: string[]; icon: any } }) => (
-  <a 
-    href={item.link} 
+  <a
+    href={item.link}
     target="_blank"
     className="block p-6 bg-slate-900 border border-slate-800 hover:border-emerald-500/50 transition-all group cursor-pointer hover:-translate-y-1"
   >
@@ -519,11 +523,13 @@ const VaultItem = ({ item }: { item: { link: string; title: string; desc: string
 
 // --- Main Page ---
 
-export default function Portfolio() {
+export default function Portfolio()
+{
   const [scrolled, setScrolled] = useState(false);
   const data = usePortfolioData();
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
@@ -531,7 +537,7 @@ export default function Portfolio() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-emerald-500/30 selection:text-white">
-      
+
       {/* Sticky Nav */}
       <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/90 backdrop-blur border-b border-slate-800 py-4' : 'bg-transparent py-8'}`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
@@ -540,7 +546,7 @@ export default function Portfolio() {
           </div>
           <div className="flex gap-6">
             {data.meta.contact.social.map((social, idx) => (
-               <a key={idx} href={social.url} target="_blank" className="hover:text-emerald-400 transition-colors"><social.icon className="w-5 h-5" /></a>
+              <a key={idx} href={social.url} target="_blank" className="hover:text-emerald-400 transition-colors"><social.icon className="w-5 h-5" /></a>
             ))}
           </div>
         </div>
@@ -556,18 +562,18 @@ export default function Portfolio() {
             </span>
             SYSTEM ONLINE
           </div>
-          
+
           <h1 className="text-6xl md:text-8xl font-bold text-white tracking-tighter leading-[0.9] mb-8">
             The <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">Tatakaee</span><br />
             Protocol.
           </h1>
-          
+
           <p className="text-xl md:text-2xl text-slate-400 max-w-2xl leading-relaxed mb-12">
             {data.meta.summary}
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <button onClick={() => { const element = document.getElementById('work'); if (element) element.scrollIntoView({behavior: 'smooth'}); }} className="px-8 py-4 bg-emerald-500 text-slate-950 font-bold rounded hover:bg-emerald-400 transition-colors flex items-center gap-2">
+            <button onClick={() => { const element = document.getElementById('work'); if (element) element.scrollIntoView({ behavior: 'smooth' }); }} className="px-8 py-4 bg-emerald-500 text-slate-950 font-bold rounded hover:bg-emerald-400 transition-colors flex items-center gap-2">
               <Eye className="w-5 h-5" /> View Selected Works
             </button>
             <a href={`mailto:${data.meta.contact.email}`} className="px-8 py-4 bg-slate-900 border border-slate-800 text-white font-medium rounded hover:border-slate-600 transition-colors">
@@ -575,7 +581,7 @@ export default function Portfolio() {
             </a>
           </div>
         </div>
-        
+
         {/* Background Noise */}
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none -z-10 blur-3xl" />
       </header>
@@ -593,8 +599,8 @@ export default function Portfolio() {
       {/* Selected Operations */}
       <section id="work" className="bg-slate-950">
         <div className="container mx-auto px-6 pt-24 pb-12">
-          <SectionHeader 
-            title="Selected Operations" 
+          <SectionHeader
+            title="Selected Operations"
             subtitle="A curation of high-impact architectures, public goods, and stealth prototypes."
           />
         </div>
@@ -607,11 +613,11 @@ export default function Portfolio() {
       {/* The Vault */}
       <section className="py-24 bg-slate-950">
         <div className="container mx-auto px-6">
-          <SectionHeader 
-            title="The Vault" 
+          <SectionHeader
+            title="The Vault"
             subtitle="Experiments, hackathon wins, and scripts from the lab."
           />
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {data.vault.map((item) => (
               <VaultItem key={item.id} item={item} />
@@ -628,8 +634,8 @@ export default function Portfolio() {
               <p className="text-emerald-500 mb-2">$ echo "Let's Build"</p>
               <h3 className="text-2xl text-white font-bold mb-6">Ready to deploy?</h3>
               <div className="flex gap-4">
-                 <a href={`mailto:${data.meta.contact.email}`} className="text-slate-400 hover:text-white underline decoration-emerald-500 underline-offset-4">Email Protocol</a>
-                 {data.meta.contact.social.find(s => s.name === "X") && <a href={data.meta.contact.social.find(s => s.name === "X")!.url} className="text-slate-400 hover:text-white underline decoration-emerald-500 underline-offset-4">X Comms</a>}
+                <a href={`mailto:${data.meta.contact.email}`} className="text-slate-400 hover:text-white underline decoration-emerald-500 underline-offset-4">Email Protocol</a>
+                {data.meta.contact.social.find(s => s.name === "X") && <a href={data.meta.contact.social.find(s => s.name === "X")!.url} className="text-slate-400 hover:text-white underline decoration-emerald-500 underline-offset-4">X Comms</a>}
               </div>
             </div>
             <div className="text-slate-600 md:text-right">
