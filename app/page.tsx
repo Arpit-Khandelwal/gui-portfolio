@@ -1,12 +1,12 @@
 "use client"
 import React, { useState, useEffect, useMemo } from 'react';
 import
-  {
-    Terminal, Shield, Zap, ExternalLink, Github, Linkedin, Twitter,
-    Globe, Lock, Code, Mic, ChevronRight, Hash, Command, Server, Eye, Award,
-    Landmark, MessageCircle, Brain, Database, Video, Gamepad, Image as ImageIcon,
-    FileText, Music, Smartphone
-  } from 'lucide-react';
+{
+  Terminal, Shield, Zap, ExternalLink, Github, Linkedin, Twitter,
+  Globe, Lock, Code, Mic, ChevronRight, Hash, Command, Server, Eye, Award,
+  Landmark, MessageCircle, Brain, Database, Video, Gamepad, Image as ImageIcon,
+  FileText, Music, Smartphone
+} from 'lucide-react';
 
 /**
  * =========================================================================================
@@ -125,7 +125,7 @@ const RESUME_DATA = {
       title: "Atlas",
       techStack: ["LLMs", "Azure", "RAG", "Devops"],
       description: "AI-powered chatbot for the Solana ecosystem, providing users with relevant information and assistance.",
-      link: { label: "website", href: "https://solchat.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=Atlas" },
     },
     {
       title: "Youtube Downloader",
@@ -143,13 +143,13 @@ const RESUME_DATA = {
       title: "Video Trimmer",
       techStack: ["Flask", "Python", "ffmpeg"],
       description: "Frame-accurate tool to trim and merge multiple videos, handling varying resolutions and encodings.",
-      link: { label: "website", href: "https://video-trimmer.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=Video+Trimmer" },
     },
     {
       title: "Mint Free NFT",
       techStack: ["React", "Ethers.js", "Hardhat"],
       description: "Platform for minting free, randomly generated NFTs on the Ethereum testnet to onboard new users.",
-      link: { label: "website", href: "https://mynft.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal/myNFT" },
     },
     {
       title: "Blinks",
@@ -179,79 +179,79 @@ const RESUME_DATA = {
       title: "WoW Helper",
       techStack: ["React", "Node.js"],
       description: "Utility to find valid words from given letters for the 'Words of Wonder' game.",
-      link: { label: "website", href: "https://wowhelper.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=WoW+Helper" },
     },
     {
       title: "Typing Game",
       techStack: ["JavaScript", "HTML", "CSS"],
       description: "Simple web-based game designed to test and improve typing speed and accuracy.",
-      link: { label: "website", href: "https://typinggame.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal/typing-game" },
     },
     {
       title: "Drum Kit",
       techStack: ["JavaScript", "HTML", "CSS"],
       description: "Interactive web application allowing users to play drum sounds using keyboard keys.",
-      link: { label: "website", href: "https://drumkit.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal/Drum-Kit" },
     },
     {
       title: "Real Estate WhatsApp Chatbot",
       techStack: ["Node.js", "WhatsApp API", "MongoDB", "OpenAI API", "Cloudflare Workers", "Hono"],
       description: "AI-powered WhatsApp chatbot facilitating property buying, selling, and listing.",
-      link: { label: "website", href: "https://realestatechatbot.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=Real+Estate+WhatsApp+Chatbot" },
     },
     {
       title: "Calendly Workaround",
       techStack: ["JavaScript", "Node.js", "Playwright"],
       description: "Automated script using Playwright to overcome limitations in Calendly scheduling.",
-      link: { label: "website", href: "https://calendlyworkaround.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal/Calendly-workaround" },
     },
     {
       title: "AI Screenshot Renamer",
       techStack: ["Python", "OpenCV"],
       description: "Utility that automatically renames screenshot files based on their visual content using OpenCV.",
-      link: { label: "website", href: "https://aiscreenshotrenamer.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=AI+Screenshot+Renamer" },
     },
     {
       title: "Low Power Mode Test",
       techStack: ["JavaScript", "React"],
       description: "Proof-of-concept demonstrating render optimization for devices in low power mode.",
-      link: { label: "website", href: "https://lowpowermodetest.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal/Low-Power-Mode-Test" },
     },
     {
       title: "Image to Excel",
       techStack: ["Python", "Pandas"],
       description: "Tool to convert image data (e.g., tables) into structured Excel spreadsheets.",
-      link: { label: "website", href: "https://imagetoxl.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal/ImageToExcel" },
     },
     {
       title: "Insta Follow Frenzy",
       techStack: ["Python", "Instagram API"],
       description: "Proof-of-concept script to recursively follow followers of an Instagram account for social graph analysis.",
-      link: { label: "website", href: "https://instafollowfrenzy.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=Insta+Follow+Frenzy" },
     },
     {
       title: "Ask GPT Twitter",
       techStack: ["Node.js", "Twitter API", "OpenAI API"],
       description: "Twitter bot that answers questions about a tweet when mentioned in a reply, using GPT.",
-      link: { label: "website", href: "https://askgpttwitter.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=Ask+GPT+Twitter" },
     },
     {
       title: "Twitter Thread Bot",
       techStack: ["Node.js", "Twitter API", "OpenAI API"],
       description: "Automated bot creating Twitter threads on various topics using GPT and the Twitter API.",
-      link: { label: "website", href: "https://twitterthreadbot.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal/Twitter-Thread-Bot" },
     },
     {
       title: "Terminal Chat GPT",
       techStack: ["Python", "OpenAI API"],
       description: "Command-line interface application for interacting with OpenAI's GPT models directly from the terminal.",
-      link: { label: "website", href: "https://terminalchatgpt.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal/TerminalChatGPT" },
     },
     {
       title: "Face Mask Detection",
       techStack: ["Python", "OpenCV"],
       description: "Application using OpenCV to detect face masks in images and real-time video streams.",
-      link: { label: "website", href: "https://facemaskdetection.arpitkhandelwal.com" },
+      link: { label: "github", href: "https://github.com/arpit-khandelwal/AI-Face-Mask-Detection" },
     },
   ],
 };
