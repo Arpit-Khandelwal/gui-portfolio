@@ -325,7 +325,7 @@ const usePortfolioData = () =>
       selectedOperations.push({
         id: "avici",
         title: "Swiggy MCP Server",
-        role: "Founding Engineer @ Avici",
+        role: "AI & Fullstack Engineer @ Avici",
         date: aviciWork.start + " - " + aviciWork.end,
         type: "Agentic Infrastructure",
         icon: Server,
