@@ -1,652 +1,402 @@
-"use client"
-import React, { useState, useEffect, useMemo } from 'react';
-import
-{
-  Terminal, Shield, Zap, ExternalLink, Github, Linkedin, Twitter,
-  Globe, Lock, Code, Mic, ChevronRight, Hash, Command, Server, Eye, Award,
-  Landmark, MessageCircle, Brain, Database, Video, Gamepad, Image as ImageIcon,
-  FileText, Music, Smartphone
-} from 'lucide-react';
+"use client";
 
-/**
- * =========================================================================================
- * DATA LAYER - SINGLE SOURCE OF TRUTH
- * =========================================================================================
- */
+import {
+  ArrowUpRight,
+  Bot,
+  Boxes,
+  Braces,
+  Cloud,
+  Code2,
+  Container,
+  Database,
+  FileCode2,
+  Film,
+  Github,
+  Globe2,
+  Linkedin,
+  Mail,
+  MapPin,
+  Network,
+  Play,
+  Server,
+  ShieldCheck,
+  Sparkles,
+  Terminal,
+  Twitter,
+  Waypoints,
+  Zap,
+} from "lucide-react";
+import Image from "next/image";
 
-const RESUME_DATA = {
+const profile = {
   name: "Arpit Khandelwal",
-  initials: "AK",
-  location: "Bengaluru, IN",
-  locationLink: "https://maps.app.goo.gl/zhMJcYT74CoPqhkd8",
-  about:
-    "Full Stack Engineer specializing in AI and Web3 applications, focused on delivering robust and user-centric products.",
-  summary:
-    "Bridging the gap between Enterprise Security rigor and Agentic AI velocity. I build systems that are secure by design and autonomous by nature.",
-  avatarUrl: "https://avatars.githubusercontent.com/u/68700864?v=4",
-  personalWebsiteUrl: "https://arpitkhandelwal.com",
-  contact: {
-    email: "ak@arpitkhandelwal.com",
-    tel: "+918224099125",
-    social: [
-      {
-        name: "GitHub",
-        url: "https://github.com/arpit-khandelwal",
-        icon: Github,
-      },
-      {
-        name: "LinkedIn",
-        url: "https://www.linkedin.com/in/arpit-khandelwal-0812aa1a3/",
-        icon: Linkedin,
-      },
-      {
-        name: "X",
-        url: "https://x.com/ArpitKhandelwa3",
-        icon: Twitter,
-      },
-    ],
+  role: "Full-stack engineer for AI agents, Solana apps, and automation-heavy products.",
+  location: "Bengaluru, India",
+  email: "ak@arpitkhandelwal.com",
+  avatar: "https://avatars.githubusercontent.com/u/68700864?v=4",
+  socials: [
+    { label: "GitHub", href: "https://github.com/arpit-khandelwal", icon: Github },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/arpit-khandelwal-0812aa1a3/", icon: Linkedin },
+    { label: "X", href: "https://x.com/ArpitKhandelwa3", icon: Twitter },
+  ],
+};
+
+const focusAreas = [
+  {
+    label: "Agentic systems",
+    icon: Bot,
+    text: "MCP servers, browser automation, RAG workflows, and bots that operate across messy real-world surfaces.",
   },
-  work: [
-    {
-      company: "Freelance",
-      link: "",
-      badges: ["Remote"],
-      title: "Software Developer",
-      start: "2021",
-      end: "Present",
-      description:
-        "Engineered automated solutions including FFmpeg video pipelines for creators, Reddit scraping/query bots, and custom AI-powered Discord/Twitter/Telegram bots leveraging knowledge integration and web scraping tools (Firecrawl/Playwright).",
-    },
-    {
-      company: "Avici Money",
-      link: "https://avici.money",
-      badges: ["Remote"],
-      title: "AI and Backend Engineer",
-      start: "January, 2025",
-      end: "July, 2025",
-      description:
-        "Developing an AI concierge service enabling users to seamlessly order food, book tickets, and manage various tasks through natural language interaction. Built the Swiggy MCP Server using Playwright.",
-    },
-    {
-      company: "Hewlett Packard Enterprise",
-      link: "",
-      badges: ["Hybrid"],
-      title: "Software Developer 1",
-      start: "2023",
-      end: "2024",
-      description:
-        "Developed and integrated microservices for DAST security tools (Webinspect, Burp Suite, OWASP ZAP, OpenVAS), enhancing application security testing capabilities.",
-    },
-  ],
-  skills: [
-    "JavaScript", "TypeScript", "Python", "React/Next.js", "Node.js",
-    "Solana", "AI/LLMs", "Vector DB", "Prisma", "Postgres",
-    "Zod", "ffmpeg", "Playwright", "Web Scraping", "API Integration",
-    "Docker", "Cloudflare Workers", "Rust"
-  ],
-  projects: [
-    {
-      title: "Voting Dapp",
-      techStack: ["Next.js", "TypeScript", "Solana", "Rust", "Tailwind CSS"],
-      description: "Voting Dapp to vote for candidates on Solana blockchain",
-      link: { label: "website", href: "https://ion.arpitkhandelwal.com" },
-    },
-    {
-      title: "Ion Vault",
-      techStack: ["Next.js", "TypeScript", "Solana", "Rust", "Tailwind CSS"],
-      description: "Vault to Deposit/Withdraw native SOL using PDAs and Anchor.",
-      link: { label: "website", href: "https://ion.arpitkhandelwal.com" },
-    },
-    {
-      title: "Gossip DAO",
-      techStack: ["Next.js", "TypeScript", "Solana", "Prisma", "Tailwind CSS"],
-      description: "Privacy-focused anonymous gossip platform built during Zugrama residency. Achieved 50+ users & 200+ gossips within 24 hours.",
-      link: { label: "website", href: "https://gossip-dao.vercel.app" },
-    },
-    {
-      title: "Sage Aadit",
-      techStack: ["Next.js", "TypeScript", "AI", "LLMs", "Vector DB", "Tailwind CSS"],
-      description: "AI therapist providing personalized support through weekly check-ins and indexed journal entries (RAG).",
-      link: { label: "website", href: "https://sage-aadit.arpitkhandelwal.com" },
-    },
-    {
-      title: "100xNFT",
-      techStack: ["Solana", "Next.js", "TypeScript", "NFT", "Tailwind CSS"],
-      description: "Gated Solana NFT minting platform exclusively for members of Harkirat's 100x Devs cohort.",
-      link: { label: "website", href: "https://nft.arpitkhandelwal.com" },
-    },
-    {
-      title: "Helius Indexer",
-      techStack: ["Solana", "Helius API", "Postgres", "Node.js", "TypeScript", "React/Next.js"],
-      description: "Blockchain indexing platform simplifying Solana data integration into Postgres using Helius webhooks.",
-      link: { label: "website", href: "https://helius-indexer.arpitkhandelwal.com" },
-    },
-    {
-      title: "Atlas",
-      techStack: ["LLMs", "Azure", "RAG", "Devops"],
-      description: "AI-powered chatbot for the Solana ecosystem, providing users with relevant information and assistance.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=Atlas" },
-    },
-    {
-      title: "Youtube Downloader",
-      techStack: ["TypeScript", "React", "Node.js", "Next.js", "S3", "ffmpeg", "Chakra UI", "Tailwind CSS"],
-      description: "Minimalist tool for downloading YouTube audio and video at custom qualities and resolutions.",
-      link: { label: "website", href: "https://yt.arpitkhandelwal.com" },
-    },
-    {
-      title: "Github Leaderboard",
-      techStack: ["TypeScript", "React", "Node.js", "Next.js", "Prisma", "Zod", "Postgres", "Github API"],
-      description: "Ranks GitHub users based on their open-source software contributions using the GitHub API.",
-      link: { label: "website", href: "https://leaderboard.arpitkhandelwal.com" },
-    },
-    {
-      title: "Video Trimmer",
-      techStack: ["Flask", "Python", "ffmpeg"],
-      description: "Frame-accurate tool to trim and merge multiple videos, handling varying resolutions and encodings.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=Video+Trimmer" },
-    },
-    {
-      title: "Mint Free NFT",
-      techStack: ["React", "Ethers.js", "Hardhat"],
-      description: "Platform for minting free, randomly generated NFTs on the Ethereum testnet to onboard new users.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal/myNFT" },
-    },
-    {
-      title: "Blinks",
-      techStack: ["React", "Solana", "Typescript", "Next.js"],
-      description: "Collection of interactive Solana Actions (Blinks) including coin toss betting, gated NFTs, and quizzes.",
-      link: { label: "website", href: "https://actions.arpitkhandelwal.com/api/actions" },
-    },
-    {
-      title: "Blinkathon Leaderboard",
-      techStack: ["Next.js", "Typescript", "Solana Actions", "Prisma"],
-      description: "Displays views and upvotes for community-submitted Blinks (Solana Actions).",
-      link: { label: "website", href: "https://blinkathon.vercel.app/" },
-    },
-    {
-      title: "7 course mart",
-      techStack: ["Next.js", "Typescript", "Tailwind CSS", "Framer Motion"],
-      description: "Animated landing page developed for a gourmet food store.",
-      link: { label: "website", href: "https://7cm.arpitkhandelwal.com" },
-    },
-    {
-      title: "Daily Quote",
-      techStack: ["Next.js", "Typescript", "Tailwind CSS"],
-      description: "Web application displaying daily motivational quotes from Stoic philosophy.",
-      link: { label: "website", href: "https://quotes.arpitkhandelwal.com/" },
-    },
-    {
-      title: "WoW Helper",
-      techStack: ["React", "Node.js"],
-      description: "Utility to find valid words from given letters for the 'Words of Wonder' game.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=WoW+Helper" },
-    },
-    {
-      title: "Typing Game",
-      techStack: ["JavaScript", "HTML", "CSS"],
-      description: "Simple web-based game designed to test and improve typing speed and accuracy.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal/typing-game" },
-    },
-    {
-      title: "Drum Kit",
-      techStack: ["JavaScript", "HTML", "CSS"],
-      description: "Interactive web application allowing users to play drum sounds using keyboard keys.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal/Drum-Kit" },
-    },
-    {
-      title: "Real Estate WhatsApp Chatbot",
-      techStack: ["Node.js", "WhatsApp API", "MongoDB", "OpenAI API", "Cloudflare Workers", "Hono"],
-      description: "AI-powered WhatsApp chatbot facilitating property buying, selling, and listing.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=Real+Estate+WhatsApp+Chatbot" },
-    },
-    {
-      title: "Calendly Workaround",
-      techStack: ["JavaScript", "Node.js", "Playwright"],
-      description: "Automated script using Playwright to overcome limitations in Calendly scheduling.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal/Calendly-workaround" },
-    },
-    {
-      title: "AI Screenshot Renamer",
-      techStack: ["Python", "OpenCV"],
-      description: "Utility that automatically renames screenshot files based on their visual content using OpenCV.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=AI+Screenshot+Renamer" },
-    },
-    {
-      title: "Low Power Mode Test",
-      techStack: ["JavaScript", "React"],
-      description: "Proof-of-concept demonstrating render optimization for devices in low power mode.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal/Low-Power-Mode-Test" },
-    },
-    {
-      title: "Image to Excel",
-      techStack: ["Python", "Pandas"],
-      description: "Tool to convert image data (e.g., tables) into structured Excel spreadsheets.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal/ImageToExcel" },
-    },
-    {
-      title: "Insta Follow Frenzy",
-      techStack: ["Python", "Instagram API"],
-      description: "Proof-of-concept script to recursively follow followers of an Instagram account for social graph analysis.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=Insta+Follow+Frenzy" },
-    },
-    {
-      title: "Ask GPT Twitter",
-      techStack: ["Node.js", "Twitter API", "OpenAI API"],
-      description: "Twitter bot that answers questions about a tweet when mentioned in a reply, using GPT.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal?tab=repositories&q=Ask+GPT+Twitter" },
-    },
-    {
-      title: "Twitter Thread Bot",
-      techStack: ["Node.js", "Twitter API", "OpenAI API"],
-      description: "Automated bot creating Twitter threads on various topics using GPT and the Twitter API.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal/Twitter-Thread-Bot" },
-    },
-    {
-      title: "Terminal Chat GPT",
-      techStack: ["Python", "OpenAI API"],
-      description: "Command-line interface application for interacting with OpenAI's GPT models directly from the terminal.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal/TerminalChatGPT" },
-    },
-    {
-      title: "Face Mask Detection",
-      techStack: ["Python", "OpenCV"],
-      description: "Application using OpenCV to detect face masks in images and real-time video streams.",
-      link: { label: "github", href: "https://github.com/arpit-khandelwal/AI-Face-Mask-Detection" },
-    },
-  ],
-};
-
-
-/**
- * =========================================================================================
- * COMPONENT LAYER
- * =========================================================================================
- */
-
-// --- Helpers to Map Data to UI ---
-
-const getIconForProject = (title: string, techStack: string[]) =>
-{
-  const t = title.toLowerCase();
-  const stack = techStack.join(' ').toLowerCase();
-
-  if (t.includes('voting') || t.includes('vault') || t.includes('nft')) return Landmark;
-  if (t.includes('gossip') || t.includes('chat') || t.includes('twitter') || t.includes('whatsapp')) return MessageCircle;
-  if (t.includes('ai') || t.includes('sage') || t.includes('gpt') || stack.includes('llm')) return Brain;
-  if (t.includes('indexer') || t.includes('leaderboard') || t.includes('excel')) return Database;
-  if (t.includes('youtube') || t.includes('video') || t.includes('stream')) return Video;
-  if (t.includes('game') || t.includes('wow') || t.includes('typing')) return Gamepad;
-  if (t.includes('image') || t.includes('mask') || t.includes('screenshot')) return ImageIcon;
-  if (t.includes('drum')) return Music;
-  return Code;
-};
-
-// Data Transformation Adapter
-const usePortfolioData = () =>
-{
-  return useMemo(() =>
   {
-    // 1. Meta & Hero
-    const meta = RESUME_DATA;
-
-    // 2. Cores (Split Work History)
-    const hpeWork = RESUME_DATA.work.find(w => w.company.includes("Hewlett Packard"));
-    const aviciWork = RESUME_DATA.work.find(w => w.company.includes("Avici"));
-
-    const cores = [
-      {
-        id: "security",
-        title: "The Sentinel",
-        icon: Shield,
-        color: "blue",
-        protocol: "Protocol: Security",
-        description: hpeWork ? hpeWork.description : "Enterprise Security Specialist",
-        skills: ["Auth Automation (Selenium)", "Pen-Testing Integrations", "WebInspect"]
-      },
-      {
-        id: "velocity",
-        title: "The Architect",
-        icon: Zap,
-        color: "emerald",
-        protocol: "Protocol: Velocity",
-        description: aviciWork ? aviciWork.description : "AI & Web3 Engineer",
-        skills: ["Reverse Engineering APIs", "Decentralized Swarms", "MCP Servers"]
-      }
-    ];
-
-    // 3. Selected Operations (Curated High Impact)
-    // We manually pick the top projects to show in the "Magnum Opus" section
-    const selectedTitles = ["Avici Money", "Gossip DAO", "Atlas", "Helius Indexer", "Ion Vault"];
-
-    const selectedOperations = [];
-
-    // Add Avici (from Work) as a Project
-    if (aviciWork) {
-      selectedOperations.push({
-        id: "avici",
-        title: "Swiggy MCP Server",
-        role: "AI & Fullstack Engineer @ Avici",
-        date: aviciWork.start + " - " + aviciWork.end,
-        type: "Agentic Infrastructure",
-        icon: Server,
-        description: "Built a Model Context Protocol (MCP) server that allowed LLMs to interact with Swiggy's closed ecosystem. Engineered a session-mocking layer using Playwright to simulate human authentication.",
-        tags: ["Python", "Playwright", "MCP"],
-        link: aviciWork.link,
-        stats: { label: "Impact", value: "Zero-API Integration" }
-      });
-    }
-
-    // Add Gossip DAO
-    const gossip = RESUME_DATA.projects.find(p => p.title === "Gossip DAO");
-    if (gossip) {
-      selectedOperations.push({
-        id: "gossip",
-        title: gossip.title,
-        role: "Zugrama Residency",
-        date: "2025",
-        type: "Community",
-        icon: MessageCircle,
-        description: gossip.description,
-        tags: gossip.techStack,
-        link: gossip.link.href,
-        stats: { label: "Users", value: "200+ in 24h" }
-      });
-    }
-
-    // Add Atlas (Solchat)
-    const atlas = RESUME_DATA.projects.find(p => p.title === "Atlas");
-    if (atlas) {
-      selectedOperations.push({
-        id: "atlas",
-        title: "Atlas (Solchat)",
-        role: "Grant Winner ($2,500)",
-        date: "LATE 2024",
-        type: "Grant Winner",
-        icon: Award,
-        description: atlas.description,
-        tags: atlas.techStack,
-        link: atlas.link.href,
-        stats: { label: "Award", value: "Foundation Grant" }
-      });
-    }
-
-    // Add Helius
-    const helius = RESUME_DATA.projects.find(p => p.title === "Helius Indexer");
-    if (helius) {
-      selectedOperations.push({
-        id: "helius",
-        title: helius.title,
-        role: "Infrastructure Engineering",
-        date: "2024",
-        type: "Protocol Engineering",
-        icon: Database,
-        description: helius.description,
-        tags: helius.techStack,
-        link: helius.link.href
-      });
-    }
-
-    // 4. The Vault (Everything else)
-    const vault = RESUME_DATA.projects
-      .filter(p => !selectedTitles.includes(p.title) && p.title !== "Gossip DAO" && p.title !== "Helius Indexer" && p.title !== "Atlas")
-      .map(p => ({
-        id: p.title,
-        title: p.title,
-        desc: p.description,
-        stack: p.techStack.slice(0, 3), // First 3 tags only
-        link: p.link.href,
-        icon: getIconForProject(p.title, p.techStack)
-      }));
-
-    return { meta, cores, selectedOperations, vault };
-  }, []);
-};
-
-
-// --- UI Components ---
-
-const SectionHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
-  <div className="mb-12 md:mb-20">
-    <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-      {title}<span className="text-emerald-500">.</span>
-    </h2>
-    <div className="h-1 w-20 bg-emerald-500 mb-4"></div>
-    <p className="text-slate-400 max-w-xl text-lg leading-relaxed">{subtitle}</p>
-  </div>
-);
-
-const TechTag = ({ label }: { label: string }) => (
-  <span className="px-3 py-1 bg-slate-800/50 border border-slate-700 text-slate-300 text-xs font-mono rounded hover:border-emerald-500/50 transition-colors cursor-default">
-    {label}
-  </span>
-);
-
-const DualCoreSystem = ({ cores }: { cores: { id: string; icon: any; color: string; protocol: string; title: string; description: string; skills: string[] }[] }) => (
-  <div className="grid md:grid-cols-2 gap-6 w-full max-w-5xl mx-auto">
-    {cores.map((core) => (
-      <div key={core.id} className="bg-slate-900/40 border border-slate-800 p-8 rounded-2xl hover:bg-slate-900/60 transition-all group relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-          <core.icon className={`w-32 h-32 ${core.color === 'blue' ? 'text-blue-500' : 'text-emerald-500'}`} />
-        </div>
-        <div className="relative z-10">
-          <div className={`flex items-center gap-3 mb-4 ${core.color === 'blue' ? 'text-blue-400' : 'text-emerald-400'}`}>
-            <core.icon className="w-5 h-5" />
-            <span className="font-mono text-xs uppercase tracking-widest">{core.protocol}</span>
-          </div>
-          <h3 className="text-2xl font-bold text-white mb-2">{core.title}</h3>
-          <p className="text-slate-400 text-sm leading-relaxed mb-6">
-            {core.description}
-          </p>
-          <ul className="space-y-2 text-sm text-slate-300 font-mono">
-            {core.skills.map((skill, i) => (
-              <li key={i} className="flex items-center gap-2">
-                <div className={`w-1.5 h-1.5 rounded-full ${core.color === 'blue' ? 'bg-blue-500' : 'bg-emerald-500'}`}></div>
-                {skill}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    ))}
-  </div>
-);
-
-const MagnumOpus = ({ op }: { op: { date: string; title: string; role: string; stats?: { label: string; value: string }; icon: any; type: string; description: string; tags: string[]; link?: string } }) => (
-  <div className="group relative bg-slate-950 border-b border-slate-800 py-12 md:py-16 hover:bg-slate-900/20 transition-colors">
-    <div className="container mx-auto px-6 flex flex-col md:flex-row gap-8 md:gap-16">
-
-      {/* Left: Meta */}
-      <div className="md:w-1/4 flex flex-col justify-between shrink-0">
-        <div>
-          <span className="font-mono text-emerald-500 text-xs mb-2 block">{op.date}</span>
-          <h3 className="text-3xl font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">
-            {op.title}
-          </h3>
-          <span className="inline-block mt-2 px-2 py-0.5 rounded border border-slate-700 bg-slate-900 text-slate-400 text-xs">
-            {op.role}
-          </span>
-        </div>
-        {op.stats && (
-          <div className="mt-6 p-4 bg-slate-900 rounded border border-slate-800 border-l-2 border-l-emerald-500">
-            <p className="text-xs text-slate-400 font-mono uppercase">{op.stats.label}</p>
-            <p className="text-xl font-bold text-white">{op.stats.value}</p>
-          </div>
-        )}
-      </div>
-
-      {/* Right: Content */}
-      <div className="md:w-3/4">
-        <div className="flex items-center gap-3 mb-4">
-          {/* Dynamic Icon */}
-          <op.icon className={`w-4 h-4 ${op.type.includes('Grant') ? 'text-yellow-400' : op.type.includes('Speaker') ? 'text-purple-400' : 'text-slate-500'}`} />
-          <span className="text-sm font-semibold text-slate-300">{op.type}</span>
-        </div>
-        <p className="text-lg text-slate-400 leading-relaxed mb-8 max-w-3xl">
-          {op.description}
-        </p>
-
-        <div className="flex flex-wrap items-center gap-3 mb-8">
-          {op.tags.map((tag, i) => <TechTag key={i} label={tag} />)}
-        </div>
-
-        {op.link && (
-          <a href={op.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-white font-semibold border-b border-emerald-500 pb-1 hover:text-emerald-400 transition-colors">
-            View Source <ExternalLink className="w-4 h-4" />
-          </a>
-        )}
-      </div>
-    </div>
-  </div>
-);
-
-const VaultItem = ({ item }: { item: { link: string; title: string; desc: string; stack: string[]; icon: any } }) => (
-  <a
-    href={item.link}
-    target="_blank"
-    className="block p-6 bg-slate-900 border border-slate-800 hover:border-emerald-500/50 transition-all group cursor-pointer hover:-translate-y-1"
-  >
-    <div className="flex justify-between items-start mb-4">
-      <div className="p-2 bg-slate-800 rounded group-hover:bg-slate-700 transition-colors text-emerald-400">
-        <item.icon className="w-5 h-5" />
-      </div>
-      <ExternalLink className="w-4 h-4 text-slate-600 group-hover:text-emerald-400" />
-    </div>
-    <h4 className="text-lg font-bold text-white mb-2">{item.title}</h4>
-    <p className="text-sm text-slate-400 mb-4 h-10 line-clamp-2">{item.desc}</p>
-    <div className="flex flex-wrap gap-2">
-      {item.stack.map((t, i) => (
-        <span key={i} className="text-[10px] text-slate-500 font-mono">#{t}</span>
-      ))}
-    </div>
-  </a>
-);
-
-// --- Main Page ---
-
-export default function Portfolio()
-{
-  const [scrolled, setScrolled] = useState(false);
-  const data = usePortfolioData();
-
-  useEffect(() =>
+    label: "Solana products",
+    icon: Braces,
+    text: "Voting, vaults, Blinks, NFT gates, indexers, and frontend flows for protocol-grade user experiences.",
+  },
   {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    label: "Security-aware backend",
+    icon: ShieldCheck,
+    text: "Microservices, DAST integrations, API orchestration, and production instincts from enterprise security work.",
+  },
+];
 
+const selectedWork = [
+  {
+    title: "Swiggy MCP Server",
+    type: "AI automation",
+    href: "https://avici.money",
+    period: "2025",
+    summary:
+      "Built an MCP server for Avici Money that let an AI concierge operate inside Swiggy through Playwright-backed session automation.",
+    stack: ["MCP", "Playwright", "LLMs", "Backend"],
+    metric: "Closed API surface",
+  },
+  {
+    title: "Gossip DAO",
+    type: "Social product",
+    href: "https://gossip-dao.vercel.app",
+    period: "2025",
+    summary:
+      "A privacy-focused anonymous community app built during Zugrama residency, reaching 50+ users and 200+ posts in 24 hours.",
+    stack: ["Next.js", "Solana", "Prisma", "TypeScript"],
+    metric: "200+ posts day one",
+  },
+  {
+    title: "Helius Indexer",
+    type: "Data infra",
+    href: "https://helius-indexer.arpitkhandelwal.com",
+    period: "2024",
+    summary:
+      "A Solana indexing platform that pipes Helius webhook data into Postgres so teams can query chain activity without custom plumbing.",
+    stack: ["Solana", "Helius", "Postgres", "Node.js"],
+    metric: "Webhook to SQL",
+  },
+  {
+    title: "Ion Vault",
+    type: "Protocol UI",
+    href: "https://ion.arpitkhandelwal.com",
+    period: "2024",
+    summary:
+      "A Solana vault interface for native SOL deposits and withdrawals using PDAs and Anchor program patterns.",
+    stack: ["Anchor", "Rust", "Next.js", "Tailwind"],
+    metric: "PDA vault flow",
+  },
+  {
+    title: "Sage Aadit",
+    type: "AI product",
+    href: "https://sage-aadit.arpitkhandelwal.com",
+    period: "2024",
+    summary:
+      "An AI therapist concept with weekly check-ins and indexed journal memory for personalized support.",
+    stack: ["RAG", "Vector DB", "LLMs", "Next.js"],
+    metric: "Memory layer",
+  },
+];
+
+const projectArchive = [
+  ["YouTube Downloader", "FFmpeg pipeline for audio and video exports.", "https://yt.arpitkhandelwal.com"],
+  ["GitHub Leaderboard", "Ranks open-source contribution activity with GitHub API data.", "https://leaderboard.arpitkhandelwal.com"],
+  ["Blinks", "Solana Actions for betting, gated NFTs, and quizzes.", "https://actions.arpitkhandelwal.com/api/actions"],
+  ["100xNFT", "Solana NFT minting gate for the 100x Devs cohort.", "https://nft.arpitkhandelwal.com"],
+  ["Video Trimmer", "Frame-aware video trimming and merge utility.", "https://github.com/arpit-khandelwal?tab=repositories&q=Video+Trimmer"],
+  ["Real Estate WhatsApp Bot", "AI-assisted property workflow over WhatsApp.", "https://github.com/arpit-khandelwal?tab=repositories&q=Real+Estate+WhatsApp+Chatbot"],
+];
+
+const experience = [
+  {
+    company: "Freelance",
+    title: "Software Developer",
+    period: "2021 - Present",
+    text: "Built automation pipelines, social bots, web scrapers, creator tooling, and LLM-backed workflows across Discord, Telegram, X, and browser surfaces.",
+  },
+  {
+    company: "Avici Money",
+    title: "AI and Backend Engineer",
+    period: "Jan 2025 - Jul 2025",
+    text: "Developed AI concierge infrastructure for ordering, booking, and task execution through natural language interfaces.",
+  },
+  {
+    company: "Hewlett Packard Enterprise",
+    title: "Software Developer 1",
+    period: "2023 - 2024",
+    text: "Integrated microservices for DAST tooling including WebInspect, Burp Suite, OWASP ZAP, and OpenVAS.",
+  },
+];
+
+const skills = [
+  { name: "TypeScript", label: "Product code", icon: FileCode2 },
+  { name: "Next.js", label: "App framework", icon: Code2 },
+  { name: "Node.js", label: "Backend runtime", icon: Server },
+  { name: "Python", label: "Automation", icon: Terminal },
+  { name: "Solana", label: "Onchain apps", icon: Braces },
+  { name: "Rust", label: "Programs", icon: Boxes },
+  { name: "LLMs", label: "Agent brains", icon: Bot },
+  { name: "MCP", label: "Tool protocol", icon: Network },
+  { name: "Playwright", label: "Browser ops", icon: Play },
+  { name: "Postgres", label: "Data layer", icon: Database },
+  { name: "Prisma", label: "ORM", icon: Waypoints },
+  { name: "Docker", label: "Shipping", icon: Container },
+  { name: "Cloudflare Workers", label: "Edge runtime", icon: Cloud },
+  { name: "FFmpeg", label: "Media pipeline", icon: Film },
+  { name: "Web scraping", label: "No-API work", icon: Globe2 },
+];
+
+export default function Portfolio() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-emerald-500/30 selection:text-white">
-
-      {/* Sticky Nav */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/90 backdrop-blur border-b border-slate-800 py-4' : 'bg-transparent py-8'}`}>
-        <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="font-mono font-bold text-xl tracking-tighter text-white">
-            {data.meta.name.split(' ')[0].toUpperCase()}<span className="text-emerald-500">.</span>{data.meta.name.split(' ')[1].toUpperCase()}
+    <main className="min-h-screen overflow-hidden bg-[#f6f1e8] text-[#15110d]">
+      <nav className="fixed left-0 right-0 top-0 z-50 border-b border-black/10 bg-[#f6f1e8]/82 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
+          <a href="#" className="font-mono text-sm font-semibold uppercase tracking-[0.18em]">
+            Arpit K.
+          </a>
+          <div className="hidden items-center gap-8 text-sm font-medium text-black/65 md:flex">
+            <a href="#work" className="transition hover:text-black">Work</a>
+            <a href="#experience" className="transition hover:text-black">Experience</a>
+            <a href="#contact" className="transition hover:text-black">Contact</a>
           </div>
-          <div className="flex gap-6">
-            {data.meta.contact.social.map((social, idx) => (
-              <a key={idx} href={social.url} target="_blank" className="hover:text-emerald-400 transition-colors"><social.icon className="w-5 h-5" /></a>
-            ))}
-          </div>
+          <a
+            href={`mailto:${profile.email}`}
+            className="inline-flex h-10 items-center gap-2 rounded-full bg-[#15110d] px-4 text-sm font-semibold text-white transition hover:bg-[#d84f2a]"
+          >
+            <Mail className="size-4" />
+            Email
+          </a>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <header className="pt-40 pb-32 px-6 relative overflow-hidden">
-        <div className="container mx-auto max-w-5xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 text-xs font-mono mb-8 animate-fade-in-up">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            SYSTEM ONLINE
+      <section className="relative min-h-svh border-b border-black/10 pt-20">
+        <div className="absolute inset-0 hero-grid opacity-70" />
+        <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#f6f1e8] to-transparent" />
+
+        <div className="relative mx-auto grid min-h-[calc(100svh-5rem)] max-w-7xl items-center gap-14 px-5 py-12 lg:grid-cols-[0.95fr_1.05fr] md:px-8">
+          <div className="max-w-3xl">
+            <div className="mb-7 inline-flex items-center gap-2 border-y border-black/20 py-2 pr-4 font-mono text-xs uppercase tracking-[0.2em] text-black/62">
+              <Sparkles className="size-4 text-[#d84f2a]" />
+              Available for serious builds
+            </div>
+            <h1 className="max-w-4xl text-[clamp(3.35rem,6.2vw,6.9rem)] font-black uppercase leading-[0.8] tracking-normal">
+              Arpit
+              <span className="block text-[#d84f2a]">Khandelwal</span>
+            </h1>
+            <p className="mt-8 max-w-2xl text-xl leading-8 text-black/68 md:text-2xl md:leading-9">
+              {profile.role} I ship the glue between LLMs, browsers, blockchains, and production backends.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <a
+                href="#work"
+                className="inline-flex h-12 items-center gap-2 rounded-full bg-[#15110d] px-6 font-semibold text-white transition hover:bg-[#d84f2a]"
+              >
+                View selected work
+                <ArrowUpRight className="size-5" />
+              </a>
+              <div className="flex items-center gap-3">
+                {profile.socials.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    aria-label={social.label}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="grid size-12 place-items-center rounded-full border border-black/15 bg-white/45 transition hover:border-[#d84f2a] hover:text-[#d84f2a]"
+                  >
+                    <social.icon className="size-5" />
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
 
-          <h1 className="text-6xl md:text-8xl font-bold text-white tracking-tighter leading-[0.9] mb-8">
-            The <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">Tatakaee</span><br />
-            Protocol.
-          </h1>
-
-          <p className="text-xl md:text-2xl text-slate-400 max-w-2xl leading-relaxed mb-12">
-            {data.meta.summary}
-          </p>
-
-          <div className="flex flex-wrap gap-4">
-            <button onClick={() => { const element = document.getElementById('work'); if (element) element.scrollIntoView({ behavior: 'smooth' }); }} className="px-8 py-4 bg-emerald-500 text-slate-950 font-bold rounded hover:bg-emerald-400 transition-colors flex items-center gap-2">
-              <Eye className="w-5 h-5" /> View Selected Works
-            </button>
-            <a href={`mailto:${data.meta.contact.email}`} className="px-8 py-4 bg-slate-900 border border-slate-800 text-white font-medium rounded hover:border-slate-600 transition-colors">
-              Establish Uplink
-            </a>
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-[460px] lg:ml-auto lg:mr-0">
+            <div className="absolute inset-0 rotate-[-4deg] rounded-[2rem] bg-[#15110d]" />
+            <Image
+              src={profile.avatar}
+              alt="Arpit Khandelwal"
+              fill
+              priority
+              sizes="(max-width: 768px) calc(100vw - 4.5rem), 488px"
+              unoptimized
+              className="absolute inset-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] rounded-[1.45rem] object-cover grayscale contrast-110"
+            />
+            <div className="absolute -bottom-5 left-4 right-4 rounded-2xl border border-white/15 bg-[#15110d]/92 p-5 text-white shadow-2xl backdrop-blur">
+              <div className="flex items-center justify-between gap-6">
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.18em] text-white/45">Current stack</p>
+                  <p className="mt-1 text-lg font-semibold">AI agents + Solana + backend systems</p>
+                </div>
+                <Terminal className="size-8 text-[#f0c15a]" />
+              </div>
+            </div>
           </div>
-        </div>
-
-        {/* Background Noise */}
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none -z-10 blur-3xl" />
-      </header>
-
-      {/* DNA Section */}
-      <section className="py-20 border-y border-slate-900 bg-slate-950/50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-sm font-mono text-slate-500 uppercase tracking-widest">System Architecture</h2>
-          </div>
-          <DualCoreSystem cores={data.cores} />
         </div>
       </section>
 
-      {/* Selected Operations */}
-      <section id="work" className="bg-slate-950">
-        <div className="container mx-auto px-6 pt-24 pb-12">
-          <SectionHeader
-            title="Selected Operations"
-            subtitle="A curation of high-impact architectures, public goods, and stealth prototypes."
-          />
+      <section className="mx-auto grid max-w-7xl gap-10 px-5 py-20 md:grid-cols-[0.72fr_1.28fr] md:px-8 md:py-28">
+        <div>
+          <p className="section-kicker">What I build</p>
+          <h2 className="section-title mt-4">Useful software at the edge of automation.</h2>
         </div>
-
-        {data.selectedOperations.map((op) => (
-          <MagnumOpus key={op.id} op={op} />
-        ))}
+        <div className="grid gap-8 md:grid-cols-3">
+          {focusAreas.map((area) => (
+            <article key={area.label} className="border-t border-black/18 pt-6">
+              <area.icon className="mb-8 size-8 text-[#d84f2a]" />
+              <h3 className="text-xl font-bold">{area.label}</h3>
+              <p className="mt-4 leading-7 text-black/62">{area.text}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
-      {/* The Vault */}
-      <section className="py-24 bg-slate-950">
-        <div className="container mx-auto px-6">
-          <SectionHeader
-            title="The Vault"
-            subtitle="Experiments, hackathon wins, and scripts from the lab."
-          />
+      <section id="work" className="bg-[#15110d] py-20 text-white md:py-28">
+        <div className="mx-auto max-w-7xl px-5 md:px-8">
+          <div className="mb-14 grid gap-8 md:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <p className="section-kicker text-[#f0c15a]">Selected work</p>
+              <h2 className="section-title mt-4 text-white">Proof through shipped systems.</h2>
+            </div>
+            <p className="max-w-2xl text-lg leading-8 text-white/62">
+              A portfolio should make the bet obvious. Mine is that small teams can ship ambitious products when the engineer can move across AI, infra, product UI, and protocol constraints.
+            </p>
+          </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {data.vault.map((item) => (
-              <VaultItem key={item.id} item={item} />
+          <div className="divide-y divide-white/12 border-y border-white/12">
+            {selectedWork.map((work, index) => (
+              <a
+                key={work.title}
+                href={work.href}
+                target="_blank"
+                rel="noreferrer"
+                className="work-row group grid gap-6 py-8 transition md:grid-cols-[0.18fr_0.34fr_0.34fr_0.14fr] md:items-center"
+              >
+                <div className="font-mono text-sm text-white/38">{String(index + 1).padStart(2, "0")}</div>
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#f0c15a]">{work.type} / {work.period}</p>
+                  <h3 className="mt-3 text-3xl font-black tracking-normal text-white md:text-5xl">{work.title}</h3>
+                </div>
+                <div>
+                  <p className="leading-7 text-white/62">{work.summary}</p>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {work.stack.map((item) => (
+                      <span key={item} className="rounded-full border border-white/14 px-3 py-1 text-xs text-white/58">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between gap-4 md:block md:text-right">
+                  <p className="text-sm font-semibold text-white/72">{work.metric}</p>
+                  <ArrowUpRight className="mt-3 size-7 text-[#d84f2a] transition group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </div>
+              </a>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Footer / Terminal */}
-      <footer className="bg-black py-12 border-t border-slate-900">
-        <div className="container mx-auto px-6 font-mono text-sm">
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <p className="text-emerald-500 mb-2">$ echo "Let's Build"</p>
-              <h3 className="text-2xl text-white font-bold mb-6">Ready to deploy?</h3>
-              <div className="flex gap-4">
-                <a href={`mailto:${data.meta.contact.email}`} className="text-slate-400 hover:text-white underline decoration-emerald-500 underline-offset-4">Email Protocol</a>
-                {data.meta.contact.social.find(s => s.name === "X") && <a href={data.meta.contact.social.find(s => s.name === "X")!.url} className="text-slate-400 hover:text-white underline decoration-emerald-500 underline-offset-4">X Comms</a>}
+      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-20 md:grid-cols-[0.85fr_1.15fr] md:px-8 md:py-28">
+        <div>
+          <p className="section-kicker">Archive</p>
+          <h2 className="section-title mt-4">Smaller builds, sharp edges, useful reps.</h2>
+        </div>
+        <div className="grid gap-x-10 gap-y-8 md:grid-cols-2">
+          {projectArchive.map(([title, text, href]) => (
+            <a key={title} href={href} target="_blank" rel="noreferrer" className="archive-link group border-t border-black/16 pt-5">
+              <div className="flex items-start justify-between gap-5">
+                <h3 className="text-xl font-bold">{title}</h3>
+                <ArrowUpRight className="size-5 shrink-0 text-black/35 transition group-hover:text-[#d84f2a]" />
               </div>
+              <p className="mt-3 leading-7 text-black/62">{text}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section id="experience" className="border-y border-black/10 bg-[#ede3d4] py-20 md:py-28">
+        <div className="mx-auto grid max-w-7xl gap-12 px-5 md:grid-cols-[0.72fr_1.28fr] md:px-8">
+          <div>
+            <p className="section-kicker">Experience</p>
+            <h2 className="section-title mt-4">From enterprise security to agentic product work.</h2>
+          </div>
+          <div className="space-y-8">
+            {experience.map((item) => (
+              <article key={item.company} className="grid gap-4 border-t border-black/18 pt-6 md:grid-cols-[0.35fr_0.65fr]">
+                <div>
+                  <h3 className="text-2xl font-black">{item.company}</h3>
+                  <p className="mt-1 font-mono text-xs uppercase tracking-[0.18em] text-black/45">{item.period}</p>
+                </div>
+                <div>
+                  <p className="text-lg font-semibold">{item.title}</p>
+                  <p className="mt-3 leading-7 text-black/62">{item.text}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
+        <div className="grid gap-10 md:grid-cols-[0.72fr_1.28fr]">
+          <div>
+            <p className="section-kicker">Toolbox</p>
+            <h2 className="section-title mt-4">Fast across the product stack.</h2>
+          </div>
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+            {skills.map((skill) => (
+              <div key={skill.name} className="toolbox-card group">
+                <div className="grid size-10 place-items-center rounded-xl bg-[#15110d] text-[#f0c15a] transition group-hover:bg-[#d84f2a] group-hover:text-white">
+                  <skill.icon className="size-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-black text-[#15110d] md:text-base">{skill.name}</p>
+                  <p className="mt-1 truncate font-mono text-[0.68rem] uppercase tracking-[0.14em] text-black/42">{skill.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <footer id="contact" className="bg-[#d84f2a] px-5 py-16 text-[#15110d] md:px-8">
+        <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.1fr_0.9fr] md:items-end">
+          <div>
+            <p className="section-kicker text-[#15110d]/65">Contact</p>
+            <h2 className="mt-4 max-w-4xl text-5xl font-black uppercase leading-[0.9] tracking-normal md:text-8xl">
+              Bring me in when the product needs to move.
+            </h2>
+          </div>
+          <div className="md:text-right">
+            <div className="mb-6 flex items-center gap-2 md:justify-end">
+              <MapPin className="size-5" />
+              <span className="font-semibold">{profile.location}</span>
             </div>
-            <div className="text-slate-600 md:text-right">
-              <p>LOCATION: {data.meta.location.toUpperCase()}</p>
-              <p>CURRENT STATUS: OPEN FOR CONTRACTS</p>
-              <p className="mt-4">© {new Date().getFullYear()} {data.meta.name}</p>
-            </div>
+            <a
+              href={`mailto:${profile.email}`}
+              className="inline-flex h-14 items-center gap-3 rounded-full bg-[#15110d] px-7 text-lg font-bold text-white transition hover:bg-white hover:text-[#15110d]"
+            >
+              {profile.email}
+              <Zap className="size-5" />
+            </a>
           </div>
         </div>
       </footer>
-
-    </div>
+    </main>
   );
 }
