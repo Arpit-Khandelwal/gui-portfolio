@@ -61,6 +61,16 @@ const focusAreas = [
 
 const selectedWork = [
   {
+    title: "Reskilll Platform",
+    type: "Event infra",
+    href: "https://reskilll.com",
+    period: "2025 - 2026",
+    summary:
+      "Authored product and platform commits across Reskilll codebases, including OTP login, Google OAuth, profile APIs, dashboard/profile editing, CMS console, event judging, and submission flows.",
+    stack: ["Next.js", "Express", "MongoDB", "Auth"],
+    metric: "110 authored commits",
+  },
+  {
     title: "Dark Payroll",
     type: "Privacy infra",
     href: "https://github.com/Arpit-Khandelwal/dark-payroll",
@@ -109,6 +119,29 @@ const selectedWork = [
       "A Solana indexing platform that pipes Helius webhook data into Postgres so teams can query chain activity without custom plumbing.",
     stack: ["Solana", "Helius", "Postgres", "Node.js"],
     metric: "Webhook to SQL",
+  },
+];
+
+const proofMetrics = [
+  {
+    value: "85",
+    label: "public GitHub repos",
+    detail: "Public engineering footprint across AI, crypto, automation, and dev tooling.",
+  },
+  {
+    value: "110",
+    label: "authored Reskilll commits",
+    detail: "Counted only commits authored by Arpit Khandelwal / eren-reskilll across local Reskilll repos.",
+  },
+  {
+    value: "755",
+    label: "files touched in those commits",
+    detail: "Git numstat across authored Reskilll commits, covering product UI, APIs, auth, and event tooling.",
+  },
+  {
+    value: "5",
+    label: "Reskilll codebases",
+    detail: "Authored work found in reskilll-new, reskilll-apis, antigravity, wadhwani-ai, and sales-pipeline-ai.",
   },
 ];
 
@@ -270,6 +303,24 @@ export default function Portfolio() {
               <p className="mt-4 leading-7 text-black/62">{area.text}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="border-y border-black/10 bg-[#ede3d4] py-16 md:py-20">
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 md:grid-cols-[0.72fr_1.28fr] md:px-8">
+          <div>
+            <p className="section-kicker">Operating proof</p>
+            <h2 className="section-title mt-4">Signals from the workbench.</h2>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2">
+            {proofMetrics.map((metric) => (
+              <div key={metric.label} className="border-t border-black/18 pt-5">
+                <p className="text-5xl font-black leading-none text-[#d84f2a] md:text-6xl">{metric.value}</p>
+                <h3 className="mt-4 text-lg font-black uppercase tracking-normal">{metric.label}</h3>
+                <p className="mt-3 leading-7 text-black/58">{metric.detail}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
