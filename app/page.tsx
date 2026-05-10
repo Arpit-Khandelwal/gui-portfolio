@@ -30,7 +30,7 @@ import Image from "next/image";
 
 const profile = {
   name: "Arpit Khandelwal",
-  role: "Full-stack engineer for AI agents, Solana apps, and automation-heavy products.",
+  role: "Software engineer building at the intersection of AI agents, crypto, and dev tooling.",
   location: "Bengaluru, India",
   email: "ak@arpitkhandelwal.com",
   avatar: "https://avatars.githubusercontent.com/u/68700864?v=4",
@@ -45,21 +45,41 @@ const focusAreas = [
   {
     label: "Agentic systems",
     icon: Bot,
-    text: "MCP servers, browser automation, RAG workflows, and bots that operate across messy real-world surfaces.",
+    text: "MCP servers, browser automation, RAG workflows, and agents that can operate across messy real-world surfaces.",
   },
   {
-    label: "Solana products",
+    label: "Private crypto apps",
     icon: Braces,
-    text: "Voting, vaults, Blinks, NFT gates, indexers, and frontend flows for protocol-grade user experiences.",
+    text: "Solana, Arcium, ZK proofs, vaults, micropayments, Blinks, and privacy-preserving product experiments.",
   },
   {
-    label: "Security-aware backend",
+    label: "Security-minded infra",
     icon: ShieldCheck,
-    text: "Microservices, DAST integrations, API orchestration, and production instincts from enterprise security work.",
+    text: "Microservices, DAST integrations, API orchestration, devops, and production instincts from enterprise security work.",
   },
 ];
 
 const selectedWork = [
+  {
+    title: "Dark Payroll",
+    type: "Privacy infra",
+    href: "https://github.com/Arpit-Khandelwal/dark-payroll",
+    period: "2026",
+    summary:
+      "A private payroll system on Solana that hides salary data on-chain while proving compliance with ZK proofs, built with ShadowWire and Range.",
+    stack: ["Solana", "ZK proofs", "Privacy", "TypeScript"],
+    metric: "Private payroll",
+  },
+  {
+    title: "AgentPay",
+    type: "Agent protocol",
+    href: "https://github.com/Arpit-Khandelwal/agentpay",
+    period: "2026",
+    summary:
+      "A streaming micropayment protocol for agent-to-agent services on Solana, exploring payment rails for autonomous software.",
+    stack: ["Solana", "Agents", "Payments", "TypeScript"],
+    metric: "Agent commerce",
+  },
   {
     title: "Swiggy MCP Server",
     type: "AI automation",
@@ -90,29 +110,11 @@ const selectedWork = [
     stack: ["Solana", "Helius", "Postgres", "Node.js"],
     metric: "Webhook to SQL",
   },
-  {
-    title: "Ion Vault",
-    type: "Protocol UI",
-    href: "https://ion.arpitkhandelwal.com",
-    period: "2024",
-    summary:
-      "A Solana vault interface for native SOL deposits and withdrawals using PDAs and Anchor program patterns.",
-    stack: ["Anchor", "Rust", "Next.js", "Tailwind"],
-    metric: "PDA vault flow",
-  },
-  {
-    title: "Sage Aadit",
-    type: "AI product",
-    href: "https://sage-aadit.arpitkhandelwal.com",
-    period: "2024",
-    summary:
-      "An AI therapist concept with weekly check-ins and indexed journal memory for personalized support.",
-    stack: ["RAG", "Vector DB", "LLMs", "Next.js"],
-    metric: "Memory layer",
-  },
 ];
 
 const projectArchive = [
+  ["Encrypted Games", "Confidential on-chain games built on Arcium's encrypted computation layer.", "https://github.com/Arpit-Khandelwal/encrypted-games"],
+  ["Mouse Cursor AI", "AI-powered pointer for guided accessibility and interface navigation.", "https://github.com/Arpit-Khandelwal/mouse-cursor-ai"],
   ["YouTube Downloader", "FFmpeg pipeline for audio and video exports.", "https://yt.arpitkhandelwal.com"],
   ["GitHub Leaderboard", "Ranks open-source contribution activity with GitHub API data.", "https://leaderboard.arpitkhandelwal.com"],
   ["Blinks", "Solana Actions for betting, gated NFTs, and quizzes.", "https://actions.arpitkhandelwal.com/api/actions"],
@@ -126,7 +128,7 @@ const experience = [
     company: "Freelance",
     title: "Software Developer",
     period: "2021 - Present",
-    text: "Built automation pipelines, social bots, web scrapers, creator tooling, and LLM-backed workflows across Discord, Telegram, X, and browser surfaces.",
+    text: "Built automation pipelines, social bots, web scrapers, creator tooling, LLM-backed workflows, and privacy-focused crypto experiments.",
   },
   {
     company: "Avici Money",
@@ -148,13 +150,19 @@ const skills = [
   { name: "Node.js", label: "Backend runtime", icon: Server },
   { name: "Python", label: "Automation", icon: Terminal },
   { name: "Solana", label: "Onchain apps", icon: Braces },
+  { name: "Arcium", label: "Encrypted compute", icon: ShieldCheck },
+  { name: "ZK proofs", label: "Privacy layer", icon: Network },
   { name: "Rust", label: "Programs", icon: Boxes },
+  { name: "C++", label: "CP reps", icon: Code2 },
   { name: "LLMs", label: "Agent brains", icon: Bot },
   { name: "MCP", label: "Tool protocol", icon: Network },
+  { name: "Hono", label: "API layer", icon: Server },
   { name: "Playwright", label: "Browser ops", icon: Play },
   { name: "Postgres", label: "Data layer", icon: Database },
   { name: "Prisma", label: "ORM", icon: Waypoints },
   { name: "Docker", label: "Shipping", icon: Container },
+  { name: "Kubernetes", label: "Infra", icon: Container },
+  { name: "AWS", label: "Cloud", icon: Cloud },
   { name: "Cloudflare Workers", label: "Edge runtime", icon: Cloud },
   { name: "FFmpeg", label: "Media pipeline", icon: Film },
   { name: "Web scraping", label: "No-API work", icon: Globe2 },
@@ -198,7 +206,7 @@ export default function Portfolio() {
               <span className="block text-[#d84f2a]">Khandelwal</span>
             </h1>
             <p className="mt-8 max-w-2xl text-xl leading-8 text-black/68 md:text-2xl md:leading-9">
-              {profile.role} I ship the glue between LLMs, browsers, blockchains, and production backends.
+              {profile.role} I ship the glue between LLMs, browsers, Solana, privacy systems, and production backends.
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <a
@@ -234,13 +242,13 @@ export default function Portfolio() {
               priority
               sizes="(max-width: 768px) calc(100vw - 4.5rem), 488px"
               unoptimized
-              className="absolute inset-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] rounded-[1.45rem] object-cover grayscale contrast-110"
+              className="absolute inset-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] rounded-[1.45rem] object-cover saturate-110"
             />
             <div className="absolute -bottom-5 left-4 right-4 rounded-2xl border border-white/15 bg-[#15110d]/92 p-5 text-white shadow-2xl backdrop-blur">
               <div className="flex items-center justify-between gap-6">
                 <div>
                   <p className="font-mono text-xs uppercase tracking-[0.18em] text-white/45">Current stack</p>
-                  <p className="mt-1 text-lg font-semibold">AI agents + Solana + backend systems</p>
+                  <p className="mt-1 text-lg font-semibold">AI agents + private crypto + dev tooling</p>
                 </div>
                 <Terminal className="size-8 text-[#f0c15a]" />
               </div>
@@ -273,7 +281,7 @@ export default function Portfolio() {
               <h2 className="section-title mt-4 text-white">Proof through shipped systems.</h2>
             </div>
             <p className="max-w-2xl text-lg leading-8 text-white/62">
-              A portfolio should make the bet obvious. Mine is that small teams can ship ambitious products when the engineer can move across AI, infra, product UI, and protocol constraints.
+              A portfolio should make the bet obvious. Mine is that small teams can ship ambitious products when the engineer can move across AI agents, privacy infrastructure, product UI, and protocol constraints.
             </p>
           </div>
 
@@ -356,7 +364,7 @@ export default function Portfolio() {
         <div className="grid gap-10 md:grid-cols-[0.72fr_1.28fr]">
           <div>
             <p className="section-kicker">Toolbox</p>
-            <h2 className="section-title mt-4">Fast across the product stack.</h2>
+            <h2 className="section-title mt-4">Fast across agents, crypto, and infra.</h2>
           </div>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
             {skills.map((skill) => (
