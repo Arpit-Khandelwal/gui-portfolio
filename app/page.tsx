@@ -68,7 +68,7 @@ const selectedWork = [
     summary:
       "Authored product and platform commits across Reskilll codebases, including OTP login, Google OAuth, profile APIs, dashboard/profile editing, CMS console, event judging, and submission flows.",
     stack: ["Next.js", "Express", "MongoDB", "Auth"],
-    metric: "110 authored commits",
+    metric: "110 commits / 755 files",
   },
   {
     title: "Dark Payroll",
@@ -126,26 +126,28 @@ const proofMetrics = [
   {
     value: "85",
     label: "public GitHub repos",
-    detail: "Public engineering footprint across AI, crypto, automation, and dev tooling.",
+    detail: "Across Arpit-Khandelwal, spanning AI, crypto, automation, dev tooling, and experiments.",
+  },
+  {
+    value: "71",
+    label: "original public repos",
+    detail: "Non-fork public repositories on Arpit-Khandelwal, with TypeScript leading the stack.",
   },
   {
     value: "110",
-    label: "authored Reskilll commits",
-    detail: "Counted only commits authored by Arpit Khandelwal / eren-reskilll across local Reskilll repos.",
+    label: "authored work commits",
+    detail: "Counted from local Reskilll repos across Arpit Khandelwal and eren-reskilll identities.",
   },
   {
-    value: "755",
-    label: "files touched in those commits",
-    detail: "Git numstat across authored Reskilll commits, covering product UI, APIs, auth, and event tooling.",
-  },
-  {
-    value: "5",
-    label: "Reskilll codebases",
-    detail: "Authored work found in reskilll-new, reskilll-apis, antigravity, wadhwani-ai, and sales-pipeline-ai.",
+    value: "503",
+    label: "CP practice commits",
+    detail: "Competitive-programming repository activity across Codeforces, CodeChef, LeetCode, and Striver-style practice.",
   },
 ];
 
 const projectArchive = [
+  ["CPP Practice", "503-commit competitive-programming practice archive across C++ problem solving tracks.", "https://github.com/Arpit-Khandelwal/CPP-Practice"],
+  ["LinkPeek", "URL metadata previewer built during the Kiro v Claude hackathon cycle.", "https://github.com/Arpit-Khandelwal/linkpeek-metadata-previewer"],
   ["Encrypted Games", "Confidential on-chain games built on Arcium's encrypted computation layer.", "https://github.com/Arpit-Khandelwal/encrypted-games"],
   ["Mouse Cursor AI", "AI-powered pointer for guided accessibility and interface navigation.", "https://github.com/Arpit-Khandelwal/mouse-cursor-ai"],
   ["YouTube Downloader", "FFmpeg pipeline for audio and video exports.", "https://yt.arpitkhandelwal.com"],
