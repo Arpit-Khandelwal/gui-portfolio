@@ -42,6 +42,7 @@ import {
 import { buildApiSnippet, buildChecklistText, buildSprintBrief, copyText, getAgentAnswer } from "./helpers";
 import { CaseStudyDrawer } from "./case-study-drawer";
 import { OptionGroup } from "./option-group";
+import { ThemeSwitcher } from "./theme-switcher";
 
 export function PortfolioPage() {
   const [buyerMode, setBuyerMode] = useState<(typeof buyerModes)[number]["id"]>("founder");
@@ -94,10 +95,15 @@ export function PortfolioPage() {
             <a href="#work" className="transition hover:opacity-100">Proof</a>
             <a href="#contact" className="transition hover:opacity-100">Contact</a>
           </div>
-          <a href={profile.x} target="_blank" rel="noreferrer" className="primary-button inline-flex h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold">
-            <Twitter className="size-4" />
-            DM me
-          </a>
+          <div className="flex items-center gap-3">
+            <div className="hidden lg:block">
+              <ThemeSwitcher modes={workModes} value={workMode} onChange={setWorkMode} compact />
+            </div>
+            <a href={profile.x} target="_blank" rel="noreferrer" className="primary-button inline-flex h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold">
+              <Twitter className="size-4" />
+              DM me
+            </a>
+          </div>
         </div>
       </nav>
 
@@ -126,12 +132,16 @@ export function PortfolioPage() {
               ))}
             </div>
 
+            <div className="mb-8 lg:hidden">
+              <ThemeSwitcher modes={workModes} value={workMode} onChange={setWorkMode} />
+            </div>
+
             <h1 className="text-[clamp(3.05rem,7.5vw,8rem)] font-black uppercase leading-[0.78] tracking-normal">
               Arpit
               <span className="block text-[color:var(--accent)]">Khandelwal</span>
             </h1>
             <p className="mt-8 max-w-3xl text-xl font-semibold leading-8 md:text-2xl md:leading-9">{activeBuyer.promise}</p>
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-[color:var(--muted)]">{activeBuyer.body}</p>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-[color:var(--muted)] md:text-lg">{activeBuyer.body}</p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <button type="button" onClick={copyBriefAndOpenX} className="primary-button inline-flex h-12 items-center gap-2 rounded-full px-6 font-semibold">
                 Copy brief + open X
@@ -143,7 +153,7 @@ export function PortfolioPage() {
               </a>
             </div>
             <p className="mt-3 min-h-6 font-mono text-xs uppercase tracking-[0.16em] text-[color:var(--muted)]" aria-live="polite">
-              {copiedBrief ? "Brief copied. Paste it into the X DM." : "Primary path: X DM. Email remains available below."}
+              {copiedBrief ? "Brief copied. Paste it into the X DM." : "Primary path: X DM."}
             </p>
             <div className="mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
               {activeBuyer.tags.map((item) => (
@@ -181,22 +191,10 @@ export function PortfolioPage() {
       <section className="border-b border-[color:var(--line)] px-5 py-5 md:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="section-kicker">Work mode</p>
+            <p className="section-kicker">Theme switcher</p>
             <p className="mt-1 text-sm text-[color:var(--muted)]">{activeMode.note}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {workModes.map((mode) => (
-              <button
-                key={mode.id}
-                type="button"
-                aria-pressed={workMode === mode.id}
-                onClick={() => setWorkMode(mode.id)}
-                className={`mode-button ${workMode === mode.id ? "mode-button-active" : ""}`}
-              >
-                {mode.label}
-              </button>
-            ))}
-          </div>
+          <ThemeSwitcher modes={workModes} value={workMode} onChange={setWorkMode} />
         </div>
       </section>
 
@@ -208,9 +206,9 @@ export function PortfolioPage() {
         <div className="grid gap-8 md:grid-cols-3">
           {focusAreas.map((area) => (
             <article key={area.label} className="border-t border-[color:var(--line)] pt-6">
-              <area.icon className="mb-8 size-8 text-[color:var(--accent)]" />
+              <area.icon className="mb-6 size-8 text-[color:var(--accent)]" />
               <h3 className="text-xl font-bold">{area.label}</h3>
-              <p className="mt-4 leading-7 text-[color:var(--muted)]">{area.text}</p>
+              <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{area.text}</p>
             </article>
           ))}
         </div>
@@ -229,7 +227,7 @@ export function PortfolioPage() {
               <h3 className="mb-5 text-xl font-black">Good fit</h3>
               <div className="space-y-4">
                 {goodFits.map((item) => (
-                  <p key={item} className="flex gap-3 leading-7 text-[color:var(--muted)]">
+                  <p key={item} className="flex gap-3 text-sm leading-6 text-[color:var(--muted)]">
                     <CheckCircle2 className="mt-1 size-5 shrink-0 text-[color:var(--accent-2)]" />
                     {item}
                   </p>
@@ -240,7 +238,7 @@ export function PortfolioPage() {
               <h3 className="mb-5 text-xl font-black">Bad fit</h3>
               <div className="space-y-4">
                 {badFits.map((item) => (
-                  <p key={item} className="flex gap-3 leading-7 text-[color:var(--muted)]">
+                  <p key={item} className="flex gap-3 text-sm leading-6 text-[color:var(--muted)]">
                     <X className="mt-1 size-5 shrink-0 text-[color:var(--muted)]" />
                     {item}
                   </p>
@@ -258,8 +256,8 @@ export function PortfolioPage() {
               <p className="section-kicker text-[color:var(--accent-2)]">Sprint configurator</p>
               <h2 className="section-title mt-4 text-[color:var(--dark-text)]">Turn the ask into a brief.</h2>
             </div>
-            <p className="max-w-2xl text-lg leading-8 text-[color:var(--dark-muted)]">
-              Select the shape of the work and the site generates the exact message a qualified buyer should send.
+            <p className="max-w-2xl text-base leading-7 text-[color:var(--dark-muted)] md:text-lg">
+              Choose the sprint shape. Copy the DM.
             </p>
           </div>
 
@@ -300,8 +298,8 @@ export function PortfolioPage() {
               <p className="section-kicker text-[color:var(--accent-2)]">Build sprint</p>
               <h2 className="section-title mt-4 text-[color:var(--dark-text)]">A short loop around a shipped outcome.</h2>
             </div>
-            <p className="max-w-2xl text-lg leading-8 text-[color:var(--dark-muted)]">
-              The sprint is built for teams that already know the product direction but need someone to turn the risky AI/backend piece into working software.
+            <p className="max-w-2xl text-base leading-7 text-[color:var(--dark-muted)] md:text-lg">
+              Built for teams that know the product direction and need the risky AI/backend piece shipped.
             </p>
           </div>
 
@@ -312,8 +310,8 @@ export function PortfolioPage() {
                   <span className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--accent-2)]">{step.label}</span>
                   <step.icon className="size-6 text-white/50" />
                 </div>
-                <h3 className="text-2xl font-black">{step.title}</h3>
-                <p className="mt-4 leading-7 text-[color:var(--dark-muted)]">{step.text}</p>
+                <h3 className="text-xl font-black">{step.title}</h3>
+                <p className="mt-4 text-sm leading-6 text-[color:var(--dark-muted)]">{step.text}</p>
               </article>
             ))}
           </div>
@@ -331,7 +329,7 @@ export function PortfolioPage() {
               <div key={metric.label} className="border-t border-[color:var(--line)] pt-5">
                 <p className="text-5xl font-black leading-none text-[color:var(--accent)] md:text-6xl">{metric.value}</p>
                 <h3 className="mt-4 text-lg font-black uppercase tracking-normal">{metric.label}</h3>
-                <p className="mt-3 leading-7 text-[color:var(--muted)]">{metric.detail}</p>
+                <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{metric.detail}</p>
               </div>
             ))}
           </div>
@@ -345,24 +343,22 @@ export function PortfolioPage() {
               <p className="section-kicker text-[color:var(--accent-2)]">Case studies</p>
               <h2 className="section-title mt-4 text-[color:var(--dark-text)]">Proof through shipped work.</h2>
             </div>
-            <p className="max-w-2xl text-lg leading-8 text-[color:var(--dark-muted)]">
-              Click into the proof before leaving the site. Each system is framed around the buyer problem, what shipped, and why it matters.
+            <p className="max-w-2xl text-base leading-7 text-[color:var(--dark-muted)] md:text-lg">
+              Click a row for the deeper proof.
             </p>
           </div>
 
           <div className="divide-y divide-white/12 border-y border-white/12">
             {selectedWork.map((work, index) => (
-              <article key={work.title} className="work-row grid gap-6 py-8 md:grid-cols-[0.1fr_0.28fr_0.42fr_0.2fr] md:items-start">
+              <article key={work.title} className="work-row grid gap-6 py-8 md:grid-cols-[0.1fr_0.34fr_0.36fr_0.2fr] md:items-start">
                 <div className="font-mono text-sm text-white/38">{String(index + 1).padStart(2, "0")}</div>
                 <button type="button" onClick={() => setSelectedCase(work)} className="group text-left">
                   <p className="font-mono text-xs uppercase tracking-[0.2em] text-[color:var(--accent-2)]">{work.type} / {work.period}</p>
                   <h3 className="mt-3 text-3xl font-black tracking-normal text-[color:var(--dark-text)] md:text-5xl">{work.title}</h3>
-                  <p className="mt-5 leading-7 text-[color:var(--dark-muted)]">
-                    <span className="font-semibold text-[color:var(--dark-text)]">Problem:</span> {work.problem}
-                  </p>
+                  <p className="mt-4 text-sm font-semibold text-[color:var(--dark-muted)]">{work.credibility}</p>
                 </button>
                 <button type="button" onClick={() => setSelectedCase(work)} className="text-left">
-                  <p className="leading-7 text-[color:var(--dark-muted)]">
+                  <p className="text-sm leading-6 text-[color:var(--dark-muted)]">
                     <span className="font-semibold text-[color:var(--dark-text)]">Shipped:</span> {work.shipped}
                   </p>
                   <div className="mt-5 flex flex-wrap gap-2">
@@ -382,7 +378,6 @@ export function PortfolioPage() {
                     Open
                     <ArrowUpRight className="size-4" />
                   </a>
-                  <p className="basis-full text-sm font-semibold text-white/58 md:text-right">{work.credibility}</p>
                 </div>
               </article>
             ))}
@@ -418,7 +413,7 @@ export function PortfolioPage() {
                 </div>
                 <Route className="size-8 text-[color:var(--accent)]" />
               </div>
-              <p className="mt-5 max-w-2xl leading-7 text-[color:var(--muted)]">{architecture.text}</p>
+              <p className="mt-5 max-w-2xl text-sm leading-6 text-[color:var(--muted)]">{architecture.text}</p>
               <div className="mt-6 flex flex-wrap gap-2">
                 {architecture.projects.map((project) => (
                   <span key={project} className="rounded-full border border-[color:var(--line)] px-3 py-1 text-sm text-[color:var(--muted)]">
@@ -437,8 +432,8 @@ export function PortfolioPage() {
           <h2 className="mt-4 max-w-xl text-4xl font-black uppercase leading-[0.9] md:text-6xl">
             A tiny local agent over the proof.
           </h2>
-          <p className="mt-6 max-w-xl leading-8 text-[color:var(--muted)]">
-            It does not call an API. It routes common buyer questions to the proof already on this page.
+          <p className="mt-6 max-w-xl text-sm leading-6 text-[color:var(--muted)]">
+            Local, fast answers from the proof on this page.
           </p>
         </div>
         <div className="soft-section border-t border-[color:var(--line)] px-5 py-20 md:px-8 lg:border-l lg:border-t-0 lg:pr-[max(2rem,calc((100vw-80rem)/2+2rem))]">
@@ -470,7 +465,7 @@ export function PortfolioPage() {
             </div>
             <div className="mt-6 border-t border-[color:var(--line)] pt-5">
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--muted)]">Answer</p>
-              <p className="mt-3 leading-8 text-[color:var(--muted)]">{agentResponse}</p>
+              <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">{agentResponse}</p>
             </div>
           </div>
         </div>
@@ -485,7 +480,7 @@ export function PortfolioPage() {
           {proofTimeline.map(([label, text]) => (
             <div key={label} className="grid gap-4 border-b border-[color:var(--line)] py-6 last:border-b-0 md:grid-cols-[0.22fr_0.78fr]">
               <p className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--accent)]">{label}</p>
-              <p className="max-w-3xl leading-7 text-[color:var(--muted)]">{text}</p>
+              <p className="max-w-3xl text-sm leading-6 text-[color:var(--muted)]">{text}</p>
             </div>
           ))}
         </div>
@@ -498,8 +493,8 @@ export function PortfolioPage() {
             <h2 className="mt-4 max-w-xl text-4xl font-black uppercase leading-[0.9] text-[color:var(--dark-text)] md:text-6xl">
               A developer-native hire signal.
             </h2>
-            <p className="mt-6 max-w-xl leading-8 text-[color:var(--dark-muted)]">
-              It is a small flourish, but it makes the offer concrete: inputs, timeline, outputs, and proof.
+            <p className="mt-6 max-w-xl text-sm leading-6 text-[color:var(--dark-muted)]">
+              Inputs, timeline, outputs, and proof in one static shape.
             </p>
           </div>
           <pre className="overflow-x-auto border border-white/12 bg-white/[0.04] p-5 text-sm leading-7 text-[color:var(--dark-muted)]">
@@ -519,7 +514,7 @@ export function PortfolioPage() {
               {checklistItems.map((item, index) => (
                 <div key={item} className="border-t border-[color:var(--line)] pt-4">
                   <p className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--accent)]">0{index + 1}</p>
-                  <p className="mt-3 leading-7 text-[color:var(--muted)]">{item}</p>
+                  <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{item}</p>
                 </div>
               ))}
             </div>
@@ -549,7 +544,7 @@ export function PortfolioPage() {
               </div>
               <div>
                 <p className="text-lg font-semibold">{item.title}</p>
-                <p className="mt-3 leading-7 text-[color:var(--muted)]">{item.text}</p>
+                <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{item.text}</p>
               </div>
             </article>
           ))}
@@ -590,7 +585,7 @@ export function PortfolioPage() {
                 <h3 className="text-xl font-bold">{title}</h3>
                 <ArrowUpRight className="size-5 shrink-0 text-[color:var(--muted)] transition group-hover:text-[color:var(--accent)]" />
               </div>
-              <p className="mt-3 leading-7 text-[color:var(--muted)]">{text}</p>
+              <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{text}</p>
             </a>
           ))}
         </div>
