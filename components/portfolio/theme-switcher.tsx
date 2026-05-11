@@ -1,4 +1,4 @@
-import { Palette } from "lucide-react";
+import { ChevronDown, Palette } from "lucide-react";
 
 import type { WorkMode } from "./types";
 
@@ -9,6 +9,7 @@ type ThemeSwitcherProps<T extends string> = {
   value: T;
   onChange: (id: T) => void;
   compact?: boolean;
+  variant?: "chips" | "dropdown";
 };
 
 export function ThemeSwitcher<T extends string>({
@@ -16,7 +17,38 @@ export function ThemeSwitcher<T extends string>({
   value,
   onChange,
   compact = false,
+  variant = "chips",
 }: ThemeSwitcherProps<T>) {
+  if (variant === "dropdown") {
+    return (
+      <div
+        className={`theme-dropdown ${compact ? "theme-dropdown-compact" : ""}`}
+        aria-label="Theme switcher"
+      >
+        <span className="theme-switcher-label">
+          <Palette size={15} />
+          Theme
+        </span>
+        <label className="theme-select-shell">
+          <span className="theme-chip-swatch" aria-hidden />
+          <select
+            value={value}
+            onChange={(event) => onChange(event.target.value as T)}
+            className="theme-select"
+            aria-label="Theme"
+          >
+            {modes.map((mode) => (
+              <option key={mode.id} value={mode.id}>
+                {mode.label}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="theme-select-icon" size={15} aria-hidden />
+        </label>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`theme-switcher ${compact ? "theme-switcher-compact" : ""}`}

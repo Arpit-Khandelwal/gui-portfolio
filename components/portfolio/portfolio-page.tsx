@@ -97,7 +97,7 @@ export function PortfolioPage() {
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden lg:block">
-              <ThemeSwitcher modes={workModes} value={workMode} onChange={setWorkMode} compact />
+              <ThemeSwitcher modes={workModes} value={workMode} onChange={setWorkMode} compact variant="dropdown" />
             </div>
             <a href={profile.x} target="_blank" rel="noreferrer" className="primary-button inline-flex h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold">
               <Twitter className="size-4" />
@@ -133,7 +133,7 @@ export function PortfolioPage() {
             </div>
 
             <div className="mb-8 lg:hidden">
-              <ThemeSwitcher modes={workModes} value={workMode} onChange={setWorkMode} />
+              <ThemeSwitcher modes={workModes} value={workMode} onChange={setWorkMode} variant="dropdown" />
             </div>
 
             <h1 className="text-[clamp(3.05rem,7.5vw,8rem)] font-black uppercase leading-[0.78] tracking-normal">
