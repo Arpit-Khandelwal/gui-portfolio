@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Arpit Khandelwal | AI, Solana, and Backend Engineer",
+  title: "Arpit Khandelwal | Fractional AI Backend Engineer",
   description:
-    "Portfolio of Arpit Khandelwal, a full-stack engineer building AI agents, Solana applications, automation pipelines, and backend systems.",
+    "Fractional AI backend engineer for build sprints across AI agents, backend automation, browser workflows, APIs, and integration-heavy products.",
 };
 
 export default function RootLayout({
