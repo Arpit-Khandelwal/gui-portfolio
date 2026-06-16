@@ -21,6 +21,7 @@ import {
   ShieldCheck,
   Terminal,
   Timer,
+  Twitter,
   Waypoints,
 } from "lucide-react";
 import type {
@@ -29,6 +30,7 @@ import type {
   BuyerMode,
   CaseStudy,
   Experience,
+  Faq,
   IconText,
   Profile,
   ProofMetric,
@@ -40,14 +42,26 @@ import type {
 
 export const profile: Profile = {
   name: "Arpit Khandelwal",
-  role: "Fractional AI/backend engineer for build sprints.",
+  role: "Fractional AI & backend engineer for build sprints.",
   location: "Bengaluru, India",
   email: "ak@arpitkhandelwal.com",
   avatar: "https://avatars.githubusercontent.com/u/68700864?v=4",
   x: "https://x.com/ArpitKhandelwa3",
-  github: "https://github.com/arpit-khandelwal",
+  github: "https://github.com/Arpit-Khandelwal",
   linkedin: "https://www.linkedin.com/in/arpit-khandelwal-0812aa1a3/",
+  resume: "https://cv.arpitkhandelwal.com",
 };
+
+export const availability = {
+  status: "1 sprint slot open for July",
+  reply: "Replies within 24 hours",
+};
+
+export const workedWith = [
+  "Hewlett Packard Enterprise",
+  "Avici Money",
+  "Reskilll",
+] as const;
 
 export const buyerModes = [
   {
@@ -81,7 +95,7 @@ export const buyerModes = [
     id: "recruiter",
     label: "Recruiter",
     eyebrow: "For teams hiring a hands-on engineer",
-    promise: "A builder who can move from infra constraints to shipped product.",
+    promise: "A builder who moves from infra constraints to shipped product.",
     body: "HPE security tooling, Avici AI concierge work, Reskilll platform execution, and public AI/crypto builds.",
     tags: ["Backend", "AI agents", "Security-minded"],
     briefGoal: "a fractional or full-time engineering conversation",
@@ -91,26 +105,8 @@ export const buyerModes = [
 export type BuyerModeId = (typeof buyerModes)[number]["id"];
 
 export const workModes = [
-  {
-    id: "operator",
-    label: "Operator",
-    note: "Clean sales page for founders who need a finisher.",
-  },
-  {
-    id: "terminal",
-    label: "Terminal",
-    note: "Darker, code-forward page for technical buyers.",
-  },
-  {
-    id: "blueprint",
-    label: "Blueprint",
-    note: "Architecture-first mode for systems work.",
-  },
-  {
-    id: "proof",
-    label: "Proof",
-    note: "Evidence-heavy mode for skeptical evaluators.",
-  },
+  { id: "operator", label: "Light" },
+  { id: "terminal", label: "Dark" },
 ] as const satisfies readonly WorkMode[];
 
 export type WorkModeId = (typeof workModes)[number]["id"];
@@ -164,22 +160,22 @@ export const proofMetrics: readonly ProofMetric[] = [
   {
     value: "2-6",
     label: "week build sprints",
-    detail: "Focused execution for startups that need a useful system shipped.",
+    detail: "A fuzzy ask or broken integration turned into a demoable, merged system.",
   },
   {
-    value: "110",
-    label: "authored work commits",
-    detail: "Local Reskilll repo activity across two author identities.",
+    value: "200+",
+    label: "posts, day one",
+    detail: "Gossip DAO launch: a privacy-first community app with 50+ users in 24 hours.",
   },
   {
-    value: "85",
-    label: "public GitHub repos",
-    detail: "AI, crypto, automation, backend tooling, and experiments.",
+    value: "5+",
+    label: "years shipping",
+    detail: "AI agents, backend APIs, automation, and crypto infra since 2021.",
   },
   {
-    value: "503",
-    label: "CP practice commits",
-    detail: "Competitive-programming activity across major practice tracks.",
+    value: "10+",
+    label: "case-grade builds",
+    detail: "From the Reskilll platform to Dark Payroll, Helius indexing, and the Arcium privacy suite.",
   },
 ];
 
@@ -189,11 +185,12 @@ export const selectedWork: readonly CaseStudy[] = [
     type: "Product backend",
     href: "https://reskilll.com",
     period: "2025 - 2026",
+    status: "shipped",
     problem: "Event/community software needed auth, profiles, judging, dashboards, and submissions.",
     shipped:
       "OTP login, Google OAuth, profile APIs, dashboards, CMS console, judging, and submissions.",
     stack: ["Next.js", "Express", "MongoDB", "Auth"],
-    credibility: "110 commits / 755 files",
+    credibility: "Live platform: auth, CMS, judging, dashboards",
     proof: ["Owned auth and profile surfaces", "Built operational dashboard flows", "Moved across frontend, backend, and CMS logic"],
   },
   {
@@ -201,72 +198,119 @@ export const selectedWork: readonly CaseStudy[] = [
     type: "AI automation",
     href: "https://avici.money",
     period: "2025",
+    status: "shipped",
     problem: "An AI concierge needed to operate inside a closed consumer surface.",
     shipped:
       "A Playwright-backed MCP server for controlled browser-session operation.",
     stack: ["MCP", "Playwright", "LLMs", "Backend"],
-    credibility: "Closed API surface",
+    credibility: "AI concierge ran on a closed consumer app",
     proof: ["Tool layer for an AI concierge", "Browser-session automation", "Backend control surface around a third-party UI"],
-  },
-  {
-    title: "Helius Indexer",
-    type: "Data infra",
-    href: "https://helius-indexer.arpitkhandelwal.com",
-    period: "2024",
-    problem: "Solana teams needed queryable chain activity without custom webhook plumbing.",
-    shipped:
-      "A webhook-to-Postgres indexer for faster on-chain event inspection.",
-    stack: ["Solana", "Helius", "Postgres", "Node.js"],
-    credibility: "Webhook to SQL",
-    proof: ["Webhook ingestion", "SQL query layer", "Chain data made product-readable"],
-  },
-  {
-    title: "AgentPay",
-    type: "Agent protocol",
-    href: "https://github.com/Arpit-Khandelwal/agentpay",
-    period: "2026",
-    problem: "Autonomous agents need payment rails for streamed machine-to-machine services.",
-    shipped:
-      "A Solana streaming micropayment protocol exploration for agent services.",
-    stack: ["Solana", "Agents", "Payments", "TypeScript"],
-    credibility: "Agent commerce",
-    proof: ["Payment model for agent services", "Streaming settlement direction", "Protocol-shaped product thinking"],
-  },
-  {
-    title: "Dark Payroll",
-    type: "Privacy infra",
-    href: "https://github.com/Arpit-Khandelwal/dark-payroll",
-    period: "2026",
-    problem: "Payroll products need salary privacy without losing compliance proof.",
-    shipped:
-      "A Solana payroll concept with hidden salary data and ZK compliance proofs.",
-    stack: ["Solana", "ZK proofs", "Privacy", "TypeScript"],
-    credibility: "Private payroll",
-    proof: ["Privacy-preserving payroll concept", "Compliance proof framing", "ZK and Solana experimentation"],
   },
   {
     title: "Gossip DAO",
     type: "Product launch",
     href: "https://gossip-dao.vercel.app",
     period: "2025",
+    status: "shipped",
     problem: "A residency community needed a fast anonymous social product people would use.",
     shipped:
-      "A privacy-focused community app with 50+ users and 200+ posts in 24 hours.",
+      "A privacy-focused community app that hit 50+ users and 200+ posts within 24 hours.",
     stack: ["Next.js", "Solana", "Prisma", "TypeScript"],
-    credibility: "200+ posts day one",
+    credibility: "50+ users, 200+ posts in 24h",
     proof: ["Fast product launch", "Privacy-focused social flow", "Immediate community usage"],
+  },
+  {
+    title: "Helius Indexer",
+    type: "Data infra",
+    href: "https://helius-indexer.arpitkhandelwal.com",
+    period: "2024",
+    status: "shipped",
+    problem: "Solana teams needed queryable chain activity without custom webhook plumbing.",
+    shipped:
+      "A webhook-to-Postgres indexer for faster on-chain event inspection.",
+    stack: ["Solana", "Helius", "Postgres", "Node.js"],
+    credibility: "Chain events to queryable Postgres, live",
+    proof: ["Webhook ingestion", "SQL query layer", "Chain data made product-readable"],
+  },
+  {
+    title: "Dark Payroll",
+    type: "Privacy infra",
+    href: "https://github.com/Arpit-Khandelwal/dark-payroll",
+    period: "2026",
+    status: "shipped",
+    problem: "Payroll products need salary privacy without losing compliance proof.",
+    shipped:
+      "A Solana payroll app with hidden salary data and ZK compliance proofs, with a live demo.",
+    stack: ["Solana", "ZK proofs", "Privacy", "TypeScript"],
+    credibility: "Live demo: ZK payroll + compliance proofs",
+    proof: ["Privacy-preserving payroll", "Compliance proof framing", "Solana Privacy Hackathon 2026 build"],
+  },
+  {
+    title: "Arcium Privacy Suite",
+    type: "Confidential compute",
+    href: "https://github.com/Arpit-Khandelwal?tab=repositories",
+    period: "2025 - 2026",
+    status: "experiment",
+    problem: "On-chain apps leak their inputs; most teams cannot compute on encrypted data.",
+    shipped:
+      "Five Arcium confidential-compute apps: private voting, a sealed tip jar, an encrypted message board, a secure lottery, and an encrypted calculator.",
+    stack: ["Arcium", "Rust", "Solana", "MPC"],
+    credibility: "5 confidential-compute apps on Arcium",
+    proof: ["Hands-on MPC / encrypted compute", "Reusable privacy primitives", "Backs the privacy-infra positioning"],
+  },
+  {
+    title: "AgentPay",
+    type: "Agent protocol",
+    href: "https://github.com/Arpit-Khandelwal/agentpay",
+    period: "2026",
+    status: "experiment",
+    problem: "Autonomous agents need payment rails for streamed machine-to-machine services.",
+    shipped:
+      "A Solana streaming micropayment protocol exploration for agent services (hackathon build).",
+    stack: ["Solana", "Agents", "Payments", "TypeScript"],
+    credibility: "Agent payment protocol (hackathon)",
+    proof: ["Payment model for agent services", "Streaming settlement direction", "Protocol-shaped product thinking"],
+  },
+  {
+    title: "sold.",
+    type: "Privacy demo",
+    href: "https://sold.arpitkhandelwal.com",
+    period: "2026",
+    status: "experiment",
+    problem: "Ad-tech profiles and prices you from browser signals before you ever consent.",
+    shipped:
+      "A page that reads the signals your browser leaks on arrival, sends them to an LLM that profiles and prices you, then confesses exactly what it did and stores nothing.",
+    stack: ["LLMs", "OpenRouter", "Fingerprinting", "Next.js"],
+    credibility: "Priced-on-arrival privacy provocation",
+    proof: ["Live browser-signal profiling", "LLM persona and price generation", "Zero-storage, full-disclosure design"],
+  },
+  {
+    title: "x402 Web Services",
+    type: "Agent payments",
+    href: "https://x402.arpitkhandelwal.com",
+    period: "2026",
+    status: "experiment",
+    problem: "Agents and APIs need pay-per-use access without subscriptions or accounts.",
+    shipped:
+      "A live pay-as-you-go app on the x402 protocol: per-message AI chat and a pay-once URL shortener, settled with micropayments.",
+    stack: ["x402", "Solana", "Payments", "Next.js"],
+    credibility: "Live pay-per-use services on x402",
+    proof: ["HTTP-402 paywall integration", "Per-call micropayment settlement", "Reinforces the AgentPay direction"],
   },
 ];
 
 export const projectArchive: readonly ArchiveItem[] = [
-  ["Mouse Cursor AI", "AI-guided pointer for accessibility and UI navigation.", "https://github.com/Arpit-Khandelwal/mouse-cursor-ai"],
-  ["LinkPeek", "URL metadata previewer built during the Kiro v Claude hackathon cycle.", "https://github.com/Arpit-Khandelwal/linkpeek-metadata-previewer"],
-  ["Encrypted Games", "Confidential on-chain games on Arcium.", "https://github.com/Arpit-Khandelwal/encrypted-games"],
+  ["Atlas", "AI chatbot for the Solana ecosystem with RAG-backed answers.", "https://solchat.arpitkhandelwal.com"],
+  ["Sage Aadit", "AI therapist with weekly check-ins over indexed journal entries.", "https://sage-aadit.arpitkhandelwal.com"],
+  ["Ion", "Solana voting dApp plus a native-SOL deposit/withdraw vault.", "https://ion.arpitkhandelwal.com"],
+  ["100xNFT", "Gated Solana NFT minting for the 100x Devs cohort.", "https://nft.arpitkhandelwal.com"],
+  ["Video Trimmer", "Frame-accurate trim and merge across mixed resolutions.", "https://video-trimmer.arpitkhandelwal.com"],
   ["YouTube Downloader", "FFmpeg pipeline for audio and video exports.", "https://yt.arpitkhandelwal.com"],
-  ["GitHub Leaderboard", "Open-source activity ranking with GitHub API data.", "https://leaderboard.arpitkhandelwal.com"],
-  ["Real Estate WhatsApp Bot", "AI-assisted property workflow over WhatsApp.", "https://github.com/arpit-khandelwal?tab=repositories&q=Real+Estate+WhatsApp+Chatbot"],
+  ["GitHub Leaderboard", "Open-source contribution ranking via the GitHub API.", "https://leaderboard.arpitkhandelwal.com"],
+  ["WhatsApp Automation", "AI-assisted property and messaging workflows over WhatsApp.", "https://github.com/Arpit-Khandelwal/whatsapp-api"],
   ["Blinks", "Solana Actions for betting, gated NFTs, and quizzes.", "https://actions.arpitkhandelwal.com/api/actions"],
-  ["CPP Practice", "503-commit competitive-programming archive.", "https://github.com/Arpit-Khandelwal/CPP-Practice"],
+  ["Poop Tracker (MicrobiomeDAO)", "Microbiome tracking app shipped for an external DAO.", "https://github.com/MicrobiomeDAO/poop-tracker"],
+  ["CPP Practice", "494-commit competitive-programming archive.", "https://github.com/Arpit-Khandelwal/CPP-Practice"],
 ];
 
 export const experience: readonly Experience[] = [
@@ -349,7 +393,7 @@ export const architectureNodes: readonly ArchitectureNode[] = [
     label: "Browser",
     icon: Globe2,
     text: "Closed workflows made controllable when APIs do not exist.",
-    projects: ["Swiggy MCP Server", "Real Estate WhatsApp Bot"],
+    projects: ["Swiggy MCP Server", "WhatsApp Automation"],
   },
   {
     id: "api",
@@ -382,6 +426,43 @@ export const proofTimeline = [
   ["Now", "AI/backend build sprints for teams that need senior execution."],
 ] as const;
 
+export const engagementGet = [
+  "Merged, production-path code, not slideware.",
+  "Weekly working demos and tradeoff notes.",
+  "Auth, data, and logging done properly.",
+  "Handoff docs so your team can keep shipping.",
+] as const;
+
+export const engagementTerms = [
+  ["Model", "Fixed-scope sprints, 2-6 weeks."],
+  ["Pricing", "Flat per-sprint, tied to a shipped outcome. No hourly billing."],
+  ["Start", "Scoping call within 48h; the sprint begins once scope is signed off."],
+  ["Reply", "Within 24 hours, always."],
+] as const;
+
+export const faqs: readonly Faq[] = [
+  {
+    q: "How does pricing work?",
+    a: "Sprints are fixed-scope, fixed-window engagements (2-6 weeks). After a short scoping call I send a flat sprint price tied to a clear shipped outcome, no hourly billing. Send the goal, stack, and deadline and I will quote the smallest useful slice.",
+  },
+  {
+    q: "What do you actually ship?",
+    a: "Working, merged code: APIs, AI agents and MCP servers, browser automations, dashboards, and data pipelines, plus weekly demos and handoff notes so your team can keep going.",
+  },
+  {
+    q: "Can you join an existing codebase?",
+    a: "Yes. Most sprints are about finishing the awkward middle: a broken integration, a demo that needs a production path, or an agent that has to survive real users.",
+  },
+  {
+    q: "What is the fastest way to start?",
+    a: "Use the sprint configurator to generate a brief, then send it. I reply within 24 hours with whether it is a fit and the smallest shippable scope.",
+  },
+  {
+    q: "Full-time or sprints only?",
+    a: "Primarily fractional build sprints, but open to fractional-to-full-time conversations for AI and backend roles.",
+  },
+];
+
 export const checklistItems = [
   "Name the user-facing outcome.",
   "List external systems.",
@@ -392,6 +473,7 @@ export const checklistItems = [
 
 export const socials: readonly Social[] = [
   { label: "GitHub", href: profile.github, icon: Github },
+  { label: "X", href: profile.x, icon: Twitter },
   { label: "LinkedIn", href: profile.linkedin, icon: Linkedin },
   { label: "Email", href: `mailto:${profile.email}`, icon: Mail },
 ];

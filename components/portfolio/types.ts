@@ -11,6 +11,7 @@ export type Profile = {
   x: string;
   github: string;
   linkedin: string;
+  resume: string;
 };
 
 export type BuyerMode = {
@@ -26,7 +27,6 @@ export type BuyerMode = {
 export type WorkMode = {
   id: string;
   label: string;
-  note: string;
 };
 
 export type IconText = {
@@ -48,11 +48,14 @@ export type ProofMetric = {
   detail: string;
 };
 
+export type CaseStatus = "shipped" | "experiment";
+
 export type CaseStudy = {
   title: string;
   type: string;
   href: string;
   period: string;
+  status: CaseStatus;
   problem: string;
   shipped: string;
   stack: readonly string[];
@@ -85,6 +88,11 @@ export type Social = {
   label: string;
   href: string;
   icon: Icon;
+};
+
+export type Faq = {
+  q: string;
+  a: string;
 };
 
 export type ArchiveItem = readonly [title: string, text: string, href: string];

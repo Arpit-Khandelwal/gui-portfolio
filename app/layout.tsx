@@ -1,40 +1,85 @@
-import type { Metadata } from "next";
-import Script from "next/script";
-import ClarityInit from "./clarity-init";
+import type { Metadata, Viewport } from "next";
+import Analytics from "./analytics";
+import { profile } from "@/components/portfolio/data";
 import "./globals.css";
 
+const SITE_URL = "https://arpitkhandelwal.com";
+const TITLE = "Arpit Khandelwal | Fractional AI & Backend Engineer";
+const DESCRIPTION =
+  "Fractional AI & backend engineer for build sprints across AI agents, backend automation, browser workflows, APIs, and integration-heavy products.";
+
 export const metadata: Metadata = {
-  title: "Arpit Khandelwal | Fractional AI Backend Engineer",
-  description:
-    "Fractional AI backend engineer for build sprints across AI agents, backend automation, browser workflows, APIs, and integration-heavy products.",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  applicationName: "Arpit Khandelwal",
+  authors: [{ name: profile.name, url: SITE_URL }],
+  creator: profile.name,
+  keywords: [
+    "fractional engineer",
+    "AI engineer",
+    "backend engineer",
+    "AI agents",
+    "MCP server",
+    "browser automation",
+    "Solana",
+    "build sprint",
+    "Arpit Khandelwal",
+  ],
+  alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+  openGraph: {
+    type: "profile",
+    siteName: "Arpit Khandelwal",
+    url: SITE_URL,
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    creator: "@ArpitKhandelwa3",
+  },
+};
+
+export const viewport: Viewport = {
+  colorScheme: "light dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f5f7ef" },
+    { media: "(prefers-color-scheme: dark)", color: "#09110e" },
+  ],
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: profile.name,
+  jobTitle: "Fractional AI & Backend Engineer",
+  email: `mailto:${profile.email}`,
+  url: SITE_URL,
+  address: { "@type": "PostalAddress", addressLocality: "Bengaluru", addressCountry: "IN" },
+  sameAs: [profile.github, profile.x, profile.linkedin],
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>)
-{
+}>) {
   return (
     <html lang="en">
       <body>
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-K2XHHRXL"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          />
-        </noscript>
-        <ClarityInit />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         {children}
-        <Script id="gtm" strategy="afterInteractive">{`
-(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-K2XHHRXL');
-        `}</Script>
+        <Analytics />
       </body>
     </html>
   );

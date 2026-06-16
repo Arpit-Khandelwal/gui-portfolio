@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import { ArrowUpRight, CheckCircle2, X } from "lucide-react";
 import type { CaseStudy } from "./types";
 
@@ -6,14 +9,70 @@ type CaseStudyDrawerProps = {
   onClose: () => void;
 };
 
+const FOCUSABLE = 'a[href], button:not([disabled]), textarea, input, [tabindex]:not([tabindex="-1"])';
+
 export function CaseStudyDrawer({ selectedCase, onClose }: CaseStudyDrawerProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const open = selectedCase !== null;
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const { body } = document;
+    const prevOverflow = body.style.overflow;
+    body.style.overflow = "hidden";
+
+    const panel = panelRef.current;
+    const focusables = panel ? Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE)) : [];
+    (focusables[0] ?? panel)?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (event.key !== "Tab" || focusables.length === 0) {
+        return;
+      }
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      body.style.overflow = prevOverflow;
+      previouslyFocused?.focus();
+    };
+  }, [open, onClose]);
+
   if (!selectedCase) {
     return null;
   }
 
   return (
-    <div className="fixed inset-0 z-[60] bg-black/55 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`${selectedCase.title} case study`}>
-      <div className="ml-auto flex max-h-[calc(100svh-2rem)] w-full max-w-2xl flex-col overflow-auto bg-[color:var(--page-bg)] text-[color:var(--page-ink)] shadow-2xl">
+    <div
+      className="fixed inset-0 z-[60] bg-black/55 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${selectedCase.title} case study`}
+        tabIndex={-1}
+        onClick={(event) => event.stopPropagation()}
+        className="ml-auto flex max-h-[calc(100svh-2rem)] w-full max-w-2xl flex-col overflow-auto bg-[color:var(--page-bg)] text-[color:var(--page-ink)] shadow-2xl outline-none"
+      >
         <div className="flex items-start justify-between gap-6 border-b border-[color:var(--line)] p-6">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--accent)]">{selectedCase.type} / {selectedCase.period}</p>

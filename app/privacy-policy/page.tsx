@@ -2,39 +2,53 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Arpit Khandelwal",
+  description: "How arpitkhandelwal.com uses analytics, cookies, and consent.",
+  alternates: { canonical: "/privacy-policy" },
 };
 
 export default function PrivacyPolicy() {
   return (
-    <main className="max-w-2xl mx-auto px-6 py-16 text-sm leading-relaxed">
-      <h1 className="text-2xl font-bold mb-6">Privacy Policy</h1>
-      <p className="mb-4">Last updated: May 3, 2026</p>
+    <main className="mx-auto max-w-2xl px-6 py-16 text-sm leading-relaxed">
+      <h1 className="mb-6 text-2xl font-bold">Privacy Policy</h1>
+      <p className="mb-4">Last updated: June 16, 2026</p>
 
       <p className="mb-4">
-        This website (<strong>arpitkhandelwal.com</strong>) is a personal
-        portfolio site. Your privacy is important, and this page explains what
-        data, if any, is collected when you visit.
+        This website (<strong>arpitkhandelwal.com</strong>) is a personal portfolio site. This page
+        explains what is collected when you visit and how you control it.
       </p>
 
-      <h2 className="text-lg font-semibold mt-8 mb-2">Information Collected</h2>
+      <h2 className="mb-2 mt-8 text-lg font-semibold">Analytics and cookies</h2>
       <p className="mb-4">
-        This site does not collect personal information, use cookies, or require
-        you to create an account. Basic analytics data (e.g., page views) may be
-        collected by the hosting provider.
+        With your consent, this site loads <strong>Google Tag Manager</strong> and{" "}
+        <strong>Microsoft Clarity</strong>. Clarity records anonymized session analytics (page
+        interactions, heatmaps, and session replay) and, together with Google Tag Manager, sets
+        cookies such as <code>_clck</code> and <code>_clsk</code>. These tools run only after you
+        choose &ldquo;Accept&rdquo; in the consent banner. If you choose &ldquo;Decline,&rdquo; no
+        analytics scripts are loaded and no analytics cookies are set. Your choice is stored locally
+        in your browser so you are not asked again; clearing site data resets it.
       </p>
 
-      <h2 className="text-lg font-semibold mt-8 mb-2">Third-Party Services</h2>
+      <h2 className="mb-2 mt-8 text-lg font-semibold">Contact form</h2>
       <p className="mb-4">
-        This site may be hosted on third-party platforms (e.g., Vercel) that may
-        collect standard server logs including IP addresses and browser
-        information. Please refer to their respective privacy policies for
-        details.
+        If you submit the contact form, the name, email, and message you enter are sent so I can
+        reply. If you email directly, your message and address reach my inbox. This information is
+        used only to respond to you.
       </p>
 
-      <h2 className="text-lg font-semibold mt-8 mb-2">Contact</h2>
+      <h2 className="mb-2 mt-8 text-lg font-semibold">Hosting</h2>
+      <p className="mb-4">
+        The site is hosted on Vercel, which may collect standard server logs (including IP address
+        and browser information) as part of delivering the site. See Vercel&rsquo;s privacy policy
+        for details.
+      </p>
+
+      <h2 className="mb-2 mt-8 text-lg font-semibold">Contact</h2>
       <p>
-        If you have any questions about this policy, feel free to reach out via
-        the contact information on the main site.
+        Questions about this policy? Email{" "}
+        <a className="font-semibold underline" href="mailto:ak@arpitkhandelwal.com">
+          ak@arpitkhandelwal.com
+        </a>
+        .
       </p>
     </main>
   );
