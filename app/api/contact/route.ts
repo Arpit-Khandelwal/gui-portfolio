@@ -6,7 +6,9 @@ type ContactBody = {
   message?: unknown;
 };
 
-const CONTACT_TO = "ak@arpitkhandelwal.com";
+function escapeHtml(value: string) {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
 
 export async function POST(request: Request) {
   let body: ContactBody;
@@ -27,29 +29,40 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    // No mail provider configured: tell the client to fall back to mailto.
-    return NextResponse.json({ error: "Email delivery is not configured." }, { status: 503 });
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) {
+    // No bot configured: tell the client to fall back to mailto.
+    return NextResponse.json({ error: "Contact delivery is not configured." }, { status: 503 });
   }
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      from: process.env.CONTACT_FROM ?? "Portfolio <onboarding@resend.dev>",
-      to: [CONTACT_TO],
-      reply_to: email,
-      subject: `New sprint brief from ${name}`,
-      text: `From: ${name} <${email}>\n\n${message}`,
-    }),
-  });
+  const text = [
+    "<b>🆕 New sprint brief</b>",
+    "",
+    `<b>Name:</b> ${escapeHtml(name)}`,
+    `<b>Email:</b> ${escapeHtml(email)}`,
+    "",
+    escapeHtml(message),
+  ].join("\n");
+
+  let res: Response;
+  try {
+    res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        parse_mode: "HTML",
+        disable_web_page_preview: true,
+      }),
+    });
+  } catch {
+    return NextResponse.json({ error: "Failed to reach Telegram." }, { status: 502 });
+  }
 
   if (!res.ok) {
-    return NextResponse.json({ error: "Failed to send message." }, { status: 502 });
+    return NextResponse.json({ error: "Telegram rejected the message." }, { status: 502 });
   }
 
   return NextResponse.json({ ok: true });

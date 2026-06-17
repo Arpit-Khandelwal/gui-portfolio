@@ -30,9 +30,9 @@ export default function PrivacyPolicy() {
 
       <h2 className="mb-2 mt-8 text-lg font-semibold">Contact form</h2>
       <p className="mb-4">
-        If you submit the contact form, the name, email, and message you enter are sent so I can
-        reply. If you email directly, your message and address reach my inbox. This information is
-        used only to respond to you.
+        If you submit the contact form, the name, email, and message you enter are delivered to me
+        as a private Telegram notification so I can reply. If you email directly, your message and
+        address reach my inbox. This information is used only to respond to you.
       </p>
 
       <h2 className="mb-2 mt-8 text-lg font-semibold">Hosting</h2>
