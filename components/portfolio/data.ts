@@ -300,16 +300,16 @@ export const selectedWork: readonly CaseStudy[] = [
 ];
 
 export const projectArchive: readonly ArchiveItem[] = [
+  ["XOXO", "Every tic-tac-toe game (all 255,168) as a branching, censused game tree with a minimax oracle.", "https://xoxo.arpitkhandelwal.com"],
   ["Atlas", "AI chatbot for the Solana ecosystem with RAG-backed answers.", "https://solchat.arpitkhandelwal.com"],
   ["Sage Aadit", "AI therapist with weekly check-ins over indexed journal entries.", "https://sage-aadit.arpitkhandelwal.com"],
   ["Ion", "Solana voting dApp plus a native-SOL deposit/withdraw vault.", "https://ion.arpitkhandelwal.com"],
-  ["100xNFT", "Gated Solana NFT minting for the 100x Devs cohort.", "https://nft.arpitkhandelwal.com"],
-  ["Video Trimmer", "Frame-accurate trim and merge across mixed resolutions.", "https://video-trimmer.arpitkhandelwal.com"],
-  ["XOXO", "Every tic-tac-toe game (all 255,168) as a branching, censused game tree with a minimax oracle.", "https://xoxo.arpitkhandelwal.com"],
-  ["YouTube Downloader", "FFmpeg pipeline for audio and video exports.", "https://yt.arpitkhandelwal.com"],
-  ["GitHub Leaderboard", "Open-source contribution ranking via the GitHub API.", "https://leaderboard.arpitkhandelwal.com"],
   ["WhatsApp Automation", "AI-assisted property and messaging workflows over WhatsApp.", "https://github.com/Arpit-Khandelwal/whatsapp-api"],
+  ["Video Trimmer", "Frame-accurate trim and merge across mixed resolutions.", "https://video-trimmer.arpitkhandelwal.com"],
+  ["100xNFT", "Gated Solana NFT minting for the 100x Devs cohort.", "https://nft.arpitkhandelwal.com"],
+  ["GitHub Leaderboard", "Open-source contribution ranking via the GitHub API.", "https://leaderboard.arpitkhandelwal.com"],
   ["Blinks", "Solana Actions for betting, gated NFTs, and quizzes.", "https://actions.arpitkhandelwal.com/api/actions"],
+  ["YouTube Downloader", "FFmpeg pipeline for audio and video exports.", "https://yt.arpitkhandelwal.com"],
   ["Poop Tracker (MicrobiomeDAO)", "Microbiome tracking app shipped for an external DAO.", "https://github.com/MicrobiomeDAO/poop-tracker"],
   ["CPP Practice", "494-commit competitive-programming archive.", "https://github.com/Arpit-Khandelwal/CPP-Practice"],
 ];
