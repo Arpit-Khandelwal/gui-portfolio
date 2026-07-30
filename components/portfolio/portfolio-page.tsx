@@ -696,6 +696,18 @@ export function PortfolioPage() {
         </div>
       </footer>
 
+      <a href="/play" className="play-fab" aria-label="Play the brick-breaker game">
+        <span className="play-fab-mark" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+        </span>
+        Play
+      </a>
+
       <div className="mobile-sticky fixed inset-x-0 bottom-0 z-40 border-t p-3 md:hidden">
         <div className="flex gap-2">
           <a href="#contact" className="primary-button inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-full font-semibold">

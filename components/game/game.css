@@ -1,9 +1,105 @@
+/**
+ * Epoch print language (see ./theme.ts): warm paper, hairline rules, small
+ * uppercase mono chips. These custom properties mirror theme.ts's hex values
+ * so the DOM and the canvas renderer never drift apart.
+ */
+.epoch-shell {
+  --paper: #efeee9;
+  --paper-edge: #e6e4dd;
+  --grid-dot: rgba(28, 30, 26, 0.18);
+  --grid-line: rgba(28, 30, 26, 0.07);
+  --ink: #26261f;
+  --ink-soft: rgba(38, 38, 31, 0.45);
+  --hairline: rgba(38, 38, 31, 0.2);
+  --hairline-strong: rgba(38, 38, 31, 0.34);
+  --focus-ring: #3f61ad;
+  --grid-size: 28px;
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* Faint printed graph-paper grid behind the whole page. Subtle by design:
+   this is paper texture, not a UI grid. */
+.epoch-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px var(--grid-size)),
+    repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px var(--grid-size));
+}
+
+.epoch-back {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.epoch-back:hover {
+  color: var(--ink);
+}
+
+.epoch-kicker {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.epoch-title {
+  margin: 0;
+  max-width: 20ch;
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.epoch-lede {
+  margin: 0;
+  max-width: 52ch;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.epoch-rule {
+  margin: 0;
+  border: none;
+  border-top: 1px solid var(--hairline);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Game shell — rendered by components/game/brick-breaker.tsx             */
+/* ---------------------------------------------------------------------- */
+
 .game-shell {
   --game-gutter: clamp(0.75rem, 2vw, 1.25rem);
   display: flex;
   flex-direction: column;
   gap: var(--game-gutter);
   width: 100%;
+  min-width: 0;
 }
 
 .game-hud {
@@ -11,64 +107,101 @@
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 1rem;
-  border-bottom: 1px solid var(--line-strong);
+  gap: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--hairline-strong);
   padding-bottom: 0.75rem;
 }
 
 .game-stats {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(1.25rem, 4vw, 2.75rem);
+  gap: clamp(1rem, 4vw, 2.25rem);
   margin: 0;
+  min-width: 0;
 }
 
 .game-stats dt {
-  color: var(--muted);
+  color: var(--ink-soft);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
 .game-stats dd {
   margin: 0.2rem 0 0;
+  color: var(--ink);
   font-family: var(--font-geist-mono), monospace;
-  font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+  font-size: clamp(1.1rem, 3.2vw, 1.5rem);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
-.game-life-spent {
-  color: var(--line-strong);
+/* The lives readout is a run of block glyphs; without tracking they butt
+   together and read as one solid bar instead of discrete lives. */
+.game-lives {
+  letter-spacing: 0.22em;
 }
 
-.game-reset {
+.game-life-spent {
+  color: var(--ink-soft);
+  opacity: 0.35;
+}
+
+.game-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.game-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  padding: 0.5rem 1rem;
-  color: var(--page-ink);
-  font-size: 0.8rem;
-  font-weight: 600;
+  gap: 0.4rem;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 2px;
+  background: transparent;
+  padding: 0.4rem 0.7rem;
+  color: var(--ink);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
   cursor: pointer;
   transition:
-    border-color 180ms ease,
-    color 180ms ease;
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
 }
 
-.game-reset:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+.game-chip:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.game-chip-active,
+.game-chip-active:hover {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.game-chip:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 .game-board {
   position: relative;
-  border: 1px solid var(--line-strong);
+  min-width: 0;
+  border: 1px solid var(--hairline-strong);
+  background: var(--paper-edge);
 }
 
 .game-canvas {
@@ -79,8 +212,8 @@
 }
 
 .game-canvas:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
 }
 
 .game-overlay {
@@ -90,15 +223,17 @@
   place-content: center;
   gap: 0.5rem;
   justify-items: center;
-  background: color-mix(in srgb, var(--page-bg) 82%, transparent);
+  background: color-mix(in srgb, var(--paper) 85%, transparent);
   backdrop-filter: blur(2px);
   text-align: center;
+  padding: 1rem;
 }
 
 .game-overlay-title {
   margin: 0;
-  font-size: clamp(1.5rem, 5vw, 2.5rem);
-  font-weight: 900;
+  color: var(--ink);
+  font-size: clamp(1.4rem, 5vw, 2.1rem);
+  font-weight: 800;
   letter-spacing: -0.01em;
   line-height: 1;
   text-transform: uppercase;
@@ -106,27 +241,265 @@
 
 .game-overlay-score {
   margin: 0;
-  color: var(--muted);
+  color: var(--ink-soft);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .game-overlay-button {
-  margin-top: 0.75rem;
-  border-radius: 999px;
-  padding: 0.6rem 1.4rem;
-  font-size: 0.85rem;
-  font-weight: 600;
+  margin-top: 0.5rem;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  background: var(--ink);
+  padding: 0.55rem 1.25rem;
+  color: var(--paper);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.game-overlay-button:hover {
+  background: transparent;
+  color: var(--ink);
+}
+
+.game-overlay-button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 .game-hint {
   margin: 0;
-  color: var(--muted);
+  color: var(--ink-soft);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+  text-align: center;
+}
+
+/* The renderer already paints the combo tag onto the canvas, so the DOM copy
+   exists only for screen readers. Clipped rather than display:none so it stays
+   in the accessibility tree. */
+.game-combo {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Overlaid on the board rather than stacked under it, so a timer appearing or
+   expiring never resizes the bordered board box. */
+.game-effects {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.game-effect {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+  padding: 0.25rem 0.5rem;
+  color: var(--ink);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.64rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Powerup legend — rendered by app/play/page.tsx                         */
+/* ---------------------------------------------------------------------- */
+
+.powerup-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.powerup-legend-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+  padding: 0.6rem 0.7rem;
+  min-width: 0;
+}
+
+.powerup-legend-glyph {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 2px;
+  color: var(--paper);
+  background: var(--legend-color, var(--ink));
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.powerup-legend-body {
+  min-width: 0;
+}
+
+.powerup-legend-name {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.powerup-legend-desc {
+  margin: 0.15rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Responsiveness + reduced motion                                        */
+/* ---------------------------------------------------------------------- */
+
+@media (max-width: 420px) {
+  .game-hud {
+    align-items: flex-start;
+  }
+
+  .game-stats {
+    gap: 0.85rem 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .epoch-back,
+  .game-chip,
+  .game-overlay-button {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Dossier — facts unlocked by clearing walls                             */
+/* ---------------------------------------------------------------------- */
+
+.game-reveal {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--ink);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  text-wrap: balance;
+}
+
+.game-dossier {
+  border-top: 1px solid var(--hairline);
+  padding-top: 0.9rem;
+}
+
+.game-dossier-head {
+  margin: 0 0 0.7rem;
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.game-dossier-list {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: dossier;
+}
+
+.game-dossier-item {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, auto) 1fr;
+  gap: 0.5rem 0.9rem;
+  align-items: baseline;
+  border-left: 2px solid var(--hairline);
+  padding-left: 0.7rem;
+  transition: border-color 200ms ease;
+}
+
+.game-dossier-item.is-unlocked {
+  border-left-color: var(--ink);
+}
+
+.game-dossier-word {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.game-dossier-item.is-unlocked .game-dossier-word {
+  color: var(--ink);
+}
+
+.game-dossier-fact {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.game-dossier-item.is-unlocked .game-dossier-fact {
+  color: var(--ink);
+}
+
+@media (max-width: 480px) {
+  .game-dossier-item {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-dossier-item {
+    transition: none;
+  }
 }

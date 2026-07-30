@@ -1,62 +1,82 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { RotateCcw } from "lucide-react";
 import {
+  advanceLevel,
   createGame,
-  GameState,
-  GameStatus,
-  LIVES_START,
   launchBall,
+  LIVES_START,
   MAX_FRAME_SECONDS,
   movePaddleTo,
+  readHud,
   stepGame,
   STEP_SECONDS,
   VIEW_H,
   VIEW_W,
 } from "./engine";
-import { drawGame, Palette, readPalette } from "./renderer";
-import { countBricks, WORD } from "./word-bricks";
+import { drawGame } from "./renderer";
+import { createAudio, GameAudio } from "./audio";
+import type { GameState, Hud } from "./types";
+import { factForLevel, LEVELS } from "./word-bricks";
 import "./game.css";
 
 const BEST_SCORE_KEY = "arpit-breaker-best";
+const UNLOCKED_KEY = "arpit-breaker-unlocked";
+/** How long the level-clear banner sits before the next word loads. */
+const LEVEL_CLEAR_SECONDS = 1.5;
+/** Bricks per multiplier step; mirrors COMBO_MULTIPLIER_STEP in the engine. */
+const COMBO_STEP = 4;
 
-interface Hud {
-  readonly score: number;
-  readonly best: number;
-  readonly lives: number;
-  readonly status: GameStatus;
-  readonly bricksLeft: number;
+const EFFECT_LABELS: ReadonlyArray<{ key: "wideSeconds" | "stickySeconds" | "slowSeconds"; label: string }> = [
+  { key: "wideSeconds", label: "Wide" },
+  { key: "stickySeconds", label: "Sticky" },
+  { key: "slowSeconds", label: "Slow" },
+];
+
+function sameHud(a: Hud, b: Hud): boolean {
+  return (
+    a.score === b.score &&
+    a.best === b.best &&
+    a.lives === b.lives &&
+    a.level === b.level &&
+    a.word === b.word &&
+    a.combo === b.combo &&
+    a.bestCombo === b.bestCombo &&
+    a.bricksLeft === b.bricksLeft &&
+    a.status === b.status &&
+    // Rounded so a ticking effect timer re-renders about once a second.
+    Math.ceil(a.effects.wideSeconds) === Math.ceil(b.effects.wideSeconds) &&
+    Math.ceil(a.effects.slowSeconds) === Math.ceil(b.effects.slowSeconds) &&
+    Math.ceil(a.effects.stickySeconds) === Math.ceil(b.effects.stickySeconds)
+  );
 }
-
-const TOTAL_BRICKS = countBricks();
-
-const INITIAL_HUD: Hud = {
-  score: 0,
-  best: 0,
-  lives: LIVES_START,
-  status: "ready",
-  bricksLeft: TOTAL_BRICKS,
-};
-
-const STATUS_MESSAGE: Readonly<Record<GameStatus, string>> = {
-  ready: "Click or tap the board, then press space to serve.",
-  playing: "Steer with the arrow keys, your pointer, or a finger.",
-  won: `Cleared. You knocked out every brick in ${WORD}.`,
-  lost: "Out of balls. Reset to line them up again.",
-};
 
 export function BrickBreaker() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameRef = useRef<GameState | null>(null);
-  const [hud, setHud] = useState<Hud>(INITIAL_HUD);
-  // Kept in a ref so the animation loop can read and persist it without the
-  // loop depending on render state.
+  const audioRef = useRef<GameAudio | null>(null);
   const bestRef = useRef(0);
 
-  const resetGame = useCallback(() => {
-    gameRef.current = createGame();
-    setHud((previous) => ({ ...INITIAL_HUD, best: previous.best }));
+  const [hud, setHud] = useState<Hud>(() => readHud(createGame()));
+  const [muted, setMuted] = useState(true);
+  // Unlocked facts persist across restarts: the dossier is a collection to
+  // finish, not something a lost run takes away.
+  const [unlockedCount, setUnlockedCount] = useState(0);
+  const unlockedRef = useRef(0);
+
+  const restart = useCallback(() => {
+    const fresh = createGame();
+    gameRef.current = fresh;
+    setHud({ ...readHud(fresh), best: bestRef.current });
+    canvasRef.current?.focus();
+  }, []);
+
+  const toggleMuted = useCallback(() => {
+    setMuted((previous) => {
+      const next = !previous;
+      audioRef.current?.setMuted(next);
+      return next;
+    });
     canvasRef.current?.focus();
   }, []);
 
@@ -68,10 +88,17 @@ export function BrickBreaker() {
     const game = createGame();
     gameRef.current = game;
 
+    const audio = createAudio();
+    audioRef.current = audio;
+
     const storedBest = Number(window.localStorage.getItem(BEST_SCORE_KEY));
     bestRef.current = Number.isFinite(storedBest) && storedBest > 0 ? storedBest : 0;
 
-    let palette: Palette = readPalette(canvas);
+    const storedUnlocked = Number(window.localStorage.getItem(UNLOCKED_KEY));
+    unlockedRef.current =
+      Number.isFinite(storedUnlocked) && storedUnlocked > 0
+        ? Math.min(storedUnlocked, LEVELS.length)
+        : 0;
 
     const resize = () => {
       const cssWidth = canvas.clientWidth;
@@ -86,7 +113,6 @@ export function BrickBreaker() {
       // Draw in logical viewport units; the transform absorbs both the CSS
       // scale and the device pixel ratio, so nothing is blurry on retina.
       ctx.setTransform(canvas.width / VIEW_W, 0, 0, canvas.height / VIEW_H, 0, 0);
-      palette = readPalette(canvas);
     };
 
     const observer = new ResizeObserver(resize);
@@ -99,7 +125,7 @@ export function BrickBreaker() {
     };
 
     // Every handler reads gameRef rather than closing over `game`, so input
-    // keeps driving the current board after Reset swaps in a fresh one.
+    // keeps driving the current board after a restart swaps in a fresh one.
     const onPointerDown = (event: PointerEvent) => {
       const active = gameRef.current;
       if (!active) return;
@@ -160,7 +186,13 @@ export function BrickBreaker() {
     let frame = 0;
     let previous = performance.now();
     let accumulator = 0;
-    let lastHud: Hud = INITIAL_HUD;
+    let clearHold = 0;
+    let lastHud = readHud(game);
+    // Synced from the loop rather than the effect body: the persisted mute
+    // choice only exists on the client, and setState in an effect body would
+    // both trip react-hooks/set-state-in-effect and risk a hydration mismatch.
+    let lastMuted = true;
+    let lastUnlocked = 0;
 
     const loop = (now: number) => {
       frame = requestAnimationFrame(loop);
@@ -169,38 +201,59 @@ export function BrickBreaker() {
       if (!active) return;
 
       // Fixed timestep: the simulation is identical on a 60Hz and a 120Hz
-      // display, and a backgrounded tab can't fast-forward the ball.
-      accumulator += Math.min((now - previous) / 1000, MAX_FRAME_SECONDS);
+      // display, and a backgrounded tab cannot fast-forward the ball.
+      const delta = Math.min((now - previous) / 1000, MAX_FRAME_SECONDS);
       previous = now;
+      accumulator += delta;
 
       while (accumulator >= STEP_SECONDS) {
         stepGame(active);
         accumulator -= STEP_SECONDS;
       }
 
-      drawGame(ctx, active, palette);
+      for (const event of active.events) {
+        audio.play(event.kind, event.combo);
+      }
+      active.events.length = 0;
+
+      if (active.status === "levelClear") {
+        clearHold += delta;
+        if (clearHold >= LEVEL_CLEAR_SECONDS) {
+          clearHold = 0;
+          advanceLevel(active);
+        }
+      } else {
+        clearHold = 0;
+      }
 
       if (active.score > bestRef.current) {
         bestRef.current = active.score;
         window.localStorage.setItem(BEST_SCORE_KEY, String(active.score));
       }
 
-      const changed =
-        active.score !== lastHud.score ||
-        active.lives !== lastHud.lives ||
-        active.status !== lastHud.status ||
-        active.bricksLeft !== lastHud.bricksLeft ||
-        bestRef.current !== lastHud.best;
+      drawGame(ctx, active);
 
-      if (changed) {
-        lastHud = {
-          score: active.score,
-          best: bestRef.current,
-          lives: active.lives,
-          status: active.status,
-          bricksLeft: active.bricksLeft,
-        };
-        setHud(lastHud);
+      const next = { ...readHud(active), best: bestRef.current };
+      if (!sameHud(next, lastHud)) {
+        lastHud = next;
+        setHud(next);
+      }
+
+      if (audio.isMuted() !== lastMuted) {
+        lastMuted = audio.isMuted();
+        setMuted(lastMuted);
+      }
+
+      // The clearing level counts as unlocked while its banner is showing.
+      const reached = active.status === "levelClear" ? active.level + 1 : active.level;
+      const capped = Math.min(reached, LEVELS.length);
+      if (capped > unlockedRef.current) {
+        unlockedRef.current = capped;
+        window.localStorage.setItem(UNLOCKED_KEY, String(capped));
+      }
+      if (unlockedRef.current !== lastUnlocked) {
+        lastUnlocked = unlockedRef.current;
+        setUnlockedCount(lastUnlocked);
       }
     };
 
@@ -214,11 +267,13 @@ export function BrickBreaker() {
       canvas.removeEventListener("keydown", onKeyDown);
       canvas.removeEventListener("keyup", onKeyUp);
       canvas.removeEventListener("blur", onBlur);
+      audio.dispose();
+      audioRef.current = null;
       gameRef.current = null;
     };
   }, []);
 
-  const isOver = hud.status === "won" || hud.status === "lost";
+  const activeEffects = EFFECT_LABELS.filter((effect) => hud.effects[effect.key] > 0);
 
   return (
     <div className="game-shell">
@@ -226,29 +281,40 @@ export function BrickBreaker() {
         <dl className="game-stats">
           <div>
             <dt>Score</dt>
-            <dd>{String(hud.score).padStart(4, "0")}</dd>
+            <dd>{String(hud.score).padStart(5, "0")}</dd>
           </div>
           <div>
             <dt>Best</dt>
-            <dd>{String(hud.best).padStart(4, "0")}</dd>
+            <dd>{String(hud.best).padStart(5, "0")}</dd>
+          </div>
+          <div>
+            <dt>Level</dt>
+            <dd>{hud.word}</dd>
           </div>
           <div>
             <dt>Balls</dt>
-            <dd aria-label={`${hud.lives} of ${LIVES_START} remaining`}>
-              {"●".repeat(hud.lives)}
-              <span className="game-life-spent">{"●".repeat(LIVES_START - hud.lives)}</span>
+            <dd className="game-lives" aria-label={`${hud.lives} of ${LIVES_START} remaining`}>
+              {"■".repeat(hud.lives)}
+              <span className="game-life-spent">
+                {"■".repeat(Math.max(0, LIVES_START - hud.lives))}
+              </span>
             </dd>
-          </div>
-          <div>
-            <dt>Bricks</dt>
-            <dd>{hud.bricksLeft}</dd>
           </div>
         </dl>
 
-        <button type="button" onClick={resetGame} className="game-reset">
-          <RotateCcw className="size-4" aria-hidden="true" />
-          Reset
-        </button>
+        <div className="game-chips">
+          <button
+            type="button"
+            onClick={toggleMuted}
+            aria-pressed={!muted}
+            className={`game-chip ${muted ? "" : "game-chip-active"}`}
+          >
+            {muted ? "Sound off" : "Sound on"}
+          </button>
+          <button type="button" onClick={restart} className="game-chip">
+            Restart
+          </button>
+        </div>
       </div>
 
       <div className="game-board">
@@ -256,15 +322,47 @@ export function BrickBreaker() {
           ref={canvasRef}
           tabIndex={0}
           role="application"
-          aria-label={`Brick breaker. The bricks spell ${WORD}. Move the paddle with the arrow keys and serve with space.`}
+          aria-label={`Brick breaker. The wall spells ${hud.word}. Move the paddle with the arrow keys and serve with space.`}
           className="game-canvas"
         />
 
-        {isOver ? (
+        {/* The combo tag is drawn on the canvas by the renderer; a DOM copy
+            would duplicate it. This one is visually hidden purely so screen
+            readers still hear the streak. */}
+        {hud.combo >= COMBO_STEP ? (
+          <p className="game-combo" role="status">
+            Combo &times;{1 + Math.floor(hud.combo / COMBO_STEP)}
+          </p>
+        ) : null}
+
+        {activeEffects.length > 0 ? (
+          <ul className="game-effects">
+            {activeEffects.map((effect) => (
+              <li key={effect.key} className="game-effect">
+                {effect.label} {Math.ceil(hud.effects[effect.key])}s
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        {hud.status === "levelClear" ? (
           <div className="game-overlay">
-            <p className="game-overlay-title">{hud.status === "won" ? "Board cleared" : "Game over"}</p>
-            <p className="game-overlay-score">{hud.score} points</p>
-            <button type="button" onClick={resetGame} className="primary-button game-overlay-button">
+            <p className="game-overlay-title">{hud.word} cleared</p>
+            {factForLevel(hud.level) ? (
+              <p className="game-reveal">{factForLevel(hud.level)}</p>
+            ) : (
+              <p className="game-overlay-score">Next wall loading</p>
+            )}
+          </div>
+        ) : null}
+
+        {hud.status === "lost" ? (
+          <div className="game-overlay">
+            <p className="game-overlay-title">Game over</p>
+            <p className="game-overlay-score">
+              {hud.score} points &middot; level {hud.level + 1} &middot; best combo {hud.bestCombo}
+            </p>
+            <button type="button" onClick={restart} className="game-overlay-button">
               Play again
             </button>
           </div>
@@ -272,8 +370,28 @@ export function BrickBreaker() {
       </div>
 
       <p className="game-hint" role="status">
-        {STATUS_MESSAGE[hud.status]}
+        Arrow keys or drag to steer &middot; space serves &middot; catch the falling tiles
       </p>
+
+      {/* Each cleared wall unlocks the line behind it, so a run reads as a bio. */}
+      <section className="game-dossier" aria-label="Unlocked by playing">
+        <p className="game-dossier-head">
+          Dossier &mdash; {unlockedCount} of {LEVELS.length} unlocked
+        </p>
+        <ol className="game-dossier-list">
+          {LEVELS.map((level, index) => (
+            <li
+              key={level.word}
+              className={`game-dossier-item ${index < unlockedCount ? "is-unlocked" : ""}`}
+            >
+              <span className="game-dossier-word">{level.word}</span>
+              <span className="game-dossier-fact">
+                {index < unlockedCount ? level.fact : "Clear this wall to unlock."}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </section>
     </div>
   );
 }
