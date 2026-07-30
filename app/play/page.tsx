@@ -8,14 +8,14 @@ import { blockColor, type StampGlyph } from "@/components/game/theme";
 export const metadata: Metadata = {
   title: "Play | Arpit Khandelwal",
   description:
-    "A small browser brick-breaker where the brick field spells ARPIT, with five powerups and endless, ever-escalating levels. Built with canvas, no dependencies.",
+    "A browser brick-breaker where every wall is a chapter of my CV. Break a letter, catch a tile or lose a ball and it turns over one of 42 cards. Canvas, no dependencies.",
   alternates: { canonical: "/play" },
   openGraph: {
     type: "website",
     url: "/play",
     title: "Play | Arpit Khandelwal",
     description:
-      "A small browser brick-breaker with five powerups and endless levels. The brick field spells ARPIT.",
+      "A brick-breaker that hands you my CV one card at a time. Break a letter, catch a tile, collect all 42.",
   },
 };
 
@@ -32,33 +32,34 @@ const GLYPH_CHARACTERS: Readonly<Record<StampGlyph, string>> = {
   slash: "/",
 };
 
+/** Names match the cards each tile turns over, so the legend and the toast agree. */
 const POWERUPS: readonly PowerupEntry[] = [
   {
-    name: "Multiball",
+    name: "Agents · multiball",
     description: "Splits your ball into three, fanned out at the same speed.",
     colorIndex: 0,
     glyph: "x",
   },
   {
-    name: "Wide paddle",
+    name: "API surface · wide",
     description: "Paddle grows wider for a few seconds.",
     colorIndex: 2,
     glyph: "plus",
   },
   {
-    name: "Sticky catch",
+    name: "MCP · sticky",
     description: "Catch the ball on the paddle and re-aim before you serve.",
     colorIndex: 4,
     glyph: "slash",
   },
   {
-    name: "Slow-mo",
+    name: "Week 0 · slow-mo",
     description: "Every ball in play drops to a crawl for a few seconds.",
     colorIndex: 6,
     glyph: "x",
   },
   {
-    name: "Extra life",
+    name: "Handoff · extra life",
     description: "One more ball banked for later.",
     colorIndex: 5,
     glyph: "plus",
@@ -76,10 +77,11 @@ export default function PlayPage() {
 
         <header className="flex flex-col gap-2">
           <p className="epoch-kicker">Coffee break</p>
-          <h1 className="epoch-title">Break the name wall.</h1>
+          <h1 className="epoch-title">Break the wall, read the CV.</h1>
           <p className="epoch-lede">
-            Every brick spells my name until you take it apart. Five powerups drop as you clear
-            rows, and the levels keep coming, each one a little faster than the last.
+            Each wall is a chapter &mdash; who I am, where I have worked, what I am building now.
+            Break a whole letter and it hands you a card. So does catching a tile, and so does
+            losing a ball. There are 42 to find, and they keep what you have already turned over.
           </p>
         </header>
 

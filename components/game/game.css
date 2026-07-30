@@ -418,8 +418,18 @@
 }
 
 /* ---------------------------------------------------------------------- */
-/* Dossier — facts unlocked by clearing walls                             */
+/* Cards — revealed by clearing letters and catching tiles                 */
 /* ---------------------------------------------------------------------- */
+
+.game-overlay-eyebrow {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
 
 .game-reveal {
   margin: 0;
@@ -430,76 +440,235 @@
   text-wrap: balance;
 }
 
-.game-dossier {
-  border-top: 1px solid var(--hairline);
-  padding-top: 0.9rem;
+/* Absolutely positioned inside .game-board: a card appearing must never
+   resize the bordered board box. */
+.game-toast {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  left: 0.6rem;
+  z-index: 2;
+  margin-left: auto;
+  max-width: 30rem;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 4px 4px 0 var(--hairline);
+  padding: 0.6rem 0.75rem;
+  animation: game-toast-in 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.game-dossier-head {
-  margin: 0 0 0.7rem;
+.game-toast-label {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.game-toast-line {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+@keyframes game-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.game-era {
+  margin: 0;
   color: var(--ink-soft);
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.game-report-stats {
+  display: flex;
+  gap: 1.4rem;
+  margin: 0.15rem 0 0.35rem;
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.game-report-stats dt {
+  color: var(--ink-soft);
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.game-report-stats dd {
+  margin: 0.15rem 0 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.game-overlay-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.game-overlay-button.is-primary {
+  border-color: var(--focus-ring);
+  background: var(--focus-ring);
+  text-decoration: none;
+}
+
+.game-overlay-button.is-primary:hover {
+  background: transparent;
+  color: var(--focus-ring);
+}
+
+/* ---------------------------------------------------------------------- */
+/* The deck                                                               */
+/* ---------------------------------------------------------------------- */
+
+.game-deck {
+  border-top: 1px solid var(--hairline);
+  padding-top: 1rem;
+}
+
+.game-deck-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.9rem;
+  margin-bottom: 0.85rem;
+}
+
+.game-deck-title {
+  margin: 0;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.game-deck-count {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+}
+
+.game-deck-count strong {
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.game-deck-note {
+  margin: 0 0 0 auto;
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+}
+
+.game-deck-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.game-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  height: 100%;
+  border: 1px solid var(--hairline);
+  padding: 0.6rem 0.7rem;
+  min-height: 5.5rem;
+}
+
+.game-card.is-found {
+  border-color: var(--hairline-strong);
+  background: color-mix(in srgb, var(--paper) 60%, #fff);
+}
+
+a.game-card {
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+a.game-card:hover {
+  border-color: var(--ink);
+  box-shadow: 3px 3px 0 var(--hairline);
+  transform: translate(-1px, -1px);
+}
+
+a.game-card:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.game-card-label {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
-.game-dossier-list {
-  display: grid;
-  gap: 0.4rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: dossier;
+.game-card-line {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  text-wrap: pretty;
 }
 
-.game-dossier-item {
-  display: grid;
-  grid-template-columns: minmax(5.5rem, auto) 1fr;
-  gap: 0.5rem 0.9rem;
-  align-items: baseline;
-  border-left: 2px solid var(--hairline);
-  padding-left: 0.7rem;
-  transition: border-color 200ms ease;
-}
-
-.game-dossier-item.is-unlocked {
-  border-left-color: var(--ink);
-}
-
-.game-dossier-word {
+.game-card-go {
+  margin-top: auto;
+  color: var(--ink-soft);
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
 }
 
-.game-dossier-item.is-unlocked .game-dossier-word {
-  color: var(--ink);
+/* Locked cards stay unnamed: the deck is a thing to finish, not a list to
+   skim. The hatch echoes the diagonal block texture on the wall. */
+.game-card.is-locked {
+  align-items: center;
+  justify-content: center;
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--grid-line) 0 2px,
+    transparent 2px 7px
+  );
 }
 
-.game-dossier-fact {
+.game-card-lock {
   color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
   font-size: 0.85rem;
-  line-height: 1.45;
-}
-
-.game-dossier-item.is-unlocked .game-dossier-fact {
-  color: var(--ink);
-}
-
-@media (max-width: 480px) {
-  .game-dossier-item {
-    grid-template-columns: 1fr;
-    gap: 0.15rem;
-  }
+  font-weight: 700;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .game-dossier-item {
+  .game-toast {
+    animation: none;
+  }
+
+  a.game-card {
     transition: none;
+  }
+
+  a.game-card:hover {
+    transform: none;
   }
 }

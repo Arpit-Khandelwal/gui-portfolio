@@ -78,6 +78,9 @@ const PARTICLE_MIN_SIZE = 1.5;
 const PARTICLE_MAX_SIZE = 3.5;
 const PARTICLE_UPWARD_BIAS = 80;
 
+/** Paid when a letter of the wall loses its last brick and hands over a card. */
+const LETTER_CLEAR_BONUS = 150;
+
 const POPUP_LIFE = 0.9;
 const POPUP_RISE_SPEED = 40;
 
@@ -86,9 +89,20 @@ const SHAKE_ON_LIFE_LOST = 5;
 const SHAKE_DECAY = 0.9;
 const SHAKE_SNAP = 0.05;
 
-/** (VIEW_W - FIELD_X*2) / gridColsFor(word); the renderer needs this per word. */
+/**
+ * Bricks stay near-square whatever the word length: a three-letter wall would
+ * otherwise stretch each block to a 2.3:1 bar, which reads as a stripe rather
+ * than a printed block. Short words get capped blocks and are centred instead.
+ */
+const BRICK_MAX_W = BRICK_H * 1.35;
+
 export function brickWidthFor(word: string): number {
-  return (VIEW_W - FIELD_X * 2) / gridColsFor(word);
+  return Math.min((VIEW_W - FIELD_X * 2) / gridColsFor(word), BRICK_MAX_W);
+}
+
+/** Left edge of the wall, so a capped word sits centred rather than hugging FIELD_X. */
+export function wallOriginX(word: string): number {
+  return (VIEW_W - gridColsFor(word) * brickWidthFor(word)) / 2;
 }
 
 function baseSpeedForLevel(level: number): number {
@@ -117,6 +131,7 @@ export function createGame(): GameState {
     word,
     bricks,
     bricksLeft: bricks.length,
+    lettersLeft: countLetters(bricks),
     balls: [makeStuckBall(VIEW_W / 2, level)],
     powerups: [],
     particles: [],
@@ -154,20 +169,31 @@ function makeStuckBall(paddleX: number, level: number): Ball {
 function buildBricks(word: string): Brick[] {
   const cells = buildBrickCells(word);
   const bw = brickWidthFor(word);
+  const originX = wallOriginX(word);
   const powerupByIndex = assignPowerups(cells);
 
   return cells.map((cell, index) => ({
-    x: FIELD_X + cell.col * bw + BRICK_INSET,
+    x: originX + cell.col * bw + BRICK_INSET,
     y: FIELD_TOP + cell.row * BRICK_H + BRICK_INSET,
     w: bw - BRICK_INSET * 2,
     h: BRICK_H - BRICK_INSET * 2,
     colorIndex: cell.letterIndex % BLOCK_COUNT,
     textureIndex: (cell.letterIndex + cell.row) % TEXTURE_COUNT,
+    letterIndex: cell.letterIndex,
     row: cell.row,
     points: POINTS_TOP_ROW - cell.row * POINTS_PER_ROW,
     powerup: powerupByIndex.get(index) ?? null,
     alive: true,
   }));
+}
+
+/** Live brick count per letter, built once per wall so breaks stay O(1). */
+function countLetters(bricks: readonly Brick[]): Map<number, number> {
+  const counts = new Map<number, number>();
+  for (const brick of bricks) {
+    counts.set(brick.letterIndex, (counts.get(brick.letterIndex) ?? 0) + 1);
+  }
+  return counts;
 }
 
 /**
@@ -392,6 +418,16 @@ function breakBrick(game: GameState, brick: Brick, centerX: number, centerY: num
     game.events.push({ kind: "powerupDrop" });
   }
 
+  // Emitted before levelClear so the final letter still hands over its card.
+  const lettersLeft = (game.lettersLeft.get(brick.letterIndex) ?? 1) - 1;
+  game.lettersLeft.set(brick.letterIndex, lettersLeft);
+  if (lettersLeft === 0) {
+    game.score += LETTER_CLEAR_BONUS;
+    game.shake = Math.max(game.shake, SHAKE_ON_COMBO);
+    spawnPopup(game, centerX, centerY - BRICK_H, `+${LETTER_CLEAR_BONUS}`, true);
+    game.events.push({ kind: "letterClear", letterIndex: brick.letterIndex });
+  }
+
   if (game.bricksLeft === 0) {
     game.status = "levelClear";
     game.events.push({ kind: "levelClear" });
@@ -406,7 +442,7 @@ function updatePowerupsFalling(game: GameState): void {
 
     if (isCaughtByPaddle(game, powerup)) {
       applyPowerup(game, powerup.kind);
-      game.events.push({ kind: "powerupCatch" });
+      game.events.push({ kind: "powerupCatch", powerup: powerup.kind });
       continue;
     }
 
@@ -570,6 +606,7 @@ export function advanceLevel(game: GameState): void {
   game.word = wordForLevel(game.level);
   game.bricks = buildBricks(game.word);
   game.bricksLeft = game.bricks.length;
+  game.lettersLeft = countLetters(game.bricks);
   game.balls = [makeStuckBall(game.paddleX, game.level)];
   game.powerups = [];
   game.particles = [];

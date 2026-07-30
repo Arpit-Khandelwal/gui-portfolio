@@ -15,6 +15,7 @@ export type SoundName =
   | "brick"
   | "powerupDrop"
   | "powerupCatch"
+  | "letterClear"
   | "lifeLost"
   | "levelClear"
   | "gameOver";
@@ -92,6 +93,11 @@ const SOUND_ENVELOPES: Readonly<Record<Exclude<SoundName, "brick">, readonly Bli
   powerupCatch: [
     { frequency: 880, duration: 0.09, type: "sine", gain: 0.5 },
     { frequency: 1318.5, duration: 0.09, type: "sine", gain: 0.42, delay: 0.05 },
+  ],
+  // Lighter than levelClear: a letter falls often, a wall rarely.
+  letterClear: [
+    { frequency: 987.77, duration: 0.1, type: "triangle", gain: 0.4 },
+    { frequency: 1318.5, duration: 0.13, type: "triangle", gain: 0.36, delay: 0.07 },
   ],
   lifeLost: [{ frequency: 95, duration: 0.16, type: "square", gain: 0.55 }],
   levelClear: [

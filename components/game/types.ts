@@ -15,6 +15,7 @@ export type GameEventKind =
   | "brick"
   | "powerupDrop"
   | "powerupCatch"
+  | "letterClear"
   | "lifeLost"
   | "levelClear"
   | "gameOver";
@@ -23,6 +24,10 @@ export interface GameEvent {
   readonly kind: GameEventKind;
   /** Combo depth for "brick" events, so audio can rise in pitch with a streak. */
   readonly combo?: number;
+  /** Which letter of the wall just lost its last brick, on "letterClear". */
+  readonly letterIndex?: number;
+  /** What was caught, on "powerupCatch", so the shell can name the capability. */
+  readonly powerup?: PowerupKind;
 }
 
 export interface Brick {
@@ -34,6 +39,8 @@ export interface Brick {
   readonly colorIndex: number;
   /** Index into the theme's texture set. */
   readonly textureIndex: number;
+  /** Which letter of the wall this brick belongs to; drives letter-clear cards. */
+  readonly letterIndex: number;
   readonly row: number;
   readonly points: number;
   /** Carries a powerup that drops when this brick breaks. */
@@ -108,6 +115,11 @@ export interface GameState {
   word: string;
   bricks: Brick[];
   bricksLeft: number;
+  /**
+   * Live brick count per letter index, so a letter-clear is O(1) instead of a
+   * scan on every break. Letters with no bricks (spaces) are simply absent.
+   */
+  lettersLeft: Map<number, number>;
   balls: Ball[];
   powerups: Powerup[];
   particles: Particle[];

@@ -17,11 +17,27 @@ import {
 import { drawGame } from "./renderer";
 import { createAudio, GameAudio } from "./audio";
 import type { GameState, Hud } from "./types";
-import { factForLevel, LEVELS } from "./word-bricks";
+import {
+  cardById,
+  cardForLetter,
+  chapterForLevel,
+  nextMissCard,
+  POWERUP_CARDS,
+  type DossierCard,
+} from "./dossier";
+import { DossierDeck } from "./dossier-deck";
+import { SprintReport } from "./sprint-report";
 import "./game.css";
 
 const BEST_SCORE_KEY = "arpit-breaker-best";
-const UNLOCKED_KEY = "arpit-breaker-unlocked";
+/**
+ * Versioned because v1 stored a bare level count. Card ids are stable strings
+ * now, so editing the card list can never relabel a returning player's deck.
+ */
+const CARDS_KEY = "arpit-breaker-cards-v2";
+const LEGACY_UNLOCKED_KEY = "arpit-breaker-unlocked";
+/** How long a revealed card sits on screen before the board is clear again. */
+const TOAST_SECONDS = 4;
 /** How long the level-clear banner sits before the next word loads. */
 const LEVEL_CLEAR_SECONDS = 1.5;
 /** Bricks per multiplier step; mirrors COMBO_MULTIPLIER_STEP in the engine. */
@@ -59,10 +75,10 @@ export function BrickBreaker() {
 
   const [hud, setHud] = useState<Hud>(() => readHud(createGame()));
   const [muted, setMuted] = useState(true);
-  // Unlocked facts persist across restarts: the dossier is a collection to
+  // Unlocked cards persist across restarts: the dossier is a collection to
   // finish, not something a lost run takes away.
-  const [unlockedCount, setUnlockedCount] = useState(0);
-  const unlockedRef = useRef(0);
+  const [unlocked, setUnlocked] = useState<ReadonlySet<string>>(() => new Set<string>());
+  const [toast, setToast] = useState<DossierCard | null>(null);
 
   const restart = useCallback(() => {
     const fresh = createGame();
@@ -94,11 +110,20 @@ export function BrickBreaker() {
     const storedBest = Number(window.localStorage.getItem(BEST_SCORE_KEY));
     bestRef.current = Number.isFinite(storedBest) && storedBest > 0 ? storedBest : 0;
 
-    const storedUnlocked = Number(window.localStorage.getItem(UNLOCKED_KEY));
-    unlockedRef.current =
-      Number.isFinite(storedUnlocked) && storedUnlocked > 0
-        ? Math.min(storedUnlocked, LEVELS.length)
-        : 0;
+    // Unknown ids are dropped so removing a card later cannot corrupt the deck.
+    const found = new Set<string>();
+    try {
+      const raw = window.localStorage.getItem(CARDS_KEY);
+      const parsed: unknown = raw ? JSON.parse(raw) : [];
+      if (Array.isArray(parsed)) {
+        for (const id of parsed) {
+          if (typeof id === "string" && cardById(id)) found.add(id);
+        }
+      }
+      window.localStorage.removeItem(LEGACY_UNLOCKED_KEY);
+    } catch {
+      // A corrupt or unavailable store just means starting the deck over.
+    }
 
     const resize = () => {
       const cssWidth = canvas.clientWidth;
@@ -192,7 +217,24 @@ export function BrickBreaker() {
     // choice only exists on the client, and setState in an effect body would
     // both trip react-hooks/set-state-in-effect and risk a hydration mismatch.
     let lastMuted = true;
-    let lastUnlocked = 0;
+    let toastLeft = 0;
+    let showingToast = false;
+    let deckDirty = true;
+
+    /** Reveals a card, ignoring anything the player has already turned over. */
+    const reveal = (card: DossierCard | null) => {
+      if (!card || found.has(card.id)) return;
+      found.add(card.id);
+      deckDirty = true;
+      try {
+        window.localStorage.setItem(CARDS_KEY, JSON.stringify([...found]));
+      } catch {
+        // Private-mode storage failures must not interrupt the run.
+      }
+      setToast(card);
+      toastLeft = TOAST_SECONDS;
+      showingToast = true;
+    };
 
     const loop = (now: number) => {
       frame = requestAnimationFrame(loop);
@@ -213,8 +255,29 @@ export function BrickBreaker() {
 
       for (const event of active.events) {
         audio.play(event.kind, event.combo);
+
+        // All three reveal paths are high-frequency by design. A perfect paddle
+        // needs ~150s to clear one wall, so gating the bio on level-clear would
+        // teach almost nobody; letters, tiles and misses land constantly.
+        if (event.kind === "letterClear" && event.letterIndex !== undefined) {
+          reveal(cardForLetter(active.level, event.letterIndex));
+        } else if (event.kind === "powerupCatch" && event.powerup) {
+          reveal(POWERUP_CARDS[event.powerup]);
+        } else if (event.kind === "lifeLost") {
+          // The floor: someone who never clears a letter still leaves knowing
+          // something, because losing a ball is the one thing they will do.
+          reveal(nextMissCard(found));
+        }
       }
       active.events.length = 0;
+
+      if (showingToast) {
+        toastLeft -= delta;
+        if (toastLeft <= 0) {
+          showingToast = false;
+          setToast(null);
+        }
+      }
 
       if (active.status === "levelClear") {
         clearHold += delta;
@@ -244,16 +307,10 @@ export function BrickBreaker() {
         setMuted(lastMuted);
       }
 
-      // The clearing level counts as unlocked while its banner is showing.
-      const reached = active.status === "levelClear" ? active.level + 1 : active.level;
-      const capped = Math.min(reached, LEVELS.length);
-      if (capped > unlockedRef.current) {
-        unlockedRef.current = capped;
-        window.localStorage.setItem(UNLOCKED_KEY, String(capped));
-      }
-      if (unlockedRef.current !== lastUnlocked) {
-        lastUnlocked = unlockedRef.current;
-        setUnlockedCount(lastUnlocked);
+      // A fresh Set each time: the deck compares by identity to re-render.
+      if (deckDirty) {
+        deckDirty = false;
+        setUnlocked(new Set(found));
       }
     };
 
@@ -345,53 +402,42 @@ export function BrickBreaker() {
           </ul>
         ) : null}
 
+        {/* Cards land here, over the board, because that is where the player
+            is already looking when a letter falls. */}
+        {toast ? (
+          <aside className="game-toast" role="status">
+            <p className="game-toast-label">{toast.label}</p>
+            <p className="game-toast-line">{toast.line}</p>
+          </aside>
+        ) : null}
+
         {hud.status === "levelClear" ? (
           <div className="game-overlay">
-            <p className="game-overlay-title">{hud.word} cleared</p>
-            {factForLevel(hud.level) ? (
-              <p className="game-reveal">{factForLevel(hud.level)}</p>
-            ) : (
-              <p className="game-overlay-score">Next wall loading</p>
-            )}
+            <p className="game-overlay-eyebrow">Wall down</p>
+            <p className="game-overlay-title">{hud.word}</p>
+            <p className="game-reveal">{chapterForLevel(hud.level).era}</p>
           </div>
         ) : null}
 
         {hud.status === "lost" ? (
-          <div className="game-overlay">
-            <p className="game-overlay-title">Game over</p>
-            <p className="game-overlay-score">
-              {hud.score} points &middot; level {hud.level + 1} &middot; best combo {hud.bestCombo}
-            </p>
-            <button type="button" onClick={restart} className="game-overlay-button">
-              Play again
-            </button>
-          </div>
+          <SprintReport
+            score={hud.score}
+            bestCombo={hud.bestCombo}
+            level={hud.level}
+            unlocked={unlocked}
+            onRestart={restart}
+          />
         ) : null}
       </div>
 
+      <p className="game-era">{chapterForLevel(hud.level).era}</p>
+
       <p className="game-hint" role="status">
-        Arrow keys or drag to steer &middot; space serves &middot; catch the falling tiles
+        Arrow keys or drag to steer &middot; space serves &middot; break a whole letter to
+        turn over a card
       </p>
 
-      {/* Each cleared wall unlocks the line behind it, so a run reads as a bio. */}
-      <section className="game-dossier" aria-label="Unlocked by playing">
-        <p className="game-dossier-head">
-          Dossier &mdash; {unlockedCount} of {LEVELS.length} unlocked
-        </p>
-        <ol className="game-dossier-list">
-          {LEVELS.map((level, index) => (
-            <li
-              key={level.word}
-              className={`game-dossier-item ${index < unlockedCount ? "is-unlocked" : ""}`}
-            >
-              <span className="game-dossier-word">{level.word}</span>
-              <span className="game-dossier-fact">
-                {index < unlockedCount ? level.fact : "Clear this wall to unlock."}
-              </span>
-            </li>
-          ))}
-        </ol>
-      </section>
+      <DossierDeck unlocked={unlocked} />
     </div>
   );
 }
