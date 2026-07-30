@@ -112,6 +112,7 @@ export function PortfolioPage() {
             <a href="#work" className="transition hover:opacity-100">Work</a>
             <a href="#faq" className="transition hover:opacity-100">FAQ</a>
             <a href="#contact" className="transition hover:opacity-100">Contact</a>
+            <a href="/play" className="transition hover:opacity-100">Play</a>
           </nav>
           <div className="flex items-center gap-3">
             <button
@@ -686,6 +687,7 @@ export function PortfolioPage() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-sm text-[color:var(--muted)] md:flex-row">
           <p>&copy; {new Date().getFullYear()} {profile.name}</p>
           <div className="flex items-center gap-6">
+            <a href="/play" className="hover:text-[color:var(--accent)]">Play</a>
             <a href="/privacy-policy" className="hover:text-[color:var(--accent)]">Privacy</a>
             <a href={profile.github} target="_blank" rel="noreferrer" className="hover:text-[color:var(--accent)]">GitHub</a>
             <a href={profile.linkedin} target="_blank" rel="noreferrer" className="hover:text-[color:var(--accent)]">LinkedIn</a>
