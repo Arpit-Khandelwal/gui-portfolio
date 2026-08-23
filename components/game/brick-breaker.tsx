@@ -331,6 +331,9 @@ export function BrickBreaker() {
   }, []);
 
   const activeEffects = EFFECT_LABELS.filter((effect) => hud.effects[effect.key] > 0);
+  // The sprint report already reports the collection, so a card revealed by the
+  // final lost ball would only compete with it.
+  const liveToast = hud.status === "lost" ? null : toast;
 
   return (
     <div className="game-shell">
@@ -374,60 +377,65 @@ export function BrickBreaker() {
         </div>
       </div>
 
-      <div className="game-board">
-        <canvas
-          ref={canvasRef}
-          tabIndex={0}
-          role="application"
-          aria-label={`Brick breaker. The wall spells ${hud.word}. Move the paddle with the arrow keys and serve with space.`}
-          className="game-canvas"
-        />
-
-        {/* The combo tag is drawn on the canvas by the renderer; a DOM copy
-            would duplicate it. This one is visually hidden purely so screen
-            readers still hear the streak. */}
-        {hud.combo >= COMBO_STEP ? (
-          <p className="game-combo" role="status">
-            Combo &times;{1 + Math.floor(hud.combo / COMBO_STEP)}
-          </p>
-        ) : null}
-
-        {activeEffects.length > 0 ? (
-          <ul className="game-effects">
-            {activeEffects.map((effect) => (
-              <li key={effect.key} className="game-effect">
-                {effect.label} {Math.ceil(hud.effects[effect.key])}s
-              </li>
-            ))}
-          </ul>
-        ) : null}
-
-        {/* Cards land here, over the board, because that is where the player
-            is already looking when a letter falls. */}
-        {toast ? (
-          <aside className="game-toast" role="status">
-            <p className="game-toast-label">{toast.label}</p>
-            <p className="game-toast-line">{toast.line}</p>
-          </aside>
-        ) : null}
-
-        {hud.status === "levelClear" ? (
-          <div className="game-overlay">
-            <p className="game-overlay-eyebrow">Wall down</p>
-            <p className="game-overlay-title">{hud.word}</p>
-            <p className="game-reveal">{chapterForLevel(hud.level).era}</p>
-          </div>
-        ) : null}
-
-        {hud.status === "lost" ? (
-          <SprintReport
-            score={hud.score}
-            bestCombo={hud.bestCombo}
-            level={hud.level}
-            unlocked={unlocked}
-            onRestart={restart}
+      <div className="game-stage">
+        <div className="game-board">
+          <canvas
+            ref={canvasRef}
+            tabIndex={0}
+            role="application"
+            aria-label={`Brick breaker. The wall spells ${hud.word}. Move the paddle with the arrow keys and serve with space.`}
+            className="game-canvas"
           />
-        ) : null}
+
+          {/* The combo tag is drawn on the canvas by the renderer; a DOM copy
+              would duplicate it. This one is visually hidden purely so screen
+              readers still hear the streak. */}
+          {hud.combo >= COMBO_STEP ? (
+            <p className="game-combo" role="status">
+              Combo &times;{1 + Math.floor(hud.combo / COMBO_STEP)}
+            </p>
+          ) : null}
+
+          {activeEffects.length > 0 ? (
+            <ul className="game-effects">
+              {activeEffects.map((effect) => (
+                <li key={effect.key} className="game-effect">
+                  {effect.label} {Math.ceil(hud.effects[effect.key])}s
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          {hud.status === "levelClear" ? (
+            <div className="game-overlay">
+              <p className="game-overlay-eyebrow">Wall down</p>
+              <p className="game-overlay-title">{hud.word}</p>
+              <p className="game-reveal">{chapterForLevel(hud.level).era}</p>
+            </div>
+          ) : null}
+
+          {hud.status === "lost" ? (
+            <SprintReport
+              score={hud.score}
+              bestCombo={hud.bestCombo}
+              level={hud.level}
+              unlocked={unlocked}
+              onRestart={restart}
+            />
+          ) : null}
+        </div>
+
+        {/* Always rendered so the reserved slot never reflows the page when a
+            card arrives. Wide screens float it over the board's bottom-right
+            corner; narrow ones keep it below, clear of the paddle. */}
+        <aside className={`game-toast ${liveToast ? "is-live" : ""}`} role="status">
+          {liveToast ? (
+            <>
+              <p className="game-toast-label">{liveToast.label}</p>
+              <p className="game-toast-line">{liveToast.line}</p>
+            </>
+          ) : null}
+        </aside>
       </div>
 
       <p className="game-era">{chapterForLevel(hud.level).era}</p>

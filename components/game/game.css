@@ -219,6 +219,9 @@
 .game-overlay {
   position: absolute;
   inset: 0;
+  /* Above the toast (z-index 2), so a card revealed by the final lost ball
+     cannot sit on top of the sprint report's contact button. */
+  z-index: 3;
   display: grid;
   place-content: center;
   gap: 0.5rem;
@@ -440,25 +443,36 @@
   text-wrap: balance;
 }
 
-/* Absolutely positioned inside .game-board: a card appearing must never
-   resize the bordered board box. */
+.game-stage {
+  position: relative;
+}
+
+/* Narrow screens: the card sits BELOW the board. Overlaying it would cover the
+   paddle, which lives at the bottom of the playfield — exactly where a
+   bottom-anchored toast lands. The slot is always present and fixed-height so
+   a card arriving mid-rally never reflows the page under the player's finger.
+   Three lines is enough for every card at this width. */
 .game-toast {
-  position: absolute;
-  right: 0.6rem;
-  bottom: 0.6rem;
-  left: 0.6rem;
-  z-index: 2;
-  margin-left: auto;
-  max-width: 30rem;
-  border: 1px solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  justify-content: center;
+  height: 5.5rem;
+  margin-top: 0.5rem;
+  border: 1px solid transparent;
+  padding: 0.6rem 0.75rem;
+  overflow: hidden;
+}
+
+.game-toast.is-live {
+  border-color: var(--ink);
   background: var(--paper);
   box-shadow: 4px 4px 0 var(--hairline);
-  padding: 0.6rem 0.75rem;
   animation: game-toast-in 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .game-toast-label {
-  margin: 0 0 0.25rem;
+  margin: 0;
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.62rem;
   font-weight: 700;
@@ -466,12 +480,42 @@
   text-transform: uppercase;
 }
 
+/* Clamped so the longest card cannot outgrow the reserved slot. The full line
+   always lives in the deck below, so nothing is lost to the clamp. */
 .game-toast-line {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   margin: 0;
+  overflow: hidden;
   color: var(--ink);
   font-size: 0.82rem;
   line-height: 1.4;
-  text-wrap: pretty;
+}
+
+/* Wide screens: float it over the board's bottom-right, where it covers only a
+   corner of the playfield and needs no reserved space. Declared after the base
+   rules so these actually win — a media query adds no specificity. */
+@media (min-width: 641px) {
+  .game-toast {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    z-index: 2;
+    height: auto;
+    max-width: 26rem;
+    margin-top: 0;
+  }
+
+  .game-toast:not(.is-live) {
+    display: none;
+  }
+
+  .game-toast-line {
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+  }
 }
 
 @keyframes game-toast-in {
