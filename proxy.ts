@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { MEDIA_MARKDOWN, negotiateMediaType } from "@/lib/agent/accept";
 import {
-  AGENT_PAGE_PATH_SET,
+  isNegotiablePath,
   markdownHandlerPath,
   markdownTwinBase,
   markdownTwinPath,
@@ -58,7 +58,7 @@ export function proxy(request: NextRequest) {
   }
 
   const pagePath = normalisePagePath(pathname);
-  if (!AGENT_PAGE_PATH_SET.has(pagePath)) return NextResponse.next();
+  if (!isNegotiablePath(pagePath)) return NextResponse.next();
 
   // React Server Component payload requests carry their own media type and
   // must pass through untouched.
@@ -94,6 +94,10 @@ export const config = {
     "/privacy",
     "/privacy-policy",
     "/play",
+    "/writing",
+    // Posts are discovered from disk, which the edge runtime cannot do, so the
+    // whole subtree is matched and the markdown handler resolves each slug.
+    "/writing/:slug*",
     // Any `.md` path, so the markdown handler owns markdown 404s too.
     "/:path*.md",
   ],

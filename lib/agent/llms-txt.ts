@@ -1,5 +1,6 @@
 import { availability, badFits, goodFits, profile, selectedWork } from "@/components/portfolio/data";
 import { SITE_NAME, SITE_DESCRIPTION, absoluteUrl, AGENT_ENTRYPOINTS } from "@/lib/site";
+import { publishedPosts } from "@/lib/writing/posts";
 
 /**
  * /llms.txt, following the llmstxt.org structure: an H1, a blockquote summary,
@@ -9,6 +10,19 @@ import { SITE_NAME, SITE_DESCRIPTION, absoluteUrl, AGENT_ENTRYPOINTS } from "@/l
  * agent should route here, and named jobs it should not — because generic
  * marketing copy gives an agent nothing to decide on.
  */
+function writingSection() {
+  const posts = publishedPosts();
+  if (posts.length === 0) return [];
+  return [
+    "## Writing",
+    "",
+    ...posts.map(
+      (post) => `- [${post.title}](${absoluteUrl(post.path)}): ${post.description} Published ${post.date}.`,
+    ),
+    "",
+  ];
+}
+
 export function buildLlmsTxt() {
   const lines: string[] = [
     `# ${SITE_NAME}`,
@@ -55,8 +69,10 @@ export function buildLlmsTxt() {
     `- [About](${absoluteUrl("/about")}): Background, how sprints run, and fit criteria. Markdown twin at /about.md.`,
     `- [Contact](${absoluteUrl("/contact")}): How to send a brief and what to include. Markdown twin at /contact.md.`,
     `- [Documentation](${absoluteUrl("/docs")}): Machine-readable entry points. Markdown twin at /docs.md.`,
+    `- [Writing](${absoluteUrl("/writing")}): Notes from shipped work. Markdown twin at /writing.md, RSS at /writing/rss.xml.`,
     `- [Privacy Policy](${absoluteUrl("/privacy-policy")}): Analytics, cookies, consent, and data handling.`,
     "",
+    ...writingSection(),
     "## Evidence",
     "",
     ...selectedWork

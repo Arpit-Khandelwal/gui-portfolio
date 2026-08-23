@@ -15,6 +15,7 @@ import {
   Terminal,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   architectureNodes,
   availability,
@@ -687,11 +688,12 @@ export function PortfolioPage() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-sm text-[color:var(--muted)] md:flex-row">
           <p>&copy; {new Date().getFullYear()} {profile.name}</p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            <a href="/about" className="hover:text-[color:var(--accent)]">About</a>
-            <a href="/contact" className="hover:text-[color:var(--accent)]">Contact</a>
-            <a href="/docs" className="hover:text-[color:var(--accent)]">API docs</a>
-            <a href="/play" className="hover:text-[color:var(--accent)]">Play</a>
-            <a href="/privacy-policy" className="hover:text-[color:var(--accent)]">Privacy</a>
+            <Link href="/writing" className="hover:text-[color:var(--accent)]">Writing</Link>
+            <Link href="/about" className="hover:text-[color:var(--accent)]">About</Link>
+            <Link href="/contact" className="hover:text-[color:var(--accent)]">Contact</Link>
+            <Link href="/docs" className="hover:text-[color:var(--accent)]">API docs</Link>
+            <Link href="/play" className="hover:text-[color:var(--accent)]">Play</Link>
+            <Link href="/privacy-policy" className="hover:text-[color:var(--accent)]">Privacy</Link>
             <a href={profile.github} target="_blank" rel="noreferrer" className="hover:text-[color:var(--accent)]">GitHub</a>
             <a href={profile.linkedin} target="_blank" rel="noreferrer" className="hover:text-[color:var(--accent)]">LinkedIn</a>
             <a href={profile.resume} target="_blank" rel="noreferrer" className="hover:text-[color:var(--accent)]">R&eacute;sum&eacute;</a>

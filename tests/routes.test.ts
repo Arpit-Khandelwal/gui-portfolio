@@ -4,14 +4,26 @@ import {
   markdownHandlerPath,
   markdownTwinBase,
   markdownTwinPath,
+  isNegotiablePath,
   normalisePagePath,
   pagePathForMarkdownTwin,
 } from "@/lib/agent/routes";
 import { AGENT_DOCUMENT_PATHS } from "@/lib/agent/markdown";
 
 describe("agent page routes", () => {
-  test("the edge-safe path list matches the markdown document registry", () => {
+  test("the edge-safe static path list matches the static markdown document registry", () => {
     expect([...AGENT_PAGE_PATHS].sort()).toEqual([...AGENT_DOCUMENT_PATHS].sort());
+  });
+
+  test("post paths are negotiable by prefix, since the edge cannot read the filesystem", () => {
+    expect(isNegotiablePath("/writing")).toBe(true);
+    expect(isNegotiablePath("/writing/some-post")).toBe(true);
+    expect(isNegotiablePath("/writingfoo")).toBe(false);
+    expect(isNegotiablePath("/nope")).toBe(false);
+  });
+
+  test("maps a post markdown twin back to its post path", () => {
+    expect(pagePathForMarkdownTwin("/writing/some-post.md")).toBe("/writing/some-post");
   });
 
   test("normalises trailing slashes", () => {

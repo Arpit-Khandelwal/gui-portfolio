@@ -53,6 +53,26 @@ Markdown bodies are generated in `lib/agent/markdown.ts` from the same content t
 
 Known limitation: Next 16 rewrites `Vary` on a page (RSC) render, so `Vary: Accept` is present on the markdown and 406 responses but not on the HTML one. Negotiation is still correct, because the proxy runs ahead of the CDN cache lookup — a markdown request is rewritten to `/md/...` and can never be served the HTML variant cached under the page path.
 
+## Writing
+
+Posts are plain markdown in `content/writing/*.md` with YAML front matter:
+
+```yaml
+---
+title: "Post title"
+description: "One sentence, used for the index, RSS, og:description and llms.txt."
+date: 2026-08-24
+draft: true
+tags: [MCP, Playwright]
+---
+```
+
+`draft: true` means the post renders in `next dev` but is excluded from the index, sitemap, RSS, `llms.txt` and the production build entirely. Flip it to `false` to publish — nothing else to do.
+
+Each post automatically gets a `.md` twin (`/writing/<slug>.md`), an `Article` JSON-LD block whose `author`/`publisher` reference the homepage identity graph, a sitemap entry, an RSS item at `/writing/rss.xml`, and an `llms.txt` line.
+
+`lib/writing/posts.ts` reads the filesystem, so it is Node-only and must never be imported by `proxy.ts`. The proxy negotiates the whole `/writing/` subtree by prefix and lets `app/md/[[...slug]]/route.ts` resolve or 404 each slug.
+
 ## Canonical host
 
 `lib/site.ts` holds `SITE_URL`, which feeds every canonical tag, `og:url`, sitemap entry, robots directive, and OpenAPI server URL.

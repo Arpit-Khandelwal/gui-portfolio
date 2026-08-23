@@ -16,6 +16,7 @@ import {
 import { SITE_URL, absoluteUrl, AGENT_ENTRYPOINTS } from "@/lib/site";
 import { aboutIntro, aboutSections, contactIntro, contactSections, contactChannels, type CopySection } from "@/lib/copy";
 import { docsEndpoints, docsEntryPoints, docsErrorCodes, docsIntro, rateLimitSummary } from "@/lib/docs";
+import { publishedPosts, findPost, type Post } from "@/lib/writing/posts";
 
 /**
  * Markdown renderings of every page route, served when a client negotiates
@@ -214,6 +215,28 @@ function privacyMarkdown() {
   ].join("\n");
 }
 
+function writingIndexMarkdown() {
+  const posts = publishedPosts();
+  return [
+    "# Writing",
+    "",
+    `Notes from shipped work by ${profile.name} — AI agents, browser automation, backend infrastructure, and Solana.`,
+    "",
+    ...(posts.length === 0
+      ? ["No posts published yet."]
+      : posts.flatMap((post) => [
+          `## [${post.title}](${absoluteUrl(post.path)})`,
+          "",
+          `${post.date} — ${post.description}`,
+          "",
+        ])),
+  ].join("\n");
+}
+
+function postMarkdown(post: Post) {
+  return [`# ${post.title}`, "", `_${post.date}_`, "", post.body, ""].join("\n");
+}
+
 function playMarkdown() {
   return [
     "# Play — brick breaker",
@@ -264,6 +287,12 @@ const documents: readonly AgentDocument[] = [
     render: privacyMarkdown,
   },
   {
+    path: "/writing",
+    title: "Writing",
+    description: "Notes from shipped work: AI agents, browser automation, backend infrastructure, and Solana.",
+    render: writingIndexMarkdown,
+  },
+  {
     path: "/play",
     title: "Play — brick breaker",
     description: "Interactive brick-breaker game with collectible CV cards.",
@@ -271,11 +300,32 @@ const documents: readonly AgentDocument[] = [
   },
 ] as const;
 
+/** Static page documents only. Post documents are resolved from disk. */
 export const AGENT_DOCUMENT_PATHS = documents.map((document) => document.path);
+
+function postDocument(post: Post): AgentDocument {
+  return {
+    path: post.path,
+    title: post.title,
+    description: post.description,
+    render: () => postMarkdown(post),
+  };
+}
+
+/** Every markdown document, static pages plus published posts. */
+export function allAgentDocumentPaths() {
+  return [...AGENT_DOCUMENT_PATHS, ...publishedPosts().map((post) => post.path)];
+}
 
 export function findAgentDocument(path: string): AgentDocument | undefined {
   const normalised = path === "" ? "/" : path.replace(/\/+$/, "") || "/";
-  return documents.find((document) => document.path === normalised);
+  const staticDocument = documents.find((document) => document.path === normalised);
+  if (staticDocument) return staticDocument;
+
+  const slug = normalised.startsWith("/writing/") ? normalised.slice("/writing/".length) : null;
+  if (!slug || slug.includes("/")) return undefined;
+  const post = findPost(slug);
+  return post ? postDocument(post) : undefined;
 }
 
 export function renderAgentDocument(document: AgentDocument) {

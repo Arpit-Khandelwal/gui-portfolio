@@ -1,5 +1,6 @@
 import { availability, faqs, profile, selectedWork, skills } from "@/components/portfolio/data";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL, absoluteUrl } from "@/lib/site";
+import type { Post } from "@/lib/writing/posts";
 
 /**
  * JSON-LD identity graph for the homepage.
@@ -138,5 +139,29 @@ export function buildHomeJsonLd() {
         },
       },
     ],
+  };
+}
+
+/**
+ * `Article` JSON-LD for one post. Author and publisher reference the `@id`s
+ * declared by the homepage graph rather than restating the identity, so an
+ * agent resolves a post back to the same entity.
+ */
+export function buildArticleJsonLd(post: Post) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": `${absoluteUrl(post.path)}#article`,
+    headline: post.title,
+    description: post.description,
+    url: absoluteUrl(post.path),
+    datePublished: post.date,
+    dateModified: post.date,
+    inLanguage: "en",
+    keywords: [...post.tags],
+    author: { "@id": PERSON_ID },
+    publisher: { "@id": ORGANISATION_ID },
+    isPartOf: { "@id": WEBSITE_ID },
+    mainEntityOfPage: { "@type": "WebPage", "@id": absoluteUrl(post.path) },
   };
 }

@@ -581,3 +581,60 @@ textarea:focus-visible {
     transition: none;
   }
 }
+
+/* Rendered post bodies. Scoped so it cannot leak into the portfolio layout. */
+.writing-body {
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+.writing-body > * + * {
+  margin-top: 1rem;
+}
+.writing-body h2 {
+  margin-top: 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.writing-body h3 {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.writing-body ul,
+.writing-body ol {
+  padding-left: 1.25rem;
+}
+.writing-body ul { list-style: disc; }
+.writing-body ol { list-style: decimal; }
+.writing-body li + li { margin-top: 0.25rem; }
+.writing-body a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.writing-body code {
+  border: 1px solid var(--line);
+  border-radius: 0.25rem;
+  padding: 0.05rem 0.3rem;
+  font-size: 0.8125rem;
+}
+.writing-body pre {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.375rem;
+  padding: 1rem;
+  font-size: 0.8125rem;
+}
+.writing-body pre code {
+  border: 0;
+  padding: 0;
+}
+.writing-body blockquote {
+  border-left: 2px solid var(--line-strong);
+  padding-left: 1rem;
+  color: var(--muted);
+}
+.writing-body hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+.writing-body strong { font-weight: 600; }

@@ -14,9 +14,23 @@ export const AGENT_PAGE_PATHS = [
   "/privacy",
   "/privacy-policy",
   "/play",
+  "/writing",
 ] as const;
 
 export const AGENT_PAGE_PATH_SET: ReadonlySet<string> = new Set(AGENT_PAGE_PATHS);
+
+/**
+ * Prefix under which posts live. Individual post paths are discovered from the
+ * filesystem, which the edge runtime cannot do, so the proxy negotiates the
+ * whole subtree by prefix and lets the markdown handler resolve or 404 each
+ * slug.
+ */
+export const WRITING_PREFIX = "/writing/";
+
+/** Whether a path takes part in `Accept` negotiation. */
+export function isNegotiablePath(pagePath: string) {
+  return AGENT_PAGE_PATH_SET.has(pagePath) || pagePath.startsWith(WRITING_PREFIX);
+}
 
 /** Normalises a request path: strips a trailing slash, maps "" to "/". */
 export function normalisePagePath(pathname: string) {
@@ -41,7 +55,7 @@ export function markdownTwinBase(pathname: string): string | null {
 /** The page path a markdown twin maps to, or null when no such page exists. */
 export function pagePathForMarkdownTwin(pathname: string): string | null {
   const base = markdownTwinBase(pathname);
-  return base !== null && AGENT_PAGE_PATH_SET.has(base) ? base : null;
+  return base !== null && isNegotiablePath(base) ? base : null;
 }
 
 /** The `/md/...` handler path that renders a given page path as markdown. */
