@@ -1,18 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import Analytics from "./analytics";
 import { profile } from "@/components/portfolio/data";
+import { buildHomeJsonLd } from "@/lib/agent/json-ld";
+import { AGENT_ENTRYPOINTS, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/site";
 import "./globals.css";
-
-const SITE_URL = "https://arpitkhandelwal.com";
-const TITLE = "Arpit Khandelwal | Fractional AI & Backend Engineer";
-const DESCRIPTION =
-  "Fractional AI & backend engineer for build sprints across AI agents, backend automation, browser workflows, APIs, and integration-heavy products.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: TITLE,
-  description: DESCRIPTION,
-  applicationName: "Arpit Khandelwal",
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
   authors: [{ name: profile.name, url: SITE_URL }],
   creator: profile.name,
   keywords: [
@@ -26,7 +23,10 @@ export const metadata: Metadata = {
     "build sprint",
     "Arpit Khandelwal",
   ],
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    types: { "text/markdown": "/index.md" },
+  },
   robots: {
     index: true,
     follow: true,
@@ -34,16 +34,22 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "profile",
-    siteName: "Arpit Khandelwal",
+    siteName: SITE_NAME,
     url: SITE_URL,
-    title: TITLE,
-    description: DESCRIPTION,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: TITLE,
-    description: DESCRIPTION,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     creator: "@ArpitKhandelwa3",
+  },
+  other: {
+    // Advertised in the head as well as in headers so a crawler that only
+    // parses HTML still finds the machine-readable surface.
+    "ai-content-declaration": "human-authored",
   },
 };
 
@@ -55,17 +61,6 @@ export const viewport: Viewport = {
   ],
 };
 
-const personJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: profile.name,
-  jobTitle: "Fractional AI & Backend Engineer",
-  email: `mailto:${profile.email}`,
-  url: SITE_URL,
-  address: { "@type": "PostalAddress", addressLocality: "Bengaluru", addressCountry: "IN" },
-  sameAs: [profile.github, profile.x, profile.linkedin],
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -73,10 +68,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="service-desc" type="application/json" href={AGENT_ENTRYPOINTS.openapiJson} />
+        <link rel="describedby" type="text/plain" href={AGENT_ENTRYPOINTS.llmsTxt} />
+        <link rel="help" href={AGENT_ENTRYPOINTS.docs} />
+      </head>
       <body>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildHomeJsonLd()) }}
         />
         {children}
         <Analytics />

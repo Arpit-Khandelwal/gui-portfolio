@@ -686,7 +686,10 @@ export function PortfolioPage() {
       <footer className="border-t border-[color:var(--line)] px-5 py-8 md:px-8">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-sm text-[color:var(--muted)] md:flex-row">
           <p>&copy; {new Date().getFullYear()} {profile.name}</p>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            <a href="/about" className="hover:text-[color:var(--accent)]">About</a>
+            <a href="/contact" className="hover:text-[color:var(--accent)]">Contact</a>
+            <a href="/docs" className="hover:text-[color:var(--accent)]">API docs</a>
             <a href="/play" className="hover:text-[color:var(--accent)]">Play</a>
             <a href="/privacy-policy" className="hover:text-[color:var(--accent)]">Privacy</a>
             <a href={profile.github} target="_blank" rel="noreferrer" className="hover:text-[color:var(--accent)]">GitHub</a>
