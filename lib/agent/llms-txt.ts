@@ -70,7 +70,7 @@ export function buildLlmsTxt() {
     `- [Contact](${absoluteUrl("/contact")}): How to send a brief and what to include. Markdown twin at /contact.md.`,
     `- [Documentation](${absoluteUrl("/docs")}): Machine-readable entry points. Markdown twin at /docs.md.`,
     `- [Writing](${absoluteUrl("/writing")}): Notes from shipped work. Markdown twin at /writing.md, RSS at /writing/rss.xml.`,
-    `- [Privacy Policy](${absoluteUrl("/privacy-policy")}): Analytics, cookies, consent, and data handling.`,
+    `- [Privacy Policy](${absoluteUrl("/privacy-policy")}): Analytics, cookies, and data handling.`,
     "",
     ...writingSection(),
     "## Evidence",

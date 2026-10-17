@@ -9,7 +9,7 @@ import { PrivacyContent } from "@/components/site/privacy-content";
  */
 export const metadata: Metadata = {
   title: "Privacy Policy | Arpit Khandelwal",
-  description: "How arpitkhandelwal.com uses analytics, cookies, and consent.",
+  description: "How arpitkhandelwal.com uses analytics and cookies.",
   alternates: {
     canonical: "/privacy-policy",
     types: { "text/markdown": "/privacy-policy.md" },

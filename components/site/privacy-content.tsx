@@ -6,7 +6,7 @@
 export function PrivacyContent() {
   return (
     <>
-      <p className="mb-4">Last updated: June 16, 2026</p>
+      <p className="mb-4">Last updated: October 17, 2026</p>
 
       <p className="mb-4">
         This website (<strong>arpitkhandelwal.com</strong>) is a personal portfolio site. This page
@@ -15,13 +15,12 @@ export function PrivacyContent() {
 
       <h2 className="mb-2 mt-8 text-lg font-semibold">Analytics and cookies</h2>
       <p className="mb-4">
-        With your consent, this site loads <strong>Google Tag Manager</strong> and{" "}
-        <strong>Microsoft Clarity</strong>. Clarity records anonymized session analytics (page
-        interactions, heatmaps, and session replay) and, together with Google Tag Manager, sets
-        cookies such as <code>_clck</code> and <code>_clsk</code>. These tools run only after you
-        choose &ldquo;Accept&rdquo; in the consent banner. If you choose &ldquo;Decline,&rdquo; no
-        analytics scripts are loaded and no analytics cookies are set. Your choice is stored locally
-        in your browser so you are not asked again; clearing site data resets it.
+        This site uses <strong>Google Tag Manager</strong> to load{" "}
+        <strong>Google Analytics 4</strong> and <strong>Microsoft Clarity</strong>. Google
+        Analytics measures visits, traffic sources, and how pages are used; Clarity records
+        anonymized session analytics (page interactions, heatmaps, and session replay). They set
+        cookies such as <code>_ga</code>, <code>_clck</code>, and <code>_clsk</code>. You can block
+        or delete these cookies at any time in your browser settings, or with a content blocker.
       </p>
 
       <h2 className="mb-2 mt-8 text-lg font-semibold">Contact form</h2>
