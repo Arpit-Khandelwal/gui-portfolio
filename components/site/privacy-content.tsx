@@ -19,8 +19,12 @@ export function PrivacyContent() {
         <strong>Google Analytics 4</strong> and <strong>Microsoft Clarity</strong>. Google
         Analytics measures visits, traffic sources, and how pages are used; Clarity records
         anonymized session analytics (page interactions, heatmaps, and session replay). They set
-        cookies such as <code>_ga</code>, <code>_clck</code>, and <code>_clsk</code>. You can block
-        or delete these cookies at any time in your browser settings, or with a content blocker.
+        cookies such as <code>_ga</code>, <code>_clck</code>, and <code>_clsk</code>. If you visit
+        from the EU/EEA, the UK, or Switzerland, these tools run only after you choose
+        &ldquo;Accept&rdquo; in the consent banner; choosing &ldquo;Decline&rdquo; means no
+        analytics scripts load and no analytics cookies are set, and your choice is stored locally
+        in your browser. Everywhere else they load by default. You can block or delete these
+        cookies at any time in your browser settings, or with a content blocker.
       </p>
 
       <h2 className="mb-2 mt-8 text-lg font-semibold">Contact form</h2>

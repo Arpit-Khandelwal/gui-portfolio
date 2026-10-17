@@ -198,7 +198,7 @@ function privacyMarkdown() {
     "",
     "## Analytics and cookies",
     "",
-    "This site uses Google Tag Manager to load Google Analytics 4 and Microsoft Clarity. Google Analytics measures visits, traffic sources, and how pages are used; Clarity records anonymised session analytics (page interactions, heatmaps, and session replay). They set cookies such as `_ga`, `_clck`, and `_clsk`. You can block or delete these cookies at any time in your browser settings, or with a content blocker.",
+    "This site uses Google Tag Manager to load Google Analytics 4 and Microsoft Clarity. Google Analytics measures visits, traffic sources, and how pages are used; Clarity records anonymised session analytics (page interactions, heatmaps, and session replay). They set cookies such as `_ga`, `_clck`, and `_clsk`. If you visit from the EU/EEA, the UK, or Switzerland, these tools run only after you choose \"Accept\" in the consent banner; choosing \"Decline\" means no analytics scripts load and no analytics cookies are set, and your choice is stored locally in your browser. Everywhere else they load by default. You can block or delete these cookies at any time in your browser settings, or with a content blocker.",
     "",
     "## Contact form",
     "",

@@ -421,6 +421,70 @@ textarea:focus-visible {
   backdrop-filter: blur(16px);
 }
 
+.consent-banner {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 32rem;
+  margin-inline: auto;
+  border: 1px solid rgba(17, 20, 15, 0.22);
+  background: color-mix(in srgb, #f5f7ef 96%, transparent);
+  color: #11140f;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(10px);
+}
+
+@media (min-width: 640px) {
+  .consent-banner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 46rem;
+  }
+}
+
+.consent-text {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(17, 20, 15, 0.7);
+}
+
+.consent-link {
+  color: #2457ff;
+  text-decoration: underline;
+}
+
+.consent-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.5rem;
+}
+
+.consent-button {
+  min-height: 2.3rem;
+  padding: 0 1.1rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.consent-button-ghost {
+  border: 1px solid rgba(17, 20, 15, 0.22);
+  background: transparent;
+  color: #11140f;
+}
+
+.consent-button-solid {
+  background: #11140f;
+  color: #ffffff;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .hero-grid {
     animation: grid-drift 18s linear infinite;
