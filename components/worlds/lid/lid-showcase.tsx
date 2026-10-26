@@ -7,6 +7,7 @@ import { openSource, projectArchive, selectedWork } from "@/components/portfolio
 import type { CaseStudy, OpenSourcePr } from "@/components/portfolio/types";
 import { track } from "@/lib/analytics";
 import { worldCopy } from "@/lib/world-copy";
+import type { BriefState } from "../use-brief";
 import { LidCaseSticker } from "./lid-case-sticker";
 import {
   CASE_NUDGE,
@@ -30,13 +31,17 @@ interface CasePileProps {
   colors: readonly StickerColor[];
   finish: "gloss" | "matte";
   offset: number;
+  isFeatured: (title: string) => boolean;
+  readerKey: string;
 }
 
 /** A packed, overlapping pile of case stickers: varied size, contour and tilt. */
-function CasePile({ studies, colors, finish, offset }: CasePileProps) {
+function CasePile({ studies, colors, finish, offset, isFeatured, readerKey }: CasePileProps) {
   return (
     <ul className={`lid-case-pile lid-finish--${finish}`}>
-      {studies.map((study, index) => {
+      {studies.map((study) => {
+        const base = BASE_ORDER.indexOf(study.title);
+        const index = base === -1 ? 0 : base;
         const slot = index + offset;
         return (
           <LidCaseSticker
@@ -47,6 +52,8 @@ function CasePile({ studies, colors, finish, offset }: CasePileProps) {
             rotate={tilt(slot)}
             nudge={CASE_NUDGE[slot % CASE_NUDGE.length]}
             width={CASE_WIDTHS[slot % CASE_WIDTHS.length]}
+            featured={isFeatured(study.title)}
+            readerKey={readerKey}
           />
         );
       })}
@@ -54,15 +61,37 @@ function CasePile({ studies, colors, finish, offset }: CasePileProps) {
   );
 }
 
-export function LidWork() {
-  const shipped = selectedWork.filter((study) => study.status === "shipped");
-  const experiments = selectedWork.filter((study) => study.status !== "shipped");
+interface LidWorkProps {
+  brief: BriefState;
+}
+
+/** Look follows the build, not its place in the pile, so a reorder moves the same sticker. */
+const BASE_ORDER: readonly string[] = selectedWork.map((study) => study.title);
+
+export function LidWork({ brief }: LidWorkProps) {
+  const shipped = brief.orderedWork.filter((study) => study.status === "shipped");
+  const experiments = brief.orderedWork.filter((study) => study.status !== "shipped");
 
   return (
     <section id="work" className="lid-section lid-work" data-analytics-section="work" aria-label="Builds">
+      <p className="lid-why" aria-live="polite">
+        <span key={brief.buyerId} className="lid-foryou lid-foryou--key lid-slap-in" aria-hidden="true">
+          For you
+        </span>
+        <span>
+          <strong>{brief.buyer.ask}:</strong> {brief.buyer.why}
+        </span>
+      </p>
       <div className="lid-work-group">
         <LidSectionHead id="lid-shipped" title={sections.work.title} intro={sections.work.intro} rotate={-2} />
-        <CasePile studies={shipped} colors={SHIPPED_COLORS} finish="gloss" offset={0} />
+        <CasePile
+          studies={shipped}
+          colors={SHIPPED_COLORS}
+          finish="gloss"
+          offset={0}
+          isFeatured={brief.isFeatured}
+          readerKey={brief.buyerId}
+        />
       </div>
       <div className="lid-work-group">
         <LidSectionHead
@@ -72,7 +101,14 @@ export function LidWork() {
           rotate={1.5}
           tone="lilac"
         />
-        <CasePile studies={experiments} colors={EXPERIMENT_COLORS} finish="matte" offset={3} />
+        <CasePile
+          studies={experiments}
+          colors={EXPERIMENT_COLORS}
+          finish="matte"
+          offset={3}
+          isFeatured={brief.isFeatured}
+          readerKey={brief.buyerId}
+        />
       </div>
     </section>
   );

@@ -36,3 +36,19 @@ describe("worlds", () => {
     expect(run("", "/w/nope")).toBe(DEFAULT_WORLD);
   });
 });
+
+describe("A/B helpers", () => {
+  test("pickAbWorld spreads across all four worlds", async () => {
+    const { pickAbWorld } = await import("@/lib/worlds");
+    expect([0, 0.3, 0.6, 0.99].map(pickAbWorld)).toEqual(["patent", "lid", "wall", "canon"]);
+    expect(pickAbWorld(1)).toBe("canon");
+  });
+
+  test("isNonHumanAgent spots crawlers and agents, not browsers", async () => {
+    const { isNonHumanAgent } = await import("@/lib/worlds");
+    expect(isNonHumanAgent("Googlebot/2.1")).toBe(true);
+    expect(isNonHumanAgent("GPTBot/1.0")).toBe(true);
+    expect(isNonHumanAgent(null)).toBe(true);
+    expect(isNonHumanAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Safari/604.1")).toBe(false);
+  });
+});

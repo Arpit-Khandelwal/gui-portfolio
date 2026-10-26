@@ -2,18 +2,29 @@
 
 import { useId, useState } from "react";
 import { ArrowUpRight, Plus } from "lucide-react";
-import { selectedWork } from "@/components/portfolio/data";
 import type { CaseStudy } from "@/components/portfolio/types";
 import { worldCopy } from "@/lib/world-copy";
 import { track } from "@/lib/analytics";
+import type { BriefState } from "../use-brief";
 import { linkParams } from "./link-params";
 
 const copy = worldCopy.canon.sections;
 
-const shipped = selectedWork.filter((work) => work.status === "shipped");
-const experiments = selectedWork.filter((work) => work.status === "experiment");
+/** A stable, unique view-transition name per case, so a reorder animates each row. */
+function transitionName(title: string): string {
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  return `c-case-${slug}`;
+}
 
-function CaseRow({ work }: { work: CaseStudy }) {
+interface CaseRowProps {
+  work: CaseStudy;
+  featured: boolean;
+}
+
+function CaseRow({ work, featured }: CaseRowProps) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
 
@@ -24,9 +35,17 @@ function CaseRow({ work }: { work: CaseStudy }) {
   };
 
   return (
-    <li className="c-case" data-open={open || undefined}>
+    <li
+      className="c-case"
+      data-open={open || undefined}
+      data-featured={featured || undefined}
+      style={{ viewTransitionName: transitionName(work.title) }}
+    >
       <div className="c-case-head">
-        <h3 className="c-case-title">{work.title}</h3>
+        <div className="c-case-title-row">
+          <h3 className="c-case-title">{work.title}</h3>
+          {featured ? <span className="c-for-you">For you</span> : null}
+        </div>
         <p className="c-case-meta">
           {work.type} <span aria-hidden="true">·</span> {work.period}
         </p>
@@ -52,7 +71,8 @@ function CaseRow({ work }: { work: CaseStudy }) {
           rel="noopener noreferrer"
           onClick={() => track("case_link", { case_title: work.title, ...linkParams(work.href) })}
         >
-          Open<span className="c-sr"> {work.title}</span>
+          <span className="c-draw">Open</span>
+          <span className="c-sr"> {work.title}</span>
           <ArrowUpRight size={15} strokeWidth={1.75} aria-hidden="true" />
         </a>
       </div>
@@ -96,17 +116,20 @@ function CaseRow({ work }: { work: CaseStudy }) {
   );
 }
 
-function CaseList({ items }: { items: readonly CaseStudy[] }) {
+function CaseList({ items, brief }: { items: readonly CaseStudy[]; brief: BriefState }) {
   return (
     <ol className="c-cases">
       {items.map((work) => (
-        <CaseRow key={work.title} work={work} />
+        <CaseRow key={work.title} work={work} featured={brief.isFeatured(work.title)} />
       ))}
     </ol>
   );
 }
 
-export function CanonWork() {
+export function CanonWork({ brief }: { brief: BriefState }) {
+  const shipped = brief.orderedWork.filter((work) => work.status === "shipped");
+  const experiments = brief.orderedWork.filter((work) => work.status === "experiment");
+
   return (
     <>
       <section id="work" className="c-shell c-section c-section-first" aria-labelledby="c-work" data-analytics-section="work">
@@ -115,8 +138,13 @@ export function CanonWork() {
             {copy.work.title}
           </h2>
           <p className="c-intro-text">{copy.work.intro}</p>
+          <p className="c-why" aria-live="polite">
+            <span key={brief.buyerId} className="c-swap">
+              <span className="c-for-you">For you</span> {brief.buyer.why}
+            </span>
+          </p>
         </header>
-        <CaseList items={shipped} />
+        <CaseList items={shipped} brief={brief} />
       </section>
 
       <section
@@ -125,13 +153,13 @@ export function CanonWork() {
         aria-labelledby="c-experiments"
         data-analytics-section="experiments"
       >
-        <header className="c-section-head c-divider-head">
+        <header className="c-section-head">
           <h2 id="c-experiments" className="c-h2 c-h2-sub">
             {copy.experiments.title}
           </h2>
           <p className="c-intro-text">{copy.experiments.intro}</p>
         </header>
-        <CaseList items={experiments} />
+        <CaseList items={experiments} brief={brief} />
       </section>
     </>
   );

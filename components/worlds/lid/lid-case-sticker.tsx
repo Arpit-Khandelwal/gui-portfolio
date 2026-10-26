@@ -4,7 +4,8 @@ import { useId, type CSSProperties } from "react";
 import { ArrowUpRight, RotateCcw, RotateCw } from "lucide-react";
 import type { CaseStudy } from "@/components/portfolio/types";
 import { track } from "@/lib/analytics";
-import { caseAnchor, useFlip } from "./lid-flip";
+import { caseAnchor, slugOf, useFlip } from "./lid-flip";
+import { ForYouDot } from "./lid-for-you";
 import { linkParams, type StickerColor } from "./lid-layout";
 import { DieCut, type ShapeId } from "./lid-shapes";
 
@@ -16,6 +17,10 @@ interface LidCaseStickerProps {
   /** Vertical nudge in px, so the cluster reads as a pile. */
   nudge: number;
   width: "narrow" | "mid" | "wide";
+  /** This build matches the reader's pick: it leads the pile and gets a dot. */
+  featured: boolean;
+  /** The reader id; the dot slaps on again when it changes. */
+  readerKey: string;
 }
 
 /**
@@ -23,8 +28,8 @@ interface LidCaseStickerProps {
  * sticker; the back (the paper liner) holds the case and the outbound link.
  * Only the face that shows is interactive; the other one is inert.
  */
-export function LidCaseSticker({ study, color, shape, rotate, nudge, width }: LidCaseStickerProps) {
-  const { flipped, frontRef, backFocusRef, flip, onKeyDown } = useFlip(study.title);
+export function LidCaseSticker({ study, color, shape, rotate, nudge, width, featured, readerKey }: LidCaseStickerProps) {
+  const { flipped, touched, frontRef, backFocusRef, flip, onKeyDown } = useFlip(study.title);
   const backId = useId();
   const titleId = useId();
 
@@ -33,9 +38,18 @@ export function LidCaseSticker({ study, color, shape, rotate, nudge, width }: Li
       id={caseAnchor(study.title)}
       className={`lid-case lid-case--${width} lid-shape--${shape} lid-c-${color}`}
       data-flipped={flipped || undefined}
-      style={{ "--r": rotate, "--nudge": nudge } as CSSProperties}
+      data-touched={touched || undefined}
+      data-featured={featured || undefined}
+      style={
+        {
+          "--r": rotate,
+          "--nudge": nudge,
+          viewTransitionName: `lid-cs-${slugOf(study.title)}`,
+        } as CSSProperties
+      }
       onKeyDown={onKeyDown}
     >
+      <div className="lid-peel">
       <article className="lid-flip lid-case-flip" aria-labelledby={titleId}>
         <button
           ref={frontRef}
@@ -65,6 +79,7 @@ export function LidCaseSticker({ study, color, shape, rotate, nudge, width }: Li
             <RotateCw aria-hidden="true" size={16} strokeWidth={2.5} />
             Show the case
           </span>
+          {featured ? <ForYouDot slapKey={readerKey} /> : null}
         </button>
 
         <div id={backId} className="lid-face lid-face--back lid-case-face" inert={!flipped}>
@@ -126,6 +141,7 @@ export function LidCaseSticker({ study, color, shape, rotate, nudge, width }: Li
           </div>
         </div>
       </article>
+      </div>
     </li>
   );
 }

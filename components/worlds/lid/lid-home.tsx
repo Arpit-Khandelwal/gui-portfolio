@@ -2,8 +2,10 @@
 
 import "./lid.css";
 import "./lid-cases.css";
-// Last: holds the responsive and reduced-motion overrides.
+// Responsive and reduced-motion overrides for the layout.
 import "./lid-sheet.css";
+// The reader pick and the microinteractions; after the sheet so it wins.
+import "./lid-motion.css";
 import { useBrief } from "../use-brief";
 import { LidBrief } from "./lid-brief";
 import { LidAbout, LidFaq, LidProcess, LidTerms } from "./lid-details";
@@ -26,7 +28,7 @@ export function LidHome() {
       <LidHeader />
       <main id="main" tabIndex={-1}>
         <LidHero brief={brief} />
-        <LidWork />
+        <LidWork brief={brief} />
         <LidOpenSource />
         <LidArchive />
         <LidPlay />

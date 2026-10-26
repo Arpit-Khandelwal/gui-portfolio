@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import {
@@ -33,11 +33,26 @@ const copy = worldCopy.patent;
 const captions = (copy.extra.figureCaptions ?? {}) as Readonly<Record<string, string>>;
 const claims = (copy.extra.claims ?? []) as readonly string[];
 
-const shipped = selectedWork.filter((work) => work.status === "shipped");
-const experiments = selectedWork.filter((work) => work.status === "experiment");
 const heroCase = selectedWork.find((work) => work.title === "Swiggy MCP Server") ?? selectedWork[0];
-const figureCases = [heroCase, ...shipped.filter((work) => work !== heroCase)];
-const TOTAL_SHEETS = 2 + figureCases.length + 1;
+
+/**
+ * Figure numbers are fixed per build (FIG. 1 is the hero, then shipped, then
+ * experiments), so a reader's field of use reorders the sheets without
+ * renumbering the drawings under them.
+ */
+const FIG_NUMBER: ReadonlyMap<string, number> = new Map(
+  [heroCase, ...selectedWork.filter((w) => w !== heroCase && w.status === "shipped"), ...selectedWork.filter((w) => w.status === "experiment")].map(
+    (work, index) => [work.title, index + 1],
+  ),
+);
+
+function figOf(work: CaseStudy): number {
+  return FIG_NUMBER.get(work.title) ?? 99;
+}
+
+function slugOf(title: string): string {
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
 
 const NAV: readonly { href: string; label: string }[] = [
   { href: "#figures", label: "Figures" },
@@ -58,16 +73,29 @@ function partsOf(work: CaseStudy): readonly string[] {
 
 interface FigureSheetProps {
   work: CaseStudy;
-  fig: number;
   sheet: number;
+  totalSheets: number;
+  flipped: boolean;
+  /** The reader's field, when this build was selected for it. */
+  selectedFor: string | null;
   active: number | null;
   onPart: (value: number | null) => void;
 }
 
-function FigureSheet({ work, fig, sheet, active, onPart }: FigureSheetProps) {
+function FigureSheet({ work, sheet, totalSheets, flipped, selectedFor, active, onPart }: FigureSheetProps) {
   const parts = partsOf(work);
+  const fig = figOf(work);
   return (
-    <article className={`pt-sheet pt-figsheet${fig % 2 === 0 ? " is-flipped" : ""}`} aria-labelledby={`fig-${fig}`}>
+    <article
+      className={`pt-sheet pt-figsheet${flipped ? " is-flipped" : ""}`}
+      aria-labelledby={`fig-${fig}`}
+      style={{ viewTransitionName: `pt-${slugOf(work.title)}` }}
+    >
+      {selectedFor ? (
+        <p className="pt-selected">
+          <span className="sr-only-focusable">This build is </span>Selected · {selectedFor}
+        </p>
+      ) : null}
       <div className="pt-figsheet-draw">
         <PatentFigure fig={fig} parts={parts} active={active} onPart={onPart} title={work.title} />
         <p className="pt-figlabel" aria-hidden="true">
@@ -75,7 +103,7 @@ function FigureSheet({ work, fig, sheet, active, onPart }: FigureSheetProps) {
         </p>
       </div>
       <p className="pt-corner" aria-hidden="true">
-        Sheet {sheet} of {TOTAL_SHEETS}
+        Sheet {sheet} of {totalSheets}
       </p>
       <div className="pt-figsheet-text">
         <h3 id={`fig-${fig}`} className="pt-h3">
@@ -107,7 +135,15 @@ function FigureSheet({ work, fig, sheet, active, onPart }: FigureSheetProps) {
 export function PatentHome() {
   const brief = useBrief();
   const [active, setActive] = useState<number | null>(null);
+  const [showNote, setShowNote] = useState(true);
+  const fieldRef = useRef<HTMLDivElement>(null);
   const heroParts = partsOf(heroCase);
+  const rest = brief.orderedWork.filter((work) => work !== heroCase);
+  const sheetCases = rest.filter((work) => work.status === "shipped" || brief.isFeatured(work.title));
+  const embodiments = rest.filter((work) => !sheetCases.includes(work));
+  const totalSheets = 2 + sheetCases.length + 1;
+  const field = brief.audienceSource === "default" ? null : brief.buyer.label;
+  const external = /^https?:/.test(brief.buyer.cta.href);
 
   return (
     <div data-world="patent" className="world-patent">
@@ -132,7 +168,7 @@ export function PatentHome() {
         {/* Sheet 1: title, abstract and FIG. 1. */}
         <section className="pt-sheet pt-hero" aria-labelledby="pt-title" data-analytics-section="hero">
           <p className="pt-corner" aria-hidden="true">
-            Sheet 1 of {TOTAL_SHEETS}
+            Sheet 1 of {totalSheets}
           </p>
           <div className="pt-margin">
             <h1 id="pt-title" className="pt-h1">
@@ -142,9 +178,7 @@ export function PatentHome() {
 
             <div className="pt-abstract">
               <h2 className="pt-label">{copy.sections.about.title}</h2>
-              <p aria-live="polite">
-                {brief.buyer.promise} {brief.buyer.body}
-              </p>
+              <p aria-live="polite">{brief.buyer.promise}</p>
               <InlineParts
                 fig={1}
                 lead={`Fig. 1 shows the parts of ${heroCase.title}:`}
@@ -155,20 +189,37 @@ export function PatentHome() {
               />
             </div>
 
-            <div className="pt-applicant" role="group" aria-label="Who reads this">
-              {buyerModes.map((mode) => (
-                <button
-                  key={mode.id}
-                  type="button"
-                  aria-pressed={brief.buyerId === mode.id}
-                  onClick={() => {
-                    brief.setBuyerId(mode.id);
-                    track("audience_select", { audience: mode.id });
-                  }}
-                >
-                  {mode.label}
-                </button>
-              ))}
+            <div className="pt-field" role="group" aria-labelledby="pt-field-label">
+              <p id="pt-field-label" className="pt-label">
+                Field of use: what brings you here?
+              </p>
+              <div className="pt-applicant" ref={fieldRef}>
+                {buyerModes.map((mode) => (
+                  <button key={mode.id} type="button" aria-pressed={brief.buyerId === mode.id} onClick={() => brief.setBuyerId(mode.id)}>
+                    {mode.ask}
+                  </button>
+                ))}
+              </div>
+              <p className="pt-field-why" aria-live="polite">
+                {field ? (
+                  <>
+                    Figures re-filed for this field. {brief.buyer.why}
+                  </>
+                ) : (
+                  "Pick one. The figures below re-order for you."
+                )}
+              </p>
+              {showNote && (brief.audienceSource === "referrer" || brief.audienceSource === "param") ? (
+                <p className="pt-note">
+                  {brief.audienceSource === "referrer" ? "Picked for you because you came from LinkedIn." : "Picked from your link."}{" "}
+                  <button type="button" className="pt-link-button" onClick={() => fieldRef.current?.querySelector("button")?.focus()}>
+                    Change
+                  </button>{" "}
+                  <button type="button" className="pt-link-button" onClick={() => setShowNote(false)} aria-label="Hide this note">
+                    Hide
+                  </button>
+                </p>
+              ) : null}
             </div>
 
             <p className="pt-status">
@@ -176,10 +227,27 @@ export function PatentHome() {
               {availability.status}. {availability.reply}.
             </p>
 
-            <a href="#brief" className="pt-file" onClick={() => track("cta_click", { cta: "brief", section: "hero" })}>
-              File a brief
-              <ArrowRight aria-hidden="true" className="pt-file-arrow" strokeWidth={1.5} />
-            </a>
+            <div className="pt-actions">
+              <a
+                key={brief.buyer.cta.label}
+                href={brief.buyer.cta.href}
+                className="pt-file"
+                {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+                onClick={() => track("cta_click", { cta: external ? "resume" : "brief", section: "hero" })}
+              >
+                {brief.buyer.cta.label}
+                {external ? (
+                  <ArrowUpRight aria-hidden="true" className="pt-file-arrow" strokeWidth={1.5} />
+                ) : (
+                  <ArrowRight aria-hidden="true" className="pt-file-arrow" strokeWidth={1.5} />
+                )}
+              </a>
+              {external ? (
+                <a href="#brief" className="pt-out" onClick={() => track("cta_click", { cta: "brief", section: "hero" })}>
+                  Or file a brief <ArrowRight aria-hidden="true" strokeWidth={1.5} />
+                </a>
+              ) : null}
+            </div>
           </div>
 
           <figure className="pt-hero-fig" aria-labelledby="pt-hero-cap">
@@ -206,10 +274,22 @@ export function PatentHome() {
             <h2 id="figures-title" className="pt-h2">
               {copy.sections.work.title}
             </h2>
-            <p className="pt-intro">{copy.sections.work.intro}</p>
+            <p className="pt-intro">
+              {copy.sections.work.intro}
+              {field ? ` Filed first for this field: ${brief.buyer.featured.join(", ")}.` : ""}
+            </p>
           </header>
-          {figureCases.slice(1).map((work, index) => (
-            <FigureSheet key={work.title} work={work} fig={index + 2} sheet={index + 2} active={active} onPart={setActive} />
+          {sheetCases.map((work, index) => (
+            <FigureSheet
+              key={work.title}
+              work={work}
+              sheet={index + 2}
+              totalSheets={totalSheets}
+              flipped={index % 2 === 0}
+              selectedFor={field && brief.isFeatured(work.title) ? field : null}
+              active={active}
+              onPart={setActive}
+            />
           ))}
           <AgentFigure caption={String(copy.extra.fig0Caption ?? "")} />
         </section>
@@ -223,8 +303,8 @@ export function PatentHome() {
             <p className="pt-intro">{copy.sections.experiments.intro}</p>
           </header>
           <div className="pt-embodiments">
-            {experiments.map((work, index) => {
-              const fig = figureCases.length + index + 1;
+            {embodiments.map((work) => {
+              const fig = figOf(work);
               return (
                 <article key={work.title} className="pt-emb" aria-labelledby={`fig-${fig}`}>
                   <PatentFigure fig={fig} parts={partsOf(work)} active={active} onPart={setActive} title={work.title} />

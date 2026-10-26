@@ -73,6 +73,10 @@ export const buyerModes = [
   {
     id: "founder",
     label: "Founder",
+    ask: "Build the AI or backend part",
+    why: "Builds with real users, shipped fast by one engineer.",
+    featured: ["Reskilll Platform", "Gossip DAO", "Swiggy MCP Server"],
+    cta: { label: "Send a brief", href: "#brief" },
     eyebrow: "For founder-led teams",
     promise: "Get the AI or backend part built without hiring a full team.",
     body: "I scope and build APIs, agents, automations and dashboards in 2-6 week sprints. You get handoff docs at the end.",
@@ -82,6 +86,10 @@ export const buyerModes = [
   {
     id: "ai-team",
     label: "AI team",
+    ask: "Make an agent hold up",
+    why: "Agents that run against real apps and real users.",
+    featured: ["Swiggy MCP Server", "Slop Filter for LinkedIn", "sold.", "Leash"],
+    cta: { label: "Send an agent brief", href: "#brief" },
     eyebrow: "For AI product teams",
     promise: "Turn an agent demo into a system that holds up with real users.",
     body: "MCP servers, browser automation, retrieval, auth, data stores and workflow orchestration.",
@@ -91,6 +99,10 @@ export const buyerModes = [
   {
     id: "crypto",
     label: "Crypto infra",
+    ask: "Build crypto infrastructure",
+    why: "Indexing, privacy and payment rails on Solana.",
+    featured: ["Dark Payroll", "Helius Indexer", "Arcium Privacy Suite", "x402 Web Services"],
+    cta: { label: "Send an infra brief", href: "#brief" },
     eyebrow: "For protocol and infra teams",
     promise: "Add backend, agent and privacy rails around a crypto product.",
     body: "I turn Solana, Arcium, Helius, ZK, indexing and payment experiments into product systems.",
@@ -100,6 +112,10 @@ export const buyerModes = [
   {
     id: "recruiter",
     label: "Recruiter",
+    ask: "Hire an engineer",
+    why: "The work that shows scale, agents and ownership.",
+    featured: ["Reskilll Platform", "Swiggy MCP Server", "Helius Indexer"],
+    cta: { label: "See the résumé", href: "https://cv.arpitkhandelwal.com" },
     eyebrow: "For teams hiring a hands-on engineer",
     promise: "An engineer who goes from infra limits to a shipped product.",
     body: "Tech lead at Reskilll. Before that: AI concierge work at Avici and security tooling at HPE. Plus public AI and crypto builds.",

@@ -6,12 +6,16 @@
   --c-max: 74rem;
   --c-gutter: clamp(1rem, 4vw, 3rem);
   --c-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --c-fast: 160ms;
-  --c-slow: 360ms;
+  --c-press: 120ms;
+  --c-fast: 180ms;
+  --c-draw: 240ms;
+  --c-slide: 280ms;
+  --c-slow: 300ms;
   --c-hair-strong: rgba(237, 237, 237, 0.2);
   --c-tint: rgba(237, 237, 237, 0.06);
   --c-tint-strong: rgba(237, 237, 237, 0.1);
   --c-accent-soft: rgba(34, 197, 94, 0.14);
+  --c-error: #f87171;
 
   --c-text-sm: 0.875rem;
   --c-text-md: 0.9375rem;
@@ -144,7 +148,6 @@
   color: var(--w-muted);
   font-size: var(--c-text-md);
   text-decoration: none;
-  transition: color var(--c-fast) var(--c-ease);
 }
 
 .world-canon .c-nav a:hover {
@@ -204,6 +207,8 @@
 /* Buttons and links -------------------------------------------------------- */
 
 .world-canon .c-btn {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -217,28 +222,37 @@
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition:
-    background-color var(--c-fast) var(--c-ease),
-    border-color var(--c-fast) var(--c-ease),
-    color var(--c-fast) var(--c-ease),
-    transform var(--c-fast) var(--c-ease);
+  transition: transform var(--c-press) var(--c-ease);
+}
+
+/* Hover light: an overlay that fades, so the colour change stays on the compositor. */
+.world-canon .c-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--c-btn-glow, var(--c-tint));
+  opacity: 0;
+  transition: opacity var(--c-fast) var(--c-ease);
+}
+
+.world-canon .c-btn:hover:not(:disabled)::before {
+  opacity: 1;
 }
 
 .world-canon .c-btn:active:not(:disabled) {
-  transform: translateY(1px);
+  transform: scale(0.97);
 }
 
 .world-canon .c-btn-primary {
+  --c-btn-glow: rgba(255, 255, 255, 0.2);
   background: var(--w-accent);
   color: var(--w-accent-ink);
 }
 
-.world-canon .c-btn-primary:hover:not(:disabled) {
-  background: #4ade80;
-}
-
 .world-canon .c-btn-primary:disabled {
-  background: color-mix(in srgb, var(--w-accent) 45%, var(--w-ground));
+  background: color-mix(in srgb, var(--w-accent) 55%, var(--w-ground));
   cursor: progress;
 }
 
@@ -248,8 +262,7 @@
 }
 
 .world-canon .c-btn-quiet:hover {
-  border-color: var(--w-ink);
-  background: var(--c-tint);
+  border-color: rgba(237, 237, 237, 0.45);
 }
 
 .world-canon .c-link-btn,
@@ -266,11 +279,16 @@
   font-size: var(--c-text-md);
   text-decoration: none;
   cursor: pointer;
-  transition: color var(--c-fast) var(--c-ease);
+  transition: transform var(--c-press) var(--c-ease);
 }
 
 .world-canon .c-link-btn:hover {
   color: var(--w-ink);
+}
+
+.world-canon .c-link-btn:active,
+.world-canon .c-open:active {
+  transform: scale(0.97);
 }
 
 .world-canon .c-open {
@@ -281,11 +299,6 @@
   transition: transform var(--c-fast) var(--c-ease);
 }
 
-.world-canon .c-open:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
-}
-
 .world-canon .c-open:hover svg {
   transform: translate(2px, -2px);
 }
@@ -294,12 +307,69 @@
   transition: transform var(--c-slow) var(--c-ease);
 }
 
+/* Underline that draws in from the left on hover and leaves to the right. */
+.world-canon .c-draw,
+.world-canon .c-nav a,
+.world-canon .c-footer-col a,
+.world-canon .c-note-btn {
+  position: relative;
+  text-decoration: none;
+}
+
+.world-canon .c-draw::after,
+.world-canon .c-nav a::after,
+.world-canon .c-footer-col a::after,
+.world-canon .c-note-btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.15em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform var(--c-draw) var(--c-ease);
+}
+
+.world-canon .c-draw:hover::after,
+.world-canon .c-open:hover .c-draw::after,
+.world-canon .c-nav a:hover::after,
+.world-canon .c-footer-col a:hover::after,
+.world-canon .c-note-btn:hover::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Content that changes with the audience fades up into place. */
+@keyframes c-swap-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@keyframes c-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+.world-canon span.c-swap {
+  display: inline-block;
+}
+
+.world-canon[data-swapped] .c-swap {
+  animation: c-swap-in var(--c-slow) var(--c-ease) both;
+}
+
 /* Intro -------------------------------------------------------------------- */
 
 .world-canon .c-intro {
   display: grid;
   gap: 2.5rem;
-  padding-top: clamp(3rem, 2rem + 4vw, 5rem);
+  padding-top: clamp(3rem, 2rem + 4vw, 4.5rem);
   padding-bottom: clamp(2.5rem, 2rem + 2vw, 3.5rem);
 }
 
@@ -327,6 +397,10 @@
   color: var(--w-muted);
   font-size: 1.125rem;
   line-height: 1.6;
+}
+
+.world-canon .c-subline-tight {
+  margin-top: 0.375rem;
 }
 
 .world-canon .c-status {
@@ -363,12 +437,6 @@
   align-content: end;
 }
 
-.world-canon .c-intro-stack {
-  color: var(--w-muted);
-  font-size: var(--c-text-md);
-  max-width: 40ch;
-}
-
 .world-canon .c-promise {
   min-height: 3.2em;
   font-size: var(--c-text-md);
@@ -376,88 +444,60 @@
   max-width: 44ch;
 }
 
+.world-canon .c-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.875rem;
+  border: 1px solid var(--w-hair);
+  border-radius: 8px;
+  background: var(--c-tint);
+  font-size: var(--c-text-sm);
+  animation: c-swap-in var(--c-slow) var(--c-ease) both;
+}
+
+.world-canon .c-note > span {
+  flex: 1 1 14rem;
+}
+
+.world-canon .c-note-btn {
+  padding: 0.25rem 0;
+  border: 0;
+  background: none;
+  color: var(--w-accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.world-canon .c-note-close {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--w-muted);
+  cursor: pointer;
+  transition: transform var(--c-press) var(--c-ease);
+}
+
+.world-canon .c-note-close:hover {
+  color: var(--w-ink);
+}
+
+.world-canon .c-note-close:active {
+  transform: scale(0.9);
+}
+
 @media (min-width: 64rem) {
   .world-canon .c-intro {
-    grid-template-columns: minmax(0, 1fr) minmax(18rem, 25rem);
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
     align-items: end;
     gap: 4rem;
   }
-}
-
-/* Segmented control ---------------------------------------------------------- */
-
-.world-canon .c-seg {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.world-canon .c-seg-label {
-  color: var(--w-muted);
-  font-size: var(--c-text-sm);
-}
-
-.world-canon .c-seg-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  padding: 0.25rem;
-  border: 1px solid var(--w-hair);
-  border-radius: 10px;
-  width: fit-content;
-  max-width: 100%;
-}
-
-.world-canon .c-seg-option {
-  min-height: 2.125rem;
-  padding: 0 0.8rem;
-  border: 0;
-  border-radius: 7px;
-  background: transparent;
-  color: var(--w-muted);
-  font: inherit;
-  font-size: var(--c-text-sm);
-  cursor: pointer;
-  transition:
-    background-color var(--c-fast) var(--c-ease),
-    color var(--c-fast) var(--c-ease);
-}
-
-.world-canon .c-seg-option:hover {
-  color: var(--w-ink);
-  background: var(--c-tint);
-}
-
-.world-canon .c-seg-option[aria-pressed="true"] {
-  background: var(--c-tint-strong);
-  color: var(--w-ink);
-  font-weight: 600;
-  box-shadow: inset 0 0 0 1px var(--c-hair-strong);
-}
-
-.world-canon .c-seg-option:focus-visible {
-  outline-offset: 0;
-}
-
-.world-canon .c-seg[data-variant="chips"] .c-seg-group {
-  gap: 0.5rem;
-  padding: 0;
-  border: 0;
-}
-
-.world-canon .c-seg[data-variant="chips"] .c-seg-option {
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px var(--w-hair);
-  padding: 0 0.95rem;
-}
-
-.world-canon .c-seg[data-variant="chips"] .c-seg-option:hover {
-  box-shadow: inset 0 0 0 1px var(--c-hair-strong);
-}
-
-.world-canon .c-seg[data-variant="chips"] .c-seg-option[aria-pressed="true"] {
-  background: var(--w-ink);
-  color: var(--w-ground);
-  box-shadow: none;
 }
 
 /* Sections ----------------------------------------------------------------- */
@@ -516,7 +556,6 @@
   gap: 0.75rem 2.5rem;
   padding-block: 1.5rem;
   border-top: 1px solid var(--w-hair);
-  transition: border-color var(--c-fast) var(--c-ease);
 }
 
 .world-canon .c-case:hover,

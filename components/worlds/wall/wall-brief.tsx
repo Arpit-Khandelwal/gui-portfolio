@@ -4,9 +4,10 @@ import { useEffect, useId, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { sprintStages, sprintTimelines, sprintTypes } from "@/components/portfolio/data";
 import { copyText } from "@/components/portfolio/helpers";
-import { contactStatusText, type BriefState } from "@/components/worlds/use-brief";
+import type { BriefState } from "@/components/worlds/use-brief";
 import { track } from "@/lib/analytics";
 import { worldCopy } from "@/lib/world-copy";
+import { WallBriefForm } from "./wall-brief-form";
 
 const copy = worldCopy.wall.sections.brief;
 
@@ -56,8 +57,6 @@ export function WallBrief({ brief }: { brief: BriefState }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  const isSending = status === "sending";
-
   return (
     <section className="wall-block wall-brief" id="brief" aria-labelledby={headingId} data-analytics-section="brief">
       <div className="wall-block-head">
@@ -96,56 +95,21 @@ export function WallBrief({ brief }: { brief: BriefState }) {
             <button
               type="button"
               className="wall-button wall-button--ghost"
+              data-copied={copied}
               onClick={() => {
                 void copyText(brief.brief, setCopied);
                 track("brief_copy", { audience: buyerId });
               }}
             >
-              {copied ? <Check aria-hidden="true" size={16} /> : <Copy aria-hidden="true" size={16} />}
-              {copied ? "Copied" : "Copy the brief"}
+              <span className="wall-copy-label" key={copied ? "copied" : "copy"}>
+                {copied ? <Check aria-hidden="true" size={16} /> : <Copy aria-hidden="true" size={16} />}
+                {copied ? "Copied" : "Copy the brief"}
+              </span>
             </button>
           </div>
         </div>
 
-        <form className="wall-form" onSubmit={brief.submit} data-clarity-mask="true">
-          <label className="wall-field">
-            <span>Name</span>
-            <input
-              name="name"
-              autoComplete="name"
-              required
-              value={brief.name}
-              onChange={(event) => brief.setName(event.target.value)}
-            />
-          </label>
-          <label className="wall-field">
-            <span>Email</span>
-            <input
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={brief.email}
-              onChange={(event) => brief.setEmail(event.target.value)}
-            />
-          </label>
-          <label className="wall-field">
-            <span>Message</span>
-            <textarea
-              name="message"
-              rows={9}
-              required
-              value={brief.message}
-              onChange={(event) => brief.setMessage(event.target.value)}
-            />
-          </label>
-          <button type="submit" className="wall-button wall-button--solid" disabled={isSending}>
-            {isSending ? "Sending…" : "Send the brief"}
-          </button>
-          <p className="wall-form-status" role="status">
-            {contactStatusText(status)}
-          </p>
-        </form>
+        <WallBriefForm brief={brief} />
       </div>
     </section>
   );

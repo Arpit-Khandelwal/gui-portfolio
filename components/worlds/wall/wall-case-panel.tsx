@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import { ArrowUpRight, X } from "lucide-react";
 import type { CaseStudy } from "@/components/portfolio/types";
 import { posterStyle } from "./poster";
@@ -14,17 +14,11 @@ interface WallCasePanelProps {
 
 /** Inline detail panel under a row. Not a modal: the row stays usable above it. */
 export function WallCasePanel({ id, study, onClose }: WallCasePanelProps) {
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    panelRef.current?.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
-  }, [study.title]);
 
   const headingId = `${id}-heading`;
 
   return (
-    <div className="wall-panel" id={id} ref={panelRef} role="region" aria-labelledby={headingId}>
+    <div className="wall-panel" id={id} role="region" aria-labelledby={headingId}>
       <div className="wall-panel-poster" style={posterStyle(study.title) as CSSProperties} aria-hidden="true">
         <span className="wall-panel-poster-title">{study.title}</span>
       </div>

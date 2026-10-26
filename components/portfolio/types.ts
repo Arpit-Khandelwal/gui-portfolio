@@ -15,9 +15,22 @@ export type Profile = {
   resume: string;
 };
 
+export type BuyerCta = {
+  label: string;
+  href: string;
+};
+
 export type BuyerMode = {
   id: string;
   label: string;
+  /** The visitor's intent, as the button says it: "Hire an engineer". */
+  ask: string;
+  /** Why the work is reordered for this reader. One sentence. */
+  why: string;
+  /** Case-study titles to show first, in order. */
+  featured: readonly string[];
+  /** The primary action for this reader. */
+  cta: BuyerCta;
   eyebrow: string;
   promise: string;
   body: string;

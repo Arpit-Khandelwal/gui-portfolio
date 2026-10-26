@@ -1,0 +1,355 @@
+/* World C: title wall, profile picker, panel motion, form states and press
+   feedback. Transform and opacity only (plus the panel's row track, which the
+   inline panel needs to push the page down). Ease-out-expo throughout. */
+
+.world-wall {
+  --wall-press: 140ms;
+  --wall-error: #ff9585;
+}
+
+.world-wall .wall-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ */
+/* Profile picker and the "picked for you" note                        */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-picker-option {
+  justify-content: flex-start;
+}
+
+.world-wall .wall-picker-name {
+  max-width: 100%;
+  overflow: visible;
+  font-size: 0.78rem;
+  line-height: 1.25;
+  text-align: center;
+  text-overflow: clip;
+  white-space: normal;
+  text-wrap: balance;
+}
+
+.world-wall .wall-picker-option:active .wall-picker-avatar {
+  transform: scale(0.94);
+  transition-duration: var(--wall-press);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .world-wall .wall-picker-option:hover:not(:active) .wall-picker-avatar {
+    transform: translateY(-3px);
+  }
+}
+
+.world-wall .wall-picked-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.75rem;
+  padding: 0.6rem 0.6rem 0.6rem 0.85rem;
+  border-radius: var(--w-radius);
+  background: var(--w-sheet);
+  font-size: 0.86rem;
+}
+
+.world-wall .wall-picked-note p {
+  flex: 1 1 12rem;
+}
+
+.world-wall .wall-picked-change,
+.world-wall .wall-picked-close {
+  border: 0;
+  background: transparent;
+  color: var(--w-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.world-wall .wall-picked-change {
+  padding: 0.2rem 0;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--wall-edge);
+  text-underline-offset: 0.2em;
+}
+
+.world-wall .wall-picked-close {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--w-radius);
+}
+
+.world-wall .wall-picked-close:hover {
+  background: color-mix(in srgb, var(--w-ink) 10%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .world-wall .wall-picked-note {
+    animation: wall-rise 420ms var(--wall-ease) both;
+  }
+}
+
+.world-wall .wall-billboard-textlink {
+  align-self: center;
+  padding: 0.5rem 0.25rem;
+  color: var(--poster-ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.25em;
+}
+
+/* One shape per profile switch: the billboard and each top pick carry a
+   unique view-transition-name (cards set theirs inline). */
+.world-wall .wall-billboard-poster {
+  view-transition-name: wall-billboard;
+}
+
+:root:has(.world-wall)::view-transition-group(*) {
+  animation-duration: 460ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root:has(.world-wall)::view-transition-old(root),
+:root:has(.world-wall)::view-transition-new(root) {
+  animation-duration: 200ms;
+}
+
+/* ------------------------------------------------------------------ */
+/* Press feedback                                                      */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-card:active {
+  transform: scale(0.97);
+  transition-duration: var(--wall-press);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .world-wall .wall-card:hover:active {
+    transform: scale(1.02);
+  }
+}
+
+.world-wall .wall-row-step:active:not(:disabled),
+.world-wall .wall-panel-close:active,
+.world-wall .wall-segment-options button:active {
+  transform: scale(0.94);
+}
+
+.world-wall .wall-row-step,
+.world-wall .wall-panel-close,
+.world-wall .wall-segment-options button {
+  transition:
+    transform var(--wall-press) var(--wall-ease),
+    background-color 180ms var(--wall-ease),
+    opacity 220ms var(--wall-ease);
+}
+
+/* ------------------------------------------------------------------ */
+/* Inline panel: opens and closes in place                             */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-panel-shell {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 460ms var(--wall-ease);
+}
+
+.world-wall .wall-panel-shell[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.world-wall .wall-panel-clip {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.world-wall .wall-panel-shell .wall-panel {
+  animation: none;
+  opacity: 0;
+  transform: translateY(-0.75rem);
+  transition:
+    opacity 260ms var(--wall-ease),
+    transform 460ms var(--wall-ease);
+}
+
+.world-wall .wall-panel-shell[data-open="true"] .wall-panel {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  .world-wall .wall-panel-shell[data-open="true"] {
+    grid-template-rows: 0fr;
+  }
+
+  .world-wall .wall-panel-shell[data-open="true"] .wall-panel {
+    opacity: 0;
+    transform: translateY(-0.75rem);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Copy feedback                                                       */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-copy-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.world-wall .wall-button--ghost[data-copied="true"] {
+  box-shadow: inset 0 0 0 1px var(--w-ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .world-wall .wall-copy-label {
+    animation: wall-pop 260ms var(--wall-ease) both;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Form states                                                         */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-field[data-invalid="true"] input {
+  box-shadow: inset 0 0 0 2px var(--wall-error);
+}
+
+.world-wall .wall-field-error {
+  color: var(--wall-error);
+  font-size: 0.84rem;
+  font-weight: 500;
+  font-stretch: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .world-wall .wall-field-error {
+    animation: wall-rise 260ms var(--wall-ease) both;
+  }
+}
+
+.world-wall .wall-submit {
+  min-width: 11rem;
+}
+
+.world-wall .wall-form[data-status="sent"] .wall-submit:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.world-wall .wall-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .world-wall .wall-spinner {
+    animation: wall-spin 700ms linear infinite;
+  }
+}
+
+.world-wall .wall-form-fallback {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: start;
+  width: 100%;
+  padding: 1rem 1.1rem;
+  border-radius: var(--w-radius);
+  background: var(--w-sheet);
+  box-shadow: inset 0 0 0 1px var(--wall-edge);
+}
+
+/* "Brief sent" slides in like a notification, then leaves on its own. */
+.world-wall .wall-toast {
+  position: fixed;
+  right: var(--wall-gutter);
+  bottom: 1.5rem;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  max-width: calc(100vw - 2 * var(--wall-gutter));
+  padding: 0.85rem 1.2rem 0.85rem 0.85rem;
+  border-radius: var(--w-radius);
+  background: var(--w-ink);
+  color: var(--w-ground);
+  box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.8);
+  opacity: 0;
+  transform: translateY(calc(100% + 2rem));
+  pointer-events: none;
+  transition:
+    transform 520ms var(--wall-ease),
+    opacity 300ms var(--wall-ease);
+}
+
+.world-wall .wall-toast[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+.world-wall .wall-toast-mark {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--w-ground);
+  color: var(--w-ink);
+}
+
+.world-wall .wall-toast-text {
+  display: grid;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.world-wall .wall-toast-text strong {
+  font-size: 1rem;
+  font-weight: 800;
+  font-stretch: 112%;
+}
+
+@keyframes wall-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.4rem);
+  }
+}
+
+@keyframes wall-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes wall-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world-wall .wall-panel-shell,
+  .world-wall .wall-panel-shell .wall-panel,
+  .world-wall .wall-toast {
+    transition: none;
+  }
+
+  .world-wall .wall-card:active {
+    transform: none;
+    opacity: 0.85;
+  }
+}

@@ -106,7 +106,7 @@
 .pt-h1 {
   font-family: var(--w-display);
   font-weight: 400;
-  font-size: clamp(2.3rem, 1.5rem + 2.2vw, 3.6rem);
+  font-size: clamp(2.2rem, 1.5rem + 1.8vw, 3.2rem);
   line-height: 1.02;
   letter-spacing: -0.02em;
   text-wrap: balance;
@@ -224,14 +224,14 @@
 .pt-margin {
   display: flex;
   flex-direction: column;
-  gap: 0.95rem;
+  gap: 0.8rem;
   padding: clamp(1.75rem, 2.6vw, 2.25rem) clamp(1.25rem, 2.4vw, 2rem) clamp(1.25rem, 2.4vw, 2rem);
   border-right: 1px solid var(--w-line);
 }
 
 .pt-inventor {
   font-family: var(--w-label);
-  font-size: 0.92rem;
+  font-size: 0.84rem;
   line-height: 1.5;
   margin: 0;
 }
@@ -243,30 +243,40 @@
 
 .pt-applicant {
   display: grid;
-  grid-template-columns: repeat(4, auto);
+  grid-template-columns: 1fr 1fr;
   border: 1px solid var(--w-line);
 }
 
 .pt-applicant button {
-  min-height: 2.6rem;
-  padding: 0 0.6rem;
+  min-height: 3rem;
+  padding: 0.45rem 0.7rem;
   border: 0;
   border-right: 1px solid var(--w-line);
   border-bottom: 1px solid var(--w-line);
-  background: transparent;
+  /* Ink fills the box from the left when it is ticked. */
+  background: linear-gradient(var(--w-ink), var(--w-ink)) left / 0% 100% no-repeat;
   color: var(--w-ink);
   font-family: var(--w-label);
   font-size: 0.85rem;
+  line-height: 1.25;
+  text-align: left;
   cursor: pointer;
-  transition: background-color 180ms var(--pt-ease), color 180ms var(--pt-ease);
+  transition:
+    background-size 320ms var(--pt-ease),
+    color 200ms var(--pt-ease),
+    transform 120ms var(--pt-ease);
 }
 
-.pt-applicant button {
-  border-bottom: 0;
+.pt-applicant button:active {
+  transform: translateY(1px);
 }
 
-.pt-applicant button:last-child {
+.pt-applicant button:nth-child(2n) {
   border-right: 0;
+}
+
+.pt-applicant button:nth-last-child(-n + 2) {
+  border-bottom: 0;
 }
 
 .pt-applicant button:hover {
@@ -274,8 +284,107 @@
 }
 
 .pt-applicant button[aria-pressed="true"] {
-  background: var(--w-ink);
+  background-size: 100% 100%;
   color: var(--w-sheet);
+}
+
+.pt-field-why {
+  margin: 0.5rem 0 0;
+  font-style: italic;
+  color: var(--w-muted);
+  max-width: 46ch;
+}
+
+.pt-note {
+  margin: 0.4rem 0 0;
+  font-family: var(--w-label);
+  font-size: 0.82rem;
+  color: var(--w-ink);
+}
+
+.pt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+  margin-top: auto;
+}
+
+.pt-actions .pt-file {
+  margin-top: 0;
+  flex: 1 1 14rem;
+}
+
+/* Selected sheets carry an examiner's red stamp in the margin. */
+.pt-selected {
+  position: absolute;
+  top: 1.6rem;
+  right: 1.25rem;
+  z-index: 1;
+  margin: 0;
+  padding: 0.3rem 0.6rem;
+  border: 2px solid var(--w-accent);
+  color: var(--w-accent);
+  font-family: var(--w-label);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+  background: color-mix(in srgb, var(--w-sheet) 88%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pt-selected {
+    animation: pt-stamp 420ms var(--pt-ease) both;
+  }
+
+  /* Re-filing the sheets: one calm move, ink on paper, no bounce. */
+  ::view-transition-group(*) {
+    animation-duration: 520ms;
+    animation-timing-function: var(--pt-ease, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+
+  .pt-file:active {
+    transform: translateY(1px);
+  }
+
+  .pt-file.is-sending {
+    animation: pt-pulse 1.1s ease-in-out infinite;
+  }
+
+  /* FAQ answers open with a measured slide where the browser can size to auto. */
+  .pt-faq details::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size 320ms var(--pt-ease),
+      content-visibility 320ms allow-discrete;
+  }
+
+  .pt-faq details[open]::details-content {
+    block-size: auto;
+  }
+}
+
+@keyframes pt-stamp {
+  from {
+    opacity: 0;
+    transform: rotate(-4deg) scale(1.6);
+  }
+  60% {
+    opacity: 1;
+    transform: rotate(-4deg) scale(0.96);
+  }
+  to {
+    transform: rotate(-4deg) scale(1);
+  }
+}
+
+@keyframes pt-pulse {
+  50% {
+    opacity: 0.72;
+  }
 }
 
 .pt-status {
@@ -1107,6 +1216,65 @@
 
 .pb-form .pt-file {
   margin-top: 0.25rem;
+}
+
+.pb-error {
+  font-weight: 400;
+  color: var(--w-accent);
+}
+
+.pb-form {
+  position: relative;
+}
+
+/* A filed brief gets the office's stamp across the form. */
+.pb-stamp {
+  position: absolute;
+  right: 6%;
+  top: 38%;
+  display: grid;
+  justify-items: center;
+  margin: 0;
+  padding: 0.6rem 1.4rem 0.5rem;
+  border: 4px double var(--w-accent);
+  color: var(--w-accent);
+  font-family: var(--w-label);
+  text-transform: uppercase;
+  transform: rotate(-9deg);
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+.pb-stamp span {
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1;
+}
+
+.pb-stamp small {
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pb-stamp {
+    animation: pb-stamp 520ms var(--pt-ease) both;
+  }
+}
+
+@keyframes pb-stamp {
+  from {
+    opacity: 0;
+    transform: rotate(-9deg) scale(1.9);
+  }
+  55% {
+    opacity: 1;
+    transform: rotate(-9deg) scale(0.94);
+  }
+  to {
+    transform: rotate(-9deg) scale(1);
+  }
 }
 
 .pb-status {

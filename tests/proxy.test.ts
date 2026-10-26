@@ -141,3 +141,42 @@ describe("world switching", () => {
     expect(response.headers.get("set-cookie")).toBeNull();
   });
 });
+
+describe("A/B/C/D world assignment", () => {
+  const BROWSER = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36";
+
+  test("assigns a first-time human visitor a world and records the cohort", () => {
+    const response = call("/", { accept: "text/html", "user-agent": BROWSER });
+    const cookies = response.headers.get("set-cookie") ?? "";
+    expect(cookies).toMatch(/world=(patent|lid|wall|canon)/);
+    expect(cookies).toContain("world_src=ab");
+    expect(cookies).toMatch(/ab_cohort=(patent|lid|wall|canon)/);
+  });
+
+  test("serves the assigned world on the very first request", () => {
+    for (let i = 0; i < 40; i++) {
+      const response = call("/", { accept: "text/html", "user-agent": BROWSER });
+      const world = /(?:^|[ ,])world=(\w+)/.exec(response.headers.get("set-cookie") ?? "")?.[1];
+      const target = rewriteTarget(response);
+      expect(target).toBe(world === "patent" ? null : `/w/${world}`);
+    }
+  });
+
+  test("never reassigns a visitor who already has a world", () => {
+    const response = call("/", { accept: "text/html", "user-agent": BROWSER, cookie: "world=canon" });
+    expect(response.headers.get("set-cookie")).toBeNull();
+    expect(rewriteTarget(response)).toBe("/w/canon");
+  });
+
+  test("crawlers and agents keep the default world", () => {
+    for (const ua of ["Googlebot/2.1", "Mozilla/5.0 (compatible; ClaudeBot/1.0)", "curl/8.4.0", ""]) {
+      const response = call("/", { accept: "text/html", "user-agent": ua });
+      expect(response.headers.get("set-cookie")).toBeNull();
+      expect(rewriteTarget(response)).toBeNull();
+    }
+  });
+
+  test("a shared ?world= link marks the source as shared", () => {
+    expect(call("/?world=wall").headers.get("set-cookie")).toContain("world_src=shared");
+  });
+});

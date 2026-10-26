@@ -11,6 +11,7 @@
  */
 export const ANALYTICS_EVENTS = [
   "world_switch",
+  "ab_exposure",
   "audience_select",
   "brief_option",
   "brief_copy",
@@ -48,6 +49,8 @@ export type AnalyticsEventName = (typeof ANALYTICS_EVENTS)[number];
 export const ANALYTICS_PARAM_KEYS = [
   "from",
   "to",
+  "variant",
+  "source",
   "path",
   "audience",
   "field",
@@ -84,7 +87,8 @@ export type AnalyticsParamKey = (typeof ANALYTICS_PARAM_KEYS)[number];
 /** The params each event is expected to carry. Documentation and test fixture. */
 export const ANALYTICS_EVENT_PARAMS: Readonly<Record<AnalyticsEventName, readonly AnalyticsParamKey[]>> = {
   world_switch: ["from", "to", "path"],
-  audience_select: ["audience"],
+  ab_exposure: ["variant", "source"],
+  audience_select: ["audience", "source"],
   brief_option: ["field", "value"],
   brief_copy: ["audience"],
   brief_submit: ["result", "audience"],
@@ -112,7 +116,7 @@ export const ANALYTICS_EVENT_PARAMS: Readonly<Record<AnalyticsEventName, readonl
 };
 
 /** Session-level context keys. They persist in the dataLayer across events. */
-export const ANALYTICS_CONTEXT_KEYS = ["site_world", "page_type"] as const;
+export const ANALYTICS_CONTEXT_KEYS = ["site_world", "page_type", "world_source", "ab_cohort"] as const;
 
 export type AnalyticsContextKey = (typeof ANALYTICS_CONTEXT_KEYS)[number];
 

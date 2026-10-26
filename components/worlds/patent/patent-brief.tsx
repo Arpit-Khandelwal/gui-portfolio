@@ -46,8 +46,13 @@ function ChoiceBox({ box, legend, options, value, field, onChange }: FieldProps)
 }
 
 /** The sprint brief as a blank application form: empty boxes that ask to be filled. */
+const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+const FILED_DATE = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
 export function PatentBrief({ brief, title, intro }: { brief: BriefState; title: string; intro: string }) {
   const [copied, setCopied] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
   const reported = useRef<string>("idle");
 
   useEffect(() => {
@@ -97,7 +102,27 @@ export function PatentBrief({ brief, title, intro }: { brief: BriefState; title:
             <span>
               <span className="pb-box-no">(72)</span> Email address
             </span>
-            <input type="email" required autoComplete="email" value={brief.email} onChange={(event) => brief.setEmail(event.target.value)} />
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              value={brief.email}
+              aria-invalid={emailError ? true : undefined}
+              aria-describedby={emailError ? "pb-email-error" : undefined}
+              onChange={(event) => {
+                brief.setEmail(event.target.value);
+                if (emailError && EMAIL_SHAPE.test(event.target.value)) setEmailError(null);
+              }}
+              onBlur={(event) => {
+                const value = event.target.value.trim();
+                setEmailError(value && !EMAIL_SHAPE.test(value) ? "Check the email address. It needs a name, an @ and a domain." : null);
+              }}
+            />
+            {emailError ? (
+              <span id="pb-email-error" className="pb-error" role="alert">
+                {emailError}
+              </span>
+            ) : null}
           </label>
           <label className="pb-field">
             <span>
@@ -105,13 +130,19 @@ export function PatentBrief({ brief, title, intro }: { brief: BriefState; title:
             </span>
             <textarea required rows={9} value={brief.message} onChange={(event) => brief.setMessage(event.target.value)} />
           </label>
-          <button type="submit" className="pt-file" disabled={brief.status === "sending"}>
-            {brief.status === "sending" ? "Sending…" : "File the brief"}
+          <button type="submit" className={`pt-file${brief.status === "sending" ? " is-sending" : ""}`} disabled={brief.status === "sending"}>
+            {brief.status === "sending" ? "Filing…" : "File the brief"}
             <ArrowRight aria-hidden="true" className="pt-file-arrow" strokeWidth={1.5} />
           </button>
           <p className="pb-status" role="status" aria-live="polite">
             {contactStatusText(brief.status)}
           </p>
+          {brief.status === "sent" ? (
+            <p className="pb-stamp" aria-hidden="true">
+              <span>Filed</span>
+              <small>{FILED_DATE.format(new Date())}</small>
+            </p>
+          ) : null}
         </form>
       </div>
     </section>

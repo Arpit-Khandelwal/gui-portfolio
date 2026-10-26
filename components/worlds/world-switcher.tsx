@@ -8,6 +8,7 @@ import {
   WORLD_COOKIE,
   WORLD_COOKIE_MAX_AGE,
   WORLD_LABELS,
+  WORLD_SOURCE_COOKIE,
   parseWorld,
   type WorldId,
 } from "@/lib/worlds";
@@ -22,7 +23,9 @@ function subscribe(callback: () => void) {
 
 /** Stores the choice and re-themes the current document. */
 function applyWorld(world: WorldId): void {
-  document.cookie = `${WORLD_COOKIE}=${world}; path=/; max-age=${WORLD_COOKIE_MAX_AGE}; samesite=lax`;
+  const attrs = `path=/; max-age=${WORLD_COOKIE_MAX_AGE}; samesite=lax`;
+  document.cookie = `${WORLD_COOKIE}=${world}; ${attrs}`;
+  document.cookie = `${WORLD_SOURCE_COOKIE}=chosen; ${attrs}`;
   document.documentElement.dataset.world = world;
   window.dispatchEvent(new Event(WORLD_EVENT));
 }

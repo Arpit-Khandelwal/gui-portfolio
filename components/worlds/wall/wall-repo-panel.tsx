@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import { ArrowUpRight, X } from "lucide-react";
 import { track } from "@/lib/analytics";
 import { posterStyle } from "./poster";
@@ -15,17 +15,11 @@ interface WallRepoPanelProps {
 
 /** Every pull request to one repository, as an episode list under the row. */
 export function WallRepoPanel({ id, group, onClose }: WallRepoPanelProps) {
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    panelRef.current?.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
-  }, [group.repo]);
 
   const headingId = `${id}-heading`;
 
   return (
-    <div className="wall-panel" id={id} ref={panelRef} role="region" aria-labelledby={headingId}>
+    <div className="wall-panel" id={id} role="region" aria-labelledby={headingId}>
       <div className="wall-panel-poster" style={posterStyle(group.repo) as CSSProperties} aria-hidden="true">
         <span className="wall-panel-poster-title">{group.name}</span>
       </div>

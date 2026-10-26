@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Check, Copy, Send } from "lucide-react";
+import { useState } from "react";
+import { Check, Copy } from "lucide-react";
 import { sprintStages, sprintTimelines, sprintTypes } from "@/components/portfolio/data";
 import { copyText } from "@/components/portfolio/helpers";
 import { track } from "@/lib/analytics";
 import { worldCopy } from "@/lib/world-copy";
-import { contactStatusText, type BriefState } from "../use-brief";
+import type { BriefState } from "../use-brief";
+import { LidBriefForm } from "./lid-brief-form";
 import { tilt, rotateStyle } from "./lid-layout";
 import { LidSectionHead } from "./lid-section-head";
 
@@ -63,26 +64,10 @@ interface LidBriefProps {
 
 export function LidBrief({ brief }: LidBriefProps) {
   const [copied, setCopied] = useState(false);
-  const submitted = useRef(false);
-  const { status, buyerId } = brief;
-  const sending = status === "sending";
-
-  // `status` is only fresh after the submit promise settles and React
-  // re-renders, so the result is tracked here and not inside onSubmit.
-  useEffect(() => {
-    if (!submitted.current || (status !== "sent" && status !== "fallback")) return;
-    submitted.current = false;
-    track("brief_submit", { result: status, audience: buyerId });
-  }, [status, buyerId]);
-
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    submitted.current = true;
-    void brief.submit(event);
-  };
 
   const onCopy = () => {
     void copyText(brief.brief, setCopied);
-    track("brief_copy", { audience: buyerId });
+    track("brief_copy", { audience: brief.buyerId });
   };
 
   return (
@@ -119,59 +104,25 @@ export function LidBrief({ brief }: LidBriefProps) {
             <pre className="lid-printout-text" aria-live="polite">
               {brief.brief}
             </pre>
-            <button type="button" className="lid-btn lid-btn--ghost" onClick={onCopy}>
-              {copied ? <Check aria-hidden="true" size={18} strokeWidth={2.5} /> : <Copy aria-hidden="true" size={18} strokeWidth={2.5} />}
-              {copied ? "Copied" : "Copy the brief"}
-            </button>
+            <span className="lid-copy-wrap">
+              <button type="button" className="lid-btn lid-btn--ghost" onClick={onCopy}>
+                {copied ? (
+                  <Check aria-hidden="true" size={18} strokeWidth={2.5} />
+                ) : (
+                  <Copy aria-hidden="true" size={18} strokeWidth={2.5} />
+                )}
+                {copied ? "Copied" : "Copy the brief"}
+              </button>
+              {copied ? (
+                <span className="lid-copied lid-slap-in" aria-hidden="true">
+                  Copied
+                </span>
+              ) : null}
+            </span>
           </div>
         </div>
 
-        <form className="lid-form" data-clarity-mask="true" onSubmit={onSubmit} aria-labelledby="lid-form-title">
-          <h3 id="lid-form-title" className="lid-form-title">
-            Send it to me
-          </h3>
-          <div className="lid-field">
-            <label htmlFor="lid-name-input">Your name</label>
-            <input
-              id="lid-name-input"
-              name="name"
-              autoComplete="name"
-              required
-              value={brief.name}
-              onChange={(event) => brief.setName(event.target.value)}
-            />
-          </div>
-          <div className="lid-field">
-            <label htmlFor="lid-email-input">Your email</label>
-            <input
-              id="lid-email-input"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={brief.email}
-              onChange={(event) => brief.setEmail(event.target.value)}
-            />
-          </div>
-          <div className="lid-field">
-            <label htmlFor="lid-message-input">Message</label>
-            <textarea
-              id="lid-message-input"
-              name="message"
-              rows={8}
-              required
-              value={brief.message}
-              onChange={(event) => brief.setMessage(event.target.value)}
-            />
-          </div>
-          <button type="submit" className="lid-btn lid-btn--send" disabled={sending} aria-disabled={sending}>
-            <Send aria-hidden="true" size={18} strokeWidth={2.5} />
-            {sending ? "Sending…" : "Send the brief"}
-          </button>
-          <p className="lid-form-status" role="status">
-            {contactStatusText(status)}
-          </p>
-        </form>
+        <LidBriefForm brief={brief} onCopy={onCopy} />
       </div>
     </section>
   );

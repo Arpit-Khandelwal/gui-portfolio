@@ -8,13 +8,40 @@ import {
   normalisePagePath,
 } from "@/lib/agent/routes";
 import {
+  AB_COHORT_COOKIE,
   DEFAULT_WORLD,
   WORLD_COOKIE,
   WORLD_COOKIE_MAX_AGE,
   WORLD_PARAM,
+  WORLD_SOURCE_COOKIE,
+  isNonHumanAgent,
   parseWorld,
+  pickAbWorld,
   worldHomePath,
+  type WorldId,
+  type WorldSource,
 } from "@/lib/worlds";
+
+const COOKIE_OPTIONS = { path: "/", maxAge: WORLD_COOKIE_MAX_AGE, sameSite: "lax" } as const;
+
+function setWorldCookies(response: NextResponse, world: WorldId, source: WorldSource): NextResponse {
+  response.cookies.set(WORLD_COOKIE, world, COOKIE_OPTIONS);
+  response.cookies.set(WORLD_SOURCE_COOKIE, source, COOKIE_OPTIONS);
+  if (source === "ab") response.cookies.set(AB_COHORT_COOKIE, world, COOKIE_OPTIONS);
+  return response;
+}
+
+/**
+ * A/B/C/D test: a first-time human visitor with no world cookie gets one of
+ * the four worlds at random. Crawlers and agents keep the default, so search
+ * snapshots and agent reads stay stable. Set AB_TEST=off to stop assigning.
+ */
+function abAssignment(request: NextRequest): WorldId | null {
+  if (process.env.AB_TEST === "off") return null;
+  if (request.cookies.has(WORLD_COOKIE)) return null;
+  if (isNonHumanAgent(request.headers.get("user-agent"))) return null;
+  return pickAbWorld();
+}
 
 /**
  * acceptmarkdown.com content negotiation for page routes.
@@ -62,22 +89,14 @@ function worldParamRedirect(request: NextRequest): NextResponse | null {
   const clean = request.nextUrl.clone();
   clean.searchParams.delete(WORLD_PARAM);
   const response = NextResponse.redirect(clean, 307);
-  if (world) {
-    response.cookies.set(WORLD_COOKIE, world, {
-      path: "/",
-      maxAge: WORLD_COOKIE_MAX_AGE,
-      sameSite: "lax",
-    });
-  }
-  return response;
+  return world ? setWorldCookies(response, world, "shared") : response;
 }
 
 /**
  * The homepage is prerendered once per world. A visitor who picked a world
  * other than the default is served that world's page under the same `/` URL.
  */
-function worldHomeRewrite(request: NextRequest): NextResponse | null {
-  const world = parseWorld(request.cookies.get(WORLD_COOKIE)?.value);
+function worldHomeRewrite(request: NextRequest, world = parseWorld(request.cookies.get(WORLD_COOKIE)?.value)): NextResponse | null {
   if (!world || world === DEFAULT_WORLD) return null;
   return NextResponse.rewrite(new URL(worldHomePath(world), request.url));
 }
@@ -123,8 +142,10 @@ export function proxy(request: NextRequest) {
     );
   }
 
-  const home = pagePath === "/" ? worldHomeRewrite(request) : null;
-  return withNegotiationHeaders(home ?? NextResponse.next(), pagePath);
+  const assigned = abAssignment(request);
+  const home = pagePath === "/" ? worldHomeRewrite(request, assigned ?? undefined) : null;
+  const response = withNegotiationHeaders(home ?? NextResponse.next(), pagePath);
+  return assigned ? setWorldCookies(response, assigned, "ab") : response;
 }
 
 export const config = {

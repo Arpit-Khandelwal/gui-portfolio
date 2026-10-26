@@ -1,0 +1,467 @@
+/* Lid world: the reader's pick and the microinteractions. Loaded last.
+   Motion uses transform, scale, rotate and opacity only, ease-out-expo, and
+   120-300ms for feedback. Every piece has a reduced-motion fallback below. */
+
+/* ------------------------------------------------- the reader's question */
+
+.world-lid .lid-audience-label {
+  text-transform: none;
+  font-family: var(--w-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 6px 12px 7px;
+}
+
+.world-lid .lid-audience-option {
+  min-height: 42px;
+  padding: 4px 14px;
+  font-size: 0.92rem;
+}
+
+/* Keep the main action inside the first viewport on laptops. */
+@media (min-width: 1100px) {
+  .world-lid .lid-badge-hello {
+    font-size: clamp(2.2rem, 12.5cqi, 4.1rem);
+  }
+
+  .world-lid .lid-badge-pitch {
+    min-height: 7.4em;
+  }
+
+  .world-lid .lid-hero-actions {
+    margin-top: 14px;
+  }
+
+  .world-lid .lid-send {
+    width: 132px;
+    font-size: 1.15rem;
+  }
+}
+
+.world-lid .lid-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px 8px 8px 14px;
+  border: 4px solid #ffffff;
+  border-radius: 14px;
+  background: var(--lid-paper);
+  box-shadow: var(--lid-sh-rest);
+  font-size: 0.94rem;
+  font-weight: 600;
+  rotate: -1.5deg;
+}
+
+.world-lid .lid-note-btn,
+.world-lid .lid-note-close {
+  display: inline-grid;
+  place-items: center;
+  min-height: 34px;
+  border: 2px solid var(--lid-ink);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.world-lid .lid-note-btn {
+  padding: 3px 14px;
+  background: var(--lid-ink);
+  color: #ffffff;
+  font-family: var(--w-display);
+  font-weight: 750;
+}
+
+.world-lid .lid-note-close {
+  width: 34px;
+  background: transparent;
+}
+
+.world-lid .lid-hero-side {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+}
+
+.world-lid .lid-second {
+  min-height: 46px;
+  padding: 6px 16px;
+  border-width: 5px;
+  font-family: var(--w-display);
+  font-size: 0.98rem;
+  font-weight: 750;
+}
+
+/* ------------------------------------------------------ "for you" dots */
+
+.world-lid .lid-foryou {
+  position: absolute;
+  top: -14px;
+  right: -10px;
+  z-index: 3;
+  display: inline-grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+  background: var(--lid-ink);
+  color: var(--lid-yellow);
+  font-family: var(--w-display);
+  font-size: 0.66rem;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: var(--lid-sh-rest);
+  rotate: 12deg;
+}
+
+.world-lid .lid-case .lid-foryou {
+  top: -16px;
+  right: 18px;
+  width: 64px;
+  height: 64px;
+  font-size: 0.74rem;
+}
+
+.world-lid .lid-why {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 70ch;
+  padding: 6px 18px 6px 6px;
+  border: 4px solid #ffffff;
+  border-radius: 999px;
+  background: var(--lid-paper);
+  box-shadow: var(--lid-sh-rest);
+  font-size: 1rem;
+  font-weight: 520;
+  line-height: 1.35;
+  rotate: -1deg;
+}
+
+.world-lid .lid-why .lid-foryou {
+  position: relative;
+  top: auto;
+  right: auto;
+  flex: none;
+  width: 46px;
+  height: 46px;
+  font-size: 0.6rem;
+}
+
+.world-lid .lid-work > .lid-why {
+  justify-self: start;
+  width: fit-content;
+  margin-bottom: clamp(28px, 4vw, 44px);
+}
+
+.world-lid .lid-pile {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.world-lid .lid-pile .lid-cluster {
+  max-width: 740px;
+}
+
+/* The reader's builds go on top of the pile. */
+.world-lid .lid-case[data-featured] {
+  z-index: 3;
+}
+
+/* One move per build when the reader changes (where view transitions run). */
+.world-lid .lid-hs,
+.world-lid .lid-case {
+  view-transition-class: lid-sticker;
+}
+
+::view-transition-group(*.lid-sticker) {
+  animation-duration: 460ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ------------------------------------------------------------ the flip */
+
+.world-lid [data-flipped] .lid-flip {
+  transform: rotateY(180deg);
+}
+
+.world-lid .lid-peel {
+  display: grid;
+  transform-style: preserve-3d;
+  transform-origin: 20% 100%;
+  transition: scale 260ms var(--lid-ease);
+}
+
+.world-lid .lid-hs .lid-peel {
+  width: 100%;
+  height: 100%;
+}
+
+/* Peel: the sticker lifts off at one corner as it turns over. */
+.world-lid [data-touched][data-flipped] > .lid-peel {
+  animation: lid-peel-off 300ms var(--lid-ease);
+}
+
+.world-lid [data-touched]:not([data-flipped]) > .lid-peel {
+  animation: lid-peel-on 300ms var(--lid-ease);
+}
+
+@keyframes lid-peel-off {
+  40% {
+    transform: translateY(-9px) rotate(-3deg);
+  }
+}
+
+@keyframes lid-peel-on {
+  40% {
+    transform: translateY(-9px) rotate(3deg);
+  }
+}
+
+/* ---------------------------------------------- press: squash, release */
+
+.world-lid :is(.lid-hs, .lid-case):has(.lid-face--front:active) > .lid-peel {
+  scale: 1.03 0.94;
+  transition-duration: 110ms;
+}
+
+.world-lid :is(
+    .lid-audience-option,
+    .lid-send,
+    .lid-second,
+    .lid-slap,
+    .lid-dot,
+    .lid-btn,
+    .lid-mini,
+    .lid-play-card,
+    .lid-hs-link,
+    .lid-hs-back-btn,
+    .lid-case-link,
+    .lid-case-back-btn,
+    .lid-note-btn,
+    .lid-note-close
+  ) {
+  transition:
+    transform 480ms var(--lid-ease),
+    scale 260ms var(--lid-ease);
+}
+
+.world-lid :is(
+    .lid-audience-option,
+    .lid-send,
+    .lid-second,
+    .lid-slap,
+    .lid-dot,
+    .lid-btn,
+    .lid-mini,
+    .lid-play-card,
+    .lid-hs-link,
+    .lid-hs-back-btn,
+    .lid-case-link,
+    .lid-case-back-btn,
+    .lid-note-btn,
+    .lid-note-close
+  ):active:not(:disabled) {
+  scale: 1.04 0.9;
+  transition-duration: 480ms, 110ms;
+}
+
+.world-lid .lid-btn:active {
+  transform: none;
+}
+
+/* ------------------------------------------------- slap: a sticker lands */
+
+.world-lid .lid-slap-in {
+  animation: lid-slap 280ms var(--lid-ease) both;
+}
+
+@keyframes lid-slap {
+  from {
+    opacity: 0;
+    scale: 1.45;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+/* ------------------------------------------------------- copy feedback */
+
+.world-lid .lid-copy-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.world-lid .lid-copied {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  translate: 0 -50%;
+  padding: 5px 14px 6px;
+  border: 4px solid #ffffff;
+  border-radius: 999px;
+  background: var(--lid-green);
+  color: var(--lid-ink);
+  font-family: var(--w-display);
+  font-size: 0.92rem;
+  font-weight: 800;
+  white-space: nowrap;
+  box-shadow: var(--lid-sh-rest);
+  rotate: -6deg;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------- the form */
+
+.world-lid .lid-form {
+  position: relative;
+}
+
+.world-lid .lid-field-error {
+  justify-self: start;
+  margin: 2px 0 0;
+  padding: 5px 10px 6px;
+  border-radius: 8px;
+  background: var(--lid-yellow);
+  color: var(--lid-ink);
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.world-lid .lid-field[data-invalid] :is(input, textarea) {
+  border-color: var(--lid-yellow);
+  box-shadow: 0 0 0 3px var(--lid-yellow);
+}
+
+.world-lid .lid-spin {
+  animation: lid-spin 800ms linear infinite;
+}
+
+@keyframes lid-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+.world-lid .lid-btn--send:disabled {
+  opacity: 0.85;
+}
+
+/* Success: a big SENT sticker lands on the form. */
+.world-lid .lid-sent {
+  position: absolute;
+  right: -14px;
+  bottom: 70px;
+  display: grid;
+  place-content: center;
+  gap: 6px;
+  width: 200px;
+  height: 200px;
+  border: 6px solid #ffffff;
+  border-radius: 50%;
+  background: var(--lid-orange);
+  color: #ffffff;
+  text-align: center;
+  box-shadow: var(--lid-sh-lift);
+  rotate: -12deg;
+  pointer-events: none;
+}
+
+.world-lid .lid-sent-word {
+  font-family: var(--w-label);
+  font-size: 2.6rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.world-lid .lid-sent-line {
+  max-width: 13ch;
+  margin: 0 auto;
+  font-family: var(--w-display);
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+/* Fallback: what happened, and what to do now. */
+.world-lid .lid-fallback {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 4px solid #ffffff;
+  border-radius: 14px;
+  background: var(--lid-yellow);
+  color: var(--lid-ink);
+  font-size: 0.96rem;
+  font-weight: 560;
+  line-height: 1.4;
+  rotate: -1deg;
+}
+
+.world-lid .lid-fallback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.world-lid .lid-fallback .lid-btn {
+  min-height: 42px;
+  text-decoration: none;
+}
+
+@media (max-width: 1099px) {
+  .world-lid .lid-pile .lid-cluster {
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .world-lid .lid-sent {
+    right: 6px;
+    width: 170px;
+    height: 170px;
+  }
+
+  .world-lid .lid-sent-word {
+    font-size: 2.1rem;
+  }
+
+  .world-lid .lid-why {
+    border-radius: 18px;
+    font-size: 0.95rem;
+  }
+
+  .world-lid .lid-copied {
+    left: auto;
+    right: 0;
+    top: -26px;
+    translate: none;
+  }
+}
+
+/* Reduced motion: every state still shows, at once and without movement. */
+@media (prefers-reduced-motion: reduce) {
+  .world-lid *,
+  .world-lid *::before,
+  .world-lid *::after {
+    animation: none !important;
+  }
+
+  .world-lid :is(.lid-hs, .lid-case):has(.lid-face--front:active) > .lid-peel,
+  .world-lid :active {
+    scale: none !important;
+  }
+
+  ::view-transition-group(*.lid-sticker) {
+    animation: none;
+  }
+}

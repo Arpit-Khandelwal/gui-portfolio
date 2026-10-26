@@ -44,3 +44,4 @@ next-env.d.ts
 .impeccable/review/
 .impeccable/live/
 .impeccable/config.local.json
+.impeccable/analytics/

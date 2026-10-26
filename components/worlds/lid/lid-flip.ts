@@ -5,6 +5,8 @@ import { track } from "@/lib/analytics";
 
 export interface FlipState {
   flipped: boolean;
+  /** True once the sticker has flipped at least once; gates the peel motion. */
+  touched: boolean;
   frontRef: RefObject<HTMLButtonElement | null>;
   backFocusRef: RefObject<HTMLElement | null>;
   flip: (next: boolean) => void;
@@ -17,6 +19,7 @@ export interface FlipState {
  */
 export function useFlip(item: string): FlipState {
   const [flipped, setFlipped] = useState(false);
+  const [touched, setTouched] = useState(false);
   const frontRef = useRef<HTMLButtonElement>(null);
   const backFocusRef = useRef<HTMLElement>(null);
   const moveFocus = useRef(false);
@@ -30,6 +33,7 @@ export function useFlip(item: string): FlipState {
 
   const flip = (next: boolean) => {
     moveFocus.current = true;
+    setTouched(true);
     setFlipped(next);
     if (next) track("sticker_flip", { item });
   };
@@ -40,10 +44,14 @@ export function useFlip(item: string): FlipState {
     flip(false);
   };
 
-  return { flipped, frontRef, backFocusRef, flip, onKeyDown };
+  return { flipped, touched, frontRef, backFocusRef, flip, onKeyDown };
+}
+
+export function slugOf(title: string): string {
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
 /** Anchor id for a case sticker, so a hero sticker can point at its full case. */
 export function caseAnchor(title: string): string {
-  return `case-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`;
+  return `case-${slugOf(title)}`;
 }

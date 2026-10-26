@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { availability, buyerModes, profile } from "@/components/portfolio/data";
-import { worldCopy } from "@/lib/world-copy";
+import { profile } from "@/components/portfolio/data";
 import { track } from "@/lib/analytics";
 import { useBrief } from "../use-brief";
 import { WorldSwitcher } from "../world-switcher";
@@ -10,11 +9,11 @@ import { CanonBrief } from "./canon-brief";
 import { CanonFooter } from "./canon-footer";
 import { CanonAbout, CanonArchive, CanonFaq, CanonOpenSource, CanonPlay, CanonProcess } from "./canon-sections";
 import { CanonWork } from "./canon-work";
-import { Segmented } from "./segmented";
+import { CanonIntro } from "./canon-intro";
 import "./canon.css";
+import "./canon-controls.css";
 import "./canon-lower.css";
-
-const copy = worldCopy.canon;
+import "./canon-form.css";
 
 const NAV = [
   { label: "Work", href: "#work" },
@@ -23,10 +22,6 @@ const NAV = [
   { label: "Play", href: "/play" },
   { label: "Contact", href: "#brief" },
 ] as const;
-
-function textOf(value: unknown): string | null {
-  return typeof value === "string" ? value : null;
-}
 
 function CanonHeader() {
   return (
@@ -64,62 +59,21 @@ function CanonHeader() {
 /** World D: the category-standard dark engineer portfolio. */
 export function CanonHome() {
   const brief = useBrief();
-  const stackLine = textOf(copy.extra.stack);
 
   return (
-    <div data-world="canon" className="world-canon">
+    <div
+      data-world="canon"
+      className="world-canon"
+      data-swapped={brief.audienceSource !== "default" || undefined}
+    >
       <a href="#main" className="c-skip">
         Skip to the content
       </a>
       <CanonHeader />
 
       <main id="main" tabIndex={-1}>
-        <section id="top" className="c-shell c-intro" aria-labelledby="c-name" data-analytics-section="hero">
-          <div className="c-intro-main">
-            <h1 id="c-name" className="c-h1">
-              {profile.name}
-            </h1>
-            <p className="c-lead">{copy.headline}</p>
-            <p className="c-subline">{copy.subline}</p>
-            <p className="c-status">
-              <span className="c-dot" aria-hidden="true" />
-              <span>{availability.status}.</span>
-              <span className="c-status-reply">{availability.reply}.</span>
-            </p>
-            <div className="c-actions">
-              <a
-                href="#brief"
-                className="c-btn c-btn-primary"
-                onClick={() => track("cta_click", { cta: "brief", section: "hero" })}
-              >
-                Send a brief
-              </a>
-              <a href="#work" className="c-btn c-btn-quiet">
-                See the work
-              </a>
-            </div>
-          </div>
-
-          <div className="c-intro-aside">
-            {stackLine ? <p className="c-intro-stack">{stackLine}</p> : null}
-            <Segmented
-              label="Your role"
-              options={buyerModes.map((mode) => ({ value: mode.id, label: mode.label }))}
-              value={brief.buyerId}
-              onChange={(id) => {
-                const mode = buyerModes.find((item) => item.id === id);
-                if (!mode) return;
-                brief.setBuyerId(mode.id);
-                track("audience_select", { audience: mode.id });
-              }}
-            />
-            <p className="c-promise" aria-live="polite">
-              {brief.buyer.promise}
-            </p>
-          </div>
-        </section>
-
-        <CanonWork />
+        <CanonIntro brief={brief} />
+        <CanonWork brief={brief} />
         <CanonOpenSource />
         <CanonAbout />
         <CanonProcess />

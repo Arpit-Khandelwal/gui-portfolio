@@ -1,10 +1,12 @@
-import { ArrowDown } from "lucide-react";
+import { useRef, useState } from "react";
+import { ArrowDown, ArrowUpRight, X } from "lucide-react";
 import { availability, buyerModes, profile, selectedWork } from "@/components/portfolio/data";
 import { track } from "@/lib/analytics";
 import { worldCopy } from "@/lib/world-copy";
 import type { BriefState } from "../use-brief";
 import { LidHeroSticker } from "./lid-hero-sticker";
-import { HERO_SLOTS, heroLook, rotateStyle, tilt } from "./lid-layout";
+import { ForYouDot } from "./lid-for-you";
+import { HERO_SLOTS, heroLook, rotateStyle, tilt, type HeroLook, type HeroSlot } from "./lid-layout";
 
 const copy = worldCopy.lid;
 const AUDIENCE_COLORS = ["yellow", "green", "lilac", "blue"] as const;
@@ -12,6 +14,24 @@ const AUDIENCE_COLORS = ["yellow", "green", "lilac", "blue"] as const;
 function extraText(key: "badgeTop" | "badgeSub", fallback: string): string {
   const value: unknown = copy.extra[key];
   return typeof value === "string" ? value : fallback;
+}
+
+/**
+ * Each slot is sized for the build that sits there by default. When the
+ * reader's pick moves a build into another slot, it is fitted inside that
+ * box and centred, so a tall shape never spills onto its neighbours.
+ */
+function fitSlot(slot: HeroSlot, index: number, look: HeroLook): HeroSlot {
+  const home = selectedWork[index];
+  const homeRatio = home ? heroLook(home.title, index).ratio : look.ratio;
+  const height = slot.width / homeRatio;
+  const width = Math.min(slot.width, height * look.ratio);
+  return { ...slot, width, left: slot.left + (slot.width - width) / 2 };
+}
+
+/** The reader's builds go on top, the first pick highest. */
+function stackSlot(slot: HeroSlot, featuredRank: number): HeroSlot {
+  return featuredRank === -1 ? slot : { ...slot, z: 40 - featuredRank };
 }
 
 /** Splits "First Last" so the badge can stack the name. */
@@ -26,12 +46,21 @@ interface LidHeroProps {
 
 export function LidHero({ brief }: LidHeroProps) {
   const [first, last] = nameParts(profile.name);
-  const builds = selectedWork.slice(0, HERO_SLOTS.length);
+  const builds = brief.orderedWork.slice(0, HERO_SLOTS.length);
+  const groupRef = useRef<HTMLDivElement>(null);
+  const [noteClosed, setNoteClosed] = useState(false);
+  const inferred = brief.audienceSource === "referrer" || brief.audienceSource === "param";
+  const cta = brief.buyer.cta;
+  const external = /^https?:/.test(cta.href);
 
   const chooseAudience = (id: BriefState["buyerId"]) => {
     if (id === brief.buyerId) return;
+    setNoteClosed(true);
     brief.setBuyerId(id);
-    track("audience_select", { audience: id });
+  };
+
+  const focusQuestion = () => {
+    groupRef.current?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus();
   };
 
   return (
@@ -54,9 +83,9 @@ export function LidHero({ brief }: LidHeroProps) {
           <p className="lid-badge-foot">{availability.status}</p>
         </div>
 
-        <div className="lid-audience" role="group" aria-labelledby="lid-audience-label">
+        <div ref={groupRef} className="lid-audience" role="group" aria-labelledby="lid-audience-label">
           <span id="lid-audience-label" className="lid-audience-label">
-            I am a
+            What brings you here?
           </span>
           {buyerModes.map((mode, index) => (
             <button
@@ -67,38 +96,89 @@ export function LidHero({ brief }: LidHeroProps) {
               aria-pressed={brief.buyerId === mode.id}
               onClick={() => chooseAudience(mode.id)}
             >
-              {mode.label}
+              {mode.ask}
             </button>
           ))}
         </div>
 
+        {inferred && !noteClosed ? (
+          <p className="lid-note lid-slap-in" role="note">
+            <span>
+              {brief.audienceSource === "referrer"
+                ? "Picked for you because you came from LinkedIn."
+                : "Picked from your link."}
+            </span>
+            <button type="button" className="lid-note-btn" onClick={focusQuestion}>
+              Change
+            </button>
+            <button
+              type="button"
+              className="lid-note-close"
+              aria-label="Close the note"
+              onClick={() => setNoteClosed(true)}
+            >
+              <X aria-hidden="true" size={16} strokeWidth={2.75} />
+            </button>
+          </p>
+        ) : null}
+
         <div className="lid-hero-actions">
           <a
-            className="lid-stk lid-stk--circle lid-c-yellow lid-send"
-            href="#brief"
+            key={brief.buyerId}
+            className="lid-stk lid-stk--circle lid-c-yellow lid-send lid-slap-in"
+            href={cta.href}
             style={rotateStyle(8)}
-            onClick={() => track("cta_click", { cta: "brief", section: "hero" })}
+            {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+            onClick={() => track("cta_click", { cta: external ? "resume" : "brief", section: "hero" })}
           >
-            <span>Send a brief</span>
-            <ArrowDown aria-hidden="true" size={22} strokeWidth={2.5} />
+            <span>{cta.label}</span>
+            {external ? (
+              <ArrowUpRight aria-hidden="true" size={22} strokeWidth={2.5} />
+            ) : (
+              <ArrowDown aria-hidden="true" size={22} strokeWidth={2.5} />
+            )}
           </a>
-          <p className="lid-stk lid-stk--pill lid-c-green lid-status" style={rotateStyle(-3)}>
-            <span className="lid-status-dot" aria-hidden="true" />
-            {availability.reply}
-          </p>
+          <div className="lid-hero-side">
+            {cta.href !== "#brief" ? (
+              <a
+                className="lid-stk lid-stk--pill lid-c-white lid-second"
+                href="#brief"
+                style={rotateStyle(-2)}
+                onClick={() => track("cta_click", { cta: "brief", section: "hero" })}
+              >
+                Or send a brief
+                <ArrowDown aria-hidden="true" size={16} strokeWidth={2.75} />
+              </a>
+            ) : null}
+            <p className="lid-stk lid-stk--pill lid-c-green lid-status" style={rotateStyle(-3)}>
+              <span className="lid-status-dot" aria-hidden="true" />
+              {availability.reply}
+            </p>
+          </div>
         </div>
       </div>
 
+      <div className="lid-pile">
+        <p className="lid-why lid-why--hero" aria-live="polite">
+          <ForYouDot slapKey={brief.buyerId} />
+          <span>{brief.buyer.why}</span>
+        </p>
       <ul className="lid-cluster" aria-label="Builds on the lid. Flip a sticker to read it.">
         {builds.map((study, index) => (
           <LidHeroSticker
             key={study.title}
             study={study}
             look={heroLook(study.title, index)}
-            slot={HERO_SLOTS[index]}
+            slot={stackSlot(
+              fitSlot(HERO_SLOTS[index], index, heroLook(study.title, index)),
+              brief.buyer.featured.indexOf(study.title),
+            )}
+            featured={brief.isFeatured(study.title)}
+            readerKey={brief.buyerId}
           />
         ))}
       </ul>
+      </div>
     </section>
   );
 }

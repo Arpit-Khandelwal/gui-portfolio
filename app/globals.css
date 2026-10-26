@@ -110,6 +110,11 @@
   html {
     scroll-behavior: smooth;
   }
+
+  /* Lets details, accordions and panels animate to their natural height. */
+  :root {
+    interpolate-size: allow-keywords;
+  }
 }
 
 html {

@@ -1,6 +1,14 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+  type TransitionEvent,
+} from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { track } from "@/lib/analytics";
 import { WallCard, type WallTitle } from "./wall-card";
@@ -19,6 +27,16 @@ interface WallRowShellProps {
 }
 
 const SCROLL_STEP = 0.82;
+
+function prefersReducedMotion(): boolean {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+/**
+ * Section ids that differ from the shared analytics ids in DESIGN.md
+ * (the Same Instruments Rule). Anchors keep the wall's own words.
+ */
+const ANALYTICS_SECTION: Readonly<Record<string, string>> = { shipped: "work", "small-builds": "archive" };
 
 /** Section, heading, scroll-snap list and prev/next buttons. Shared by every row. */
 export function WallRowShell({ id, title, intro, listLabel, isStatic, onKeyDown, children, after }: WallRowShellProps) {
@@ -47,18 +65,17 @@ export function WallRowShell({ id, title, intro, listLabel, isStatic, onKeyDown,
   const onScroll = () => {
     if (trackedRef.current) return;
     trackedRef.current = true;
-    track("row_scroll", { section: id });
+    track("row_scroll", { section: ANALYTICS_SECTION[id] ?? id });
   };
 
   const step = (direction: 1 | -1) => {
     const list = listRef.current;
     if (!list) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    list.scrollBy({ left: direction * list.clientWidth * SCROLL_STEP, behavior: reduce ? "auto" : "smooth" });
+    list.scrollBy({ left: direction * list.clientWidth * SCROLL_STEP, behavior: prefersReducedMotion() ? "auto" : "smooth" });
   };
 
   return (
-    <section className="wall-row" id={id} aria-labelledby={headingId} data-analytics-section={id}>
+    <section className="wall-row" id={id} aria-labelledby={headingId} data-analytics-section={ANALYTICS_SECTION[id] ?? id}>
       <div className="wall-row-head">
         <h2 id={headingId} className="wall-row-title">
           {title}
@@ -124,17 +141,39 @@ interface WallRowProps {
 export function WallRow({ id, title, intro, items, renderPanel, isRanked }: WallRowProps) {
   const panelId = useId();
   const [focusIndex, setFocusIndex] = useState(0);
-  const [openKey, setOpenKey] = useState<string | null>(null);
+  // The panel content stays mounted while it closes, so the close can animate.
+  const [panelKey, setPanelKey] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const openKey = isOpen ? panelKey : null;
+
+  const hide = () => {
+    setIsOpen(false);
+    if (prefersReducedMotion()) setPanelKey(null);
+  };
 
   const onActivate = (item: WallTitle) => {
     if (item.action.kind !== "panel") return;
-    const { panelKey, onOpen } = item.action;
-    if (openKey === panelKey) {
-      setOpenKey(null);
+    const { panelKey: key, onOpen } = item.action;
+    if (openKey === key) {
+      hide();
       return;
     }
-    setOpenKey(panelKey);
+    setPanelKey(key);
+    setIsOpen(true);
     onOpen?.();
+    // With reduced motion there is no transition end, so bring the panel in now.
+    if (prefersReducedMotion()) {
+      requestAnimationFrame(() => document.getElementById(panelId)?.scrollIntoView({ block: "nearest" }));
+    }
+  };
+
+  const onShellTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget || event.propertyName !== "grid-template-rows") return;
+    if (!isOpen) {
+      setPanelKey(null);
+      return;
+    }
+    event.currentTarget.scrollIntoView({ block: "nearest", behavior: "smooth" });
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
@@ -152,14 +191,13 @@ export function WallRow({ id, title, intro, items, renderPanel, isRanked }: Wall
           ? last
           : Math.min(last, Math.max(0, current + (event.key === "ArrowRight" ? 1 : -1)));
     const target = cards[next];
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     target.focus({ preventScroll: true });
-    target.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduce ? "auto" : "smooth" });
+    target.scrollIntoView({ block: "nearest", inline: "nearest", behavior: prefersReducedMotion() ? "auto" : "smooth" });
   };
 
   const closePanel = () => {
     const key = openKey;
-    setOpenKey(null);
+    hide();
     const index = items.findIndex((item) => item.action.kind === "panel" && item.action.panelKey === key);
     const card = document.getElementById(panelId)?.closest("section")?.querySelectorAll<HTMLElement>("[data-card]")[index];
     card?.focus();
@@ -172,7 +210,18 @@ export function WallRow({ id, title, intro, items, renderPanel, isRanked }: Wall
       intro={intro}
       listLabel={`${title} titles`}
       onKeyDown={onKeyDown}
-      after={openKey && renderPanel ? renderPanel(openKey, { id: panelId, onClose: closePanel }) : null}
+      after={
+        panelKey && renderPanel ? (
+          <div
+            className="wall-panel-shell"
+            data-open={isOpen}
+            inert={!isOpen}
+            onTransitionEnd={onShellTransitionEnd}
+          >
+            <div className="wall-panel-clip">{renderPanel(panelKey, { id: panelId, onClose: closePanel })}</div>
+          </div>
+        ) : null
+      }
     >
       {items.map((item, index) => (
         <li

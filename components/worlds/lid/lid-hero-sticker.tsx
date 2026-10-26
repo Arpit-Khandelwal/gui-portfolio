@@ -4,7 +4,8 @@ import { useId, type CSSProperties } from "react";
 import { ArrowDown, RotateCcw } from "lucide-react";
 import type { CaseStudy } from "@/components/portfolio/types";
 import { track } from "@/lib/analytics";
-import { caseAnchor, useFlip } from "./lid-flip";
+import { caseAnchor, slugOf, useFlip } from "./lid-flip";
+import { ForYouDot } from "./lid-for-you";
 import type { HeroLook, HeroSlot } from "./lid-layout";
 import { DieCut } from "./lid-shapes";
 
@@ -12,14 +13,18 @@ interface LidHeroStickerProps {
   study: CaseStudy;
   look: HeroLook;
   slot: HeroSlot;
+  /** This build matches the reader's pick: it goes on top and gets a dot. */
+  featured: boolean;
+  /** The reader id; the dot slaps on again when it changes. */
+  readerKey: string;
 }
 
 /**
  * A build on the lid: its own die-cut silhouette with the build's proof on the
  * front. It flips to a short back that points to the full case below.
  */
-export function LidHeroSticker({ study, look, slot }: LidHeroStickerProps) {
-  const { flipped, frontRef, backFocusRef, flip, onKeyDown } = useFlip(study.title);
+export function LidHeroSticker({ study, look, slot, featured, readerKey }: LidHeroStickerProps) {
+  const { flipped, touched, frontRef, backFocusRef, flip, onKeyDown } = useFlip(study.title);
   const backId = useId();
   const anchor = caseAnchor(study.title);
 
@@ -30,15 +35,19 @@ export function LidHeroSticker({ study, look, slot }: LidHeroStickerProps) {
     "--w": slot.width,
     "--z": slot.z,
     "--ratio": look.ratio,
+    viewTransitionName: `lid-hs-${slugOf(study.title)}`,
   } as CSSProperties;
 
   return (
     <li
       className={`lid-hs lid-shape--${look.shape} lid-c-${look.color}`}
       data-flipped={flipped || undefined}
+      data-touched={touched || undefined}
+      data-featured={featured || undefined}
       style={style}
       onKeyDown={onKeyDown}
     >
+      <div className="lid-peel">
       <div className="lid-flip">
         <button
           ref={frontRef}
@@ -54,6 +63,7 @@ export function LidHeroSticker({ study, look, slot }: LidHeroStickerProps) {
             <span className="lid-hs-title">{study.title}</span>
             <span className="lid-hs-proof">{study.credibility}</span>
           </span>
+          {featured ? <ForYouDot slapKey={readerKey} /> : null}
         </button>
         <div id={backId} className="lid-face lid-face--back" inert={!flipped}>
           <DieCut shape={look.shape} />
@@ -81,6 +91,7 @@ export function LidHeroSticker({ study, look, slot }: LidHeroStickerProps) {
             </span>
           </div>
         </div>
+      </div>
       </div>
     </li>
   );

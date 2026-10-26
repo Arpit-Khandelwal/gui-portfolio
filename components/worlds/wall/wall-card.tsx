@@ -22,6 +22,8 @@ export interface WallTitle {
   /** Small badge on the poster, for example a PR state. */
   badge?: { label: string; tone: "solid" | "outline" };
   wide?: boolean;
+  /** Unique view-transition-name, so the poster moves as one shape on a profile switch. */
+  transitionName?: string;
   action:
     | { kind: "panel"; panelKey: string; onOpen?: () => void }
     | { kind: "link"; href: string; external: boolean; onFollow?: () => void };
@@ -103,7 +105,10 @@ export function WallCard({ item, index, isTabStop, isExpanded, panelId, onActiva
   const titleId = useId();
   const metaId = useId();
   const seed = item.hueSeed ?? item.title;
-  const style = posterStyle(seed) as CSSProperties;
+  const style = {
+    ...posterStyle(seed),
+    ...(item.transitionName ? { viewTransitionName: item.transitionName } : {}),
+  } as CSSProperties;
   const common = {
     className: `wall-card${item.wide ? " wall-card--wide" : ""}`,
     style,

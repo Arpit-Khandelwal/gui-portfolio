@@ -13,6 +13,27 @@ export const DEFAULT_WORLD: WorldId = "patent";
 
 export const WORLD_COOKIE = "world";
 
+/** How the current world was set: assigned by the A/B test, chosen, or shared link. */
+export const WORLD_SOURCE_COOKIE = "world_src";
+export type WorldSource = "ab" | "chosen" | "shared";
+
+/** The world the A/B test first assigned. Never changes after assignment. */
+export const AB_COHORT_COOKIE = "ab_cohort";
+
+/** Crawlers, link unfurlers and agents always see the default world. */
+const NON_HUMAN_AGENT =
+  /bot|crawl|spider|slurp|facebookexternalhit|embedly|preview|lighthouse|headless|python|curl|wget|httpclient|gpt|claude|anthropic|perplexity|bytespider|petal/i;
+
+export function isNonHumanAgent(userAgent: string | null): boolean {
+  return !userAgent || NON_HUMAN_AGENT.test(userAgent);
+}
+
+/** Uniform pick across all worlds for the A/B/C/D test. */
+export function pickAbWorld(random: number = Math.random()): WorldId {
+  const index = Math.min(WORLDS.length - 1, Math.floor(random * WORLDS.length));
+  return WORLDS[index];
+}
+
 /** Query parameter that makes a world shareable: `/?world=lid`. */
 export const WORLD_PARAM = "world";
 

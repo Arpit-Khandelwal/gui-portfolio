@@ -16,6 +16,7 @@ import { archiveTitles, caseTitle, openSourceTitles, playCases, playTitles, repo
 import "./wall.css";
 import "./wall-posters.css";
 import "./wall-sections.css";
+import "./wall-motion.css";
 
 const copy = worldCopy.wall;
 
@@ -29,7 +30,17 @@ function findFeatured(): CaseStudy {
   return byTitle ?? selectedWork.find((study) => study.credibility.includes("50k+")) ?? selectedWork[0];
 }
 
-const featured = findFeatured();
+const defaultFeatured = findFeatured();
+const TOP_PICKS_TITLE = "Top picks for you";
+
+/** A CSS-safe name, so each top pick can move as one shape between profiles. */
+function transitionName(prefix: string, title: string): string {
+  return `${prefix}-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+}
+
+function billboardLine(study: CaseStudy): string {
+  return study.title === textExtra("featuredTitle") ? (textExtra("featuredLine") ?? study.shipped) : study.shipped;
+}
 const shipped = selectedWork.filter((study) => study.status === "shipped");
 const experiments = selectedWork.filter((study) => study.status === "experiment");
 const repos = repoGroups();
@@ -51,19 +62,29 @@ function renderRepoPanel(key: string, panel: WallPanelProps) {
 export function WallHome() {
   const brief = useBrief();
   const s = copy.sections;
+  const topPicks = brief.orderedWork.filter((study) => brief.isFeatured(study.title));
+  const featured = topPicks[0] ?? defaultFeatured;
 
   return (
     <div data-world="wall" className="world-wall">
       <WallHeader />
       <main id="main" tabIndex={-1}>
-        <WallBillboard featured={featured} line={textExtra("featuredLine") ?? featured.shipped} brief={brief} />
+        <WallBillboard featured={featured} line={billboardLine(featured)} brief={brief} />
+        <WallRow
+          key={brief.buyerId}
+          id="top-picks"
+          title={TOP_PICKS_TITLE}
+          intro={brief.buyer.why}
+          items={topPicks.map((study) => ({ ...caseTitle(study), transitionName: transitionName("wall-pick", study.title) }))}
+          renderPanel={casePanel(topPicks)}
+          isRanked
+        />
         <WallRow
           id="shipped"
           title={s.work.title}
           intro={s.work.intro}
           items={shipped.map(caseTitle)}
           renderPanel={casePanel(shipped)}
-          isRanked
         />
         <WallRow
           id="experiments"
