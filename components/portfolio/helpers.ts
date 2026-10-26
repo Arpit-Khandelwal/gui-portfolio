@@ -32,6 +32,8 @@ export async function sendContact(payload: {
   name: string;
   email: string;
   message: string;
+  /** How the lead was captured; see lib/api/lead-context.ts. */
+  context?: Readonly<Record<string, string>>;
 }): Promise<ContactResult> {
   try {
     const res = await fetch("/api/contact", {

@@ -6,6 +6,7 @@ import { buyerModes, profile, selectedWork, sprintStages, sprintTimelines, sprin
 import { buildSprintBrief, sendContact } from "@/components/portfolio/helpers";
 import type { BuyerMode, CaseStudy } from "@/components/portfolio/types";
 import { track } from "@/lib/analytics";
+import { leadContext } from "@/lib/lead-touch";
 import { chooseAudience, useAudience, type AudienceId, type AudienceSource } from "./audience";
 
 export type BuyerModeId = AudienceId;
@@ -108,7 +109,14 @@ export function useBrief(): BriefState {
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setStatus("sending");
-    const result = await sendContact({ name, email, message });
+    const context = leadContext({
+      audience: buyerId,
+      audienceSource: audience.source,
+      sprintType,
+      sprintTimeline,
+      sprintStage,
+    });
+    const result = await sendContact({ name, email, message, context });
     if (result === "sent") {
       setStatus("sent");
       return;

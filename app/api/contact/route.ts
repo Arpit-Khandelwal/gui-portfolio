@@ -1,11 +1,8 @@
 import { availability, profile } from "@/components/portfolio/data";
 import { RATE_LIMIT_POLICIES } from "@/lib/api/rate-limit";
 import { guardRateLimit, jsonError, jsonOk, methodNotAllowed } from "@/lib/api/respond";
+import { deliverLead } from "@/lib/api/lead-delivery";
 import { parseContactBody } from "@/lib/api/validate";
-
-function escapeHtml(value: string) {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
 
 export async function POST(request: Request) {
   const limit = guardRateLimit(request, RATE_LIMIT_POLICIES.contact);
@@ -30,47 +27,17 @@ export async function POST(request: Request) {
     });
   }
 
-  const { name, email, message } = parsed.value;
+  const result = await deliverLead(parsed.value);
 
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (!token || !chatId) {
-    // No bot configured: tell the client to fall back to mailto.
+  if (result.configured.length === 0) {
+    // No channel configured: tell the client to fall back to mailto.
     return jsonError(503, "delivery_not_configured", "Contact delivery is not configured on the server.", {
       hint: `Email ${profile.email} directly instead.`,
       headers: limit.headers,
     });
   }
 
-  const text = [
-    "<b>🆕 New sprint brief</b>",
-    "",
-    `<b>Name:</b> ${escapeHtml(name)}`,
-    `<b>Email:</b> ${escapeHtml(email)}`,
-    "",
-    escapeHtml(message),
-  ].join("\n");
-
-  let res: Response;
-  try {
-    res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text,
-        parse_mode: "HTML",
-        disable_web_page_preview: true,
-      }),
-    });
-  } catch {
-    return jsonError(502, "upstream_failure", "Could not reach the delivery provider.", {
-      hint: `Retry once, then email ${profile.email} directly.`,
-      headers: limit.headers,
-    });
-  }
-
-  if (!res.ok) {
+  if (result.delivered.length === 0) {
     return jsonError(502, "upstream_failure", "The delivery provider rejected the message.", {
       hint: `Retry once, then email ${profile.email} directly.`,
       headers: limit.headers,

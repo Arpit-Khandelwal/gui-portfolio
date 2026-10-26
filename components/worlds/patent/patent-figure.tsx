@@ -1,9 +1,13 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { PatentDiagram } from "./patent-diagram";
+import { DIAGRAMS } from "./patent-diagrams";
 
 /**
- * Patent-style line drawings generated from a case study's `parts` list.
+ * Patent-style line drawings. A build with a hand-authored diagram in
+ * `patent-diagrams.ts` draws that; anything else falls back to a figure
+ * generated from the case study's `parts` list.
  * Each part becomes a drawn element with a reference numeral on a leader
  * line; the shape follows what the part is (a store is a cylinder, an app is a
  * handset, a browser is a window), so every figure is specific to its build.
@@ -202,6 +206,10 @@ interface PatentFigureProps {
 }
 
 export function PatentFigure({ fig, parts, active, onPart, title, variant = fig }: PatentFigureProps) {
+  const diagram = DIAGRAMS[title];
+  if (diagram) {
+    return <PatentDiagram diagram={diagram} fig={fig} parts={parts} active={active} onPart={onPart} title={title} />;
+  }
   const shown = parts.slice(0, 5);
   const slots = layout(shown.length, variant);
   const boxes = slots.map((slot, i) => bbox(slot, shapeFor(shown[i] ?? "")));

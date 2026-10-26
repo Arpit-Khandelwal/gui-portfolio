@@ -12,6 +12,15 @@
         ],
         "createdAt": "2026-10-26T20:31:12.612Z",
         "reason": "Claude: decision-round sketch of the category standard (Geist on purpose); not shipped, not part of the design system"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          "lib/api/lead-delivery.ts"
+        ],
+        "createdAt": "2026-10-26T21:09:51.644Z",
+        "reason": "Claude: HTML email body; mail clients cannot load the site's web fonts, so it uses email-safe Georgia/Courier New stand-ins for Old Standard TT/Courier Prime"
       }
     ]
   }

@@ -104,3 +104,7 @@ export const privacyMeasured: readonly string[] = [
   "Google Analytics keeps this data for 14 months. Google signals and User-ID are off.",
   "In the EU/EEA, the UK and Switzerland, events from before you accept stay in your browser. They are sent only if you accept on the same page. If you decline, nothing is sent.",
 ];
+
+/** The privacy policy's contact-form paragraph, shared by the page and its markdown twin. */
+export const privacyContactForm =
+  "If you send the brief form, the name, email and message you enter are delivered to Arpit by email (through Resend) and, when it is set up, as a private Telegram message. The brief also carries how it was sent from this site: the site look and A/B group, your answer to \"What brings you here?\", the button you pressed, the landing page, the referring site and any utm tags, and the time on the site. This information is used only to reply to you. If you email directly, your message and address reach the inbox.";

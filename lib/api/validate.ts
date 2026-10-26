@@ -1,5 +1,6 @@
 import type { ApiErrorDetail } from "@/lib/api/respond";
 import type { WorkQuery } from "@/lib/agent/payloads";
+import { parseLeadContext, type LeadContext } from "./lead-context";
 
 /**
  * Boundary validation for every request that carries input. Pure functions so
@@ -37,7 +38,7 @@ export function parseWorkQuery(params: URLSearchParams): Validated<WorkQuery> {
   return details.length ? { ok: false, details } : { ok: true, value: query };
 }
 
-export type ContactInput = { name: string; email: string; message: string };
+export type ContactInput = { name: string; email: string; message: string; context?: LeadContext };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FIELD_LIMITS = { name: 120, email: 200, message: 5000 } as const;
@@ -71,5 +72,7 @@ export function parseContactBody(body: unknown): Validated<ContactInput> {
     details.push({ field: "email", issue: "Must be a valid email address so a reply can be delivered." });
   }
 
-  return details.length ? { ok: false, details } : { ok: true, value: { name, email, message } };
+  if (details.length) return { ok: false, details };
+  const context = parseLeadContext(record.context);
+  return { ok: true, value: context ? { name, email, message, context } : { name, email, message } };
 }

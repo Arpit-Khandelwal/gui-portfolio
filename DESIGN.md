@@ -25,6 +25,7 @@ colors:
   wall-soft: "#c4c6cc"
   wall-edge: "#70737b"
   wall-amber: "#ffb000"
+  wall-error: "#ff9585"
   canon-ground: "#0b0b0c"
   canon-sheet: "#121214"
   canon-ink: "#ededed"
@@ -32,6 +33,7 @@ colors:
   canon-green: "#22c55e"
   canon-green-hover: "#4ade80"
   canon-green-ink: "#04130a"
+  canon-error: "#f87171"
 typography:
   patent-display:
     fontFamily: "Old Standard TT, Times New Roman, serif"
@@ -126,11 +128,15 @@ typography:
     fontWeight: 400
 rounded:
   patent: "0px"
+  wall-tag: "3px"
   wall: "6px"
   canon-control: "8px"
   canon-group: "10px"
+  lid-tag: "6px"
   lid-rect: "14px"
+  lid-card: "16px"
   lid-panel: "18px"
+  lid-panel-lg: "24px"
   lid-sheet: "28px"
   pill: "999px"
 spacing:
@@ -197,7 +203,7 @@ The site is a single proof archive rendered as four complete visual worlds. The 
 
 Each world is a full commitment, not a theme tint. Each one has its own typefaces, its own composition, its own component vocabulary, and its own motion grammar. What they share is a thin token contract (`--w-*`), one switcher, one inner-page shell, and one set of behaviours. Density is high in every world because the archive is deep. No world goes so minimal that the archive disappears, and no world reads as a SaaS landing page.
 
-`<html data-world="patent|lid|wall|canon">` selects the tokens. An inline boot script in `<head>` sets the attribute before first paint: a `/w/<world>` path wins, then the `world` cookie, then `patent`. Choosing a world writes the cookie for one year (`max-age` 31536000, `samesite=lax`). On a homepage the page reloads to `/`, because each world's homepage is a separate prerendered page. Every other page only swaps tokens.
+`<html data-world="patent|lid|wall|canon">` selects the tokens. An inline boot script in `<head>` sets the attribute before first paint: a `/w/<world>` path wins, then the `world` cookie, then `patent`. On a first-time human visit, the proxy assigns one of the four worlds at random (25% each). It records how the world was set in `world_src` (`ab`, `chosen` or `shared`) and the first assignment in `ab_cohort`. Crawlers and agents always get Patent. Choosing a world writes the cookie for one year (`max-age` 31536000, `samesite=lax`). On a homepage the page reloads to `/`, because each world's homepage is a separate prerendered page. Every other page only swaps tokens.
 
 **Key Characteristics:**
 - Four worlds, one content set (`components/portfolio/data.ts`, `lib/copy.ts`, `lib/world-copy.ts`), one brief hook (`useBrief`), and one analytics vocabulary.
@@ -224,11 +230,25 @@ Each world is a full commitment, not a theme tint. Each one has its own typeface
 
 The legacy names `--background`, `--page-bg`, `--accent`, `--line` and similar are compatibility aliases onto `--w-*`, kept for `/play` and older prose markup. Do not use them in new work.
 
+### The audience model
+
+All four worlds share one audience model, through `useBrief()` and `components/worlds/audience.ts`.
+
+- **The question.** Each world asks "What brings you here?" in its own voice. Patent asks "Field of use: what brings you here?". Laptop lid and Plain ask "What brings you here?". Title wall shows a "Who is watching?" profile picker. The four answers are Founder, AI team, Crypto infra and Recruiter, and each answer is labelled with its `buyer.ask` line (for example "Build the AI or backend part" or "Hire an engineer").
+- **What an answer changes.**
+  - `buyer.why` gives the one-line reason shown with the work.
+  - `buyer.featured` names the cases that matter to this reader. `orderedWork` lists those cases first, in that order, then the rest of `selectedWork`. Each world marks featured cases in its own way: a red stamp in Patent, a "for you" dot in Laptop lid, top picks in Title wall, a "For you" tag in Plain.
+  - `buyer.cta` replaces the main action. Three readers get a brief action ("Send a brief", "Send an agent brief", "Send an infra brief"); the recruiter gets "See the résumé".
+- **The reorder.** A change of reader reorders the work in a single `document.startViewTransition`, and each case has a stable, unique `view-transition-name`. Group durations: Patent 520ms, Laptop lid 460ms (`view-transition-class: lid-sticker`), Title wall 460ms, Plain 340ms. The root cross-fade takes 200ms. Under reduced motion, or without view-transition support, the work swaps at once.
+- **Inference.** An audience can be set by a `?for=<id>` link first, then by a stored choice (`localStorage` key `audience`), then by the referrer (a LinkedIn referrer means recruiter). Otherwise Founder is the default. The server and the first client render always use the default. When the audience is inferred, a dismissible note says why: "Picked for you because you came from LinkedIn." or "Picked from your link.". Patent shows the "Field of use" line only when the audience is not the default.
+
 ### Named Rules
+
+**The Reader First Rule.** Each world asks the question, the answer reorders the work so the reader's `featured` cases come first, and the main action becomes the reader's `cta`. An inferred answer always says why it was picked. Never hide a case for any reader; only reorder.
 
 **The One Content Rule.** Every world renders the same copy and data, the audience switch (Founder, AI team, Crypto infra, Recruiter), the sprint brief builder, and the contact form. Each one uses `useBrief()`: POST to `/api/contact` with a `mailto:` fallback. A world may restyle a behaviour. It may never drop one.
 
-**The Same Instruments Rule.** Every world tags its sections with the same `data-analytics-section` ids: `hero` (or `billboard` in wall), `work`, `experiments`, `open-source`, `archive`, `play`, `about`, `process`, `terms`, `faq`, `brief`, `footer`. Every world fires the same `track()` events: `cta_click`, `nav_click`, `audience_select`, `brief_option`, `brief_copy`, `brief_submit`, `case_link`, `oss_link`, `archive_link`, `faq_open`, `outbound_click`. World-specific signatures add their own event: `figure_part_focus` (patent), `sticker_flip` (lid), `case_open` and `row_scroll` (wall). The switcher fires `world_switch` with `from`, `to` and `path`.
+**The Same Instruments Rule.** Every world tags its sections with the same `data-analytics-section` ids: `hero` (or `billboard` in wall), `work`, `experiments`, `open-source`, `archive`, `play`, `about`, `process`, `terms`, `faq`, `brief`, `footer`. Every world fires the same `track()` events: `cta_click`, `audience_select` (with `source`: `click`, `param` or `referrer`), `ab_exposure`, `nav_click`, `brief_option`, `brief_copy`, `brief_submit`, `case_link`, `oss_link`, `archive_link`, `faq_open`, `outbound_click`. World-specific signatures add their own event: `figure_part_focus` (patent), `sticker_flip` (lid), `case_open` and `row_scroll` (wall). The switcher fires `world_switch` with `from`, `to` and `path`.
 
 ## Colors
 
@@ -249,11 +269,13 @@ Each world owns its palette. The shared rule is structural: one ground, one rais
 - **Screen Black** (wall-ground) with **Panel** (wall-sheet) for raised surfaces.
 - **Marquee Amber** (wall-amber): the single focus ring, the skip link, and the active switcher option. `--w-construct` is the same amber, not a second colour.
 - **Poster fields**: each build's hue is generated deterministically from its title in `poster.ts` (FNV-1a hash). The hue is taken from 110° to 400°, so it always skips 40–110°. Title ink is chosen by computed WCAG contrast (target 6:1, floor 4.5:1). A softer ink is also required to reach 4.5:1.
+- **Error Coral** (wall-error): form errors on the dark wall.
 - **Edge Grey** (wall-edge) for ghost-button and panel insets. **Soft Grey** (wall-soft) for secondary text on dark panels. **Silver** (wall-muted) for metadata.
 
 ### Plain
 - **Signal Green** (canon-green): status dot, links (`c-open`), and the primary button. **Bright Green** (canon-green-hover) is the hover state of the primary button only. **Deep Green Ink** (canon-green-ink) is the text on green.
 - **Near Black** (canon-ground) with **Raised Black** (canon-sheet). **Paper White** (canon-ink) and **Zinc** (canon-muted).
+- **Error Red** (canon-error): form errors.
 - Tints are ink at fixed alphas: 6% and 10% fills, 12% hairline, 20% strong hairline, plus green at 14%.
 
 ### Named Rules
@@ -293,6 +315,13 @@ The pairing is a typeset specification with typewritten form fields. Titles stay
 **Display and body:** Hanken Grotesk (800 for h1, 600 for h2 and h3, 500 for the lead, 400 for body). **Mono:** JetBrains Mono, used only for code and data.
 Tabular numerals are on for the whole world. The world's text scale tokens: `--c-text-sm` 0.875rem, `-md` 0.9375rem, `-body` 1.0625rem, `-h3` 1.1875rem, plus the clamps above.
 
+### Small text steps
+These are the reused sizes below body text. Use them before adding a new size.
+- Patent: 0.75rem, 0.78rem, 0.8rem, 0.82rem, 0.84rem, 0.85rem.
+- Laptop lid: 0.66rem, 0.72rem, 0.74rem, 0.82rem, 0.92rem, 0.95rem, 0.98rem. Larger steps are 1.12rem, 1.28rem and 1.3rem.
+- Title wall: 0.76rem, 0.8rem, 0.82rem, 0.84rem, 0.85rem, 0.86rem, 0.88rem, 0.9rem, 0.92rem, 0.95rem. Larger steps are 1.05rem and 1.1rem.
+- Plain: the `--c-text-*` scale, plus 0.75rem and 0.8125rem for mono labels.
+
 ### Inner pages (all worlds)
 `.prose-main` sets body at 1.0625rem / 1.65, h1 at `clamp(2.25rem, 1.6rem + 2.6vw, 3.75rem)` / 1.02, h2 at 1.5rem, and paragraphs at 68ch. Each world then re-voices the headings. Patent uses weight 400, with h2 as uppercase Courier Prime. Lid uses an 800 h1. Wall uses an uppercase 900 h1 at 112% width. Canon uses an 800 h1 at -0.035em.
 
@@ -331,8 +360,8 @@ Depth is set per world and follows the world's material.
 ## Shapes
 
 - **Patent:** square corners everywhere (`--w-radius: 0`). The status dot and drawn parts are the only circles. Line art uses a 2px stroke with square caps and mitre joins. Thin lines are 1px, dashed lines are `6 5`, and wires are 1.5px.
-- **Laptop lid:** die-cut forms. Every sticker has a 6px white border and is a circle, a 14px rectangle, or a pill. The base radius is 18px and the long-form sheet is 28px. Rotation is part of the shape.
-- **Title wall:** 6px corners on cards, buttons and the billboard.
+- **Laptop lid:** die-cut forms. Every sticker has a 6px white border (4px on small pills and dots) and is a circle, a 14px rectangle, or a pill. Small labels use 6px corners, cards 16px, panels 18px and 24px, and the long-form sheet 28px. Rotation is part of the shape.
+- **Title wall:** 6px corners on cards, buttons and the billboard, and 3px on small tags.
 - **Plain:** 8px on buttons, 10px on segmented groups, 7px on segmented options, pill-shaped chips, and 4px on the focus outline.
 
 ## Components
@@ -366,10 +395,39 @@ A single bordered segmented control (`role="group"`, `aria-pressed`) that appear
 - **Link action:** green text whose arrow moves 2px up and to the right on hover.
 
 ### Motion (per world)
-- **Patent:** FIG. 1 draws once with `stroke-dashoffset` over 2.2s. Wires follow at 0.7s, leaders at 1.1s, and numerals fade in at 1.5s. After that the drawing stays still. Under reduced motion it is shown already drawn.
-- **Lid:** see Sticker. Under reduced motion all transitions take 0ms.
-- **Wall:** cards transition `transform` over 460ms and `opacity` over 320ms. Under reduced motion, scaling is dropped and only a 120ms opacity transition remains.
-- **Plain:** colour transitions take 160ms and the plus icon rotates over 360ms.
+Every world uses the one easing curve and animates only transforms and opacity. The exceptions are Title wall's panel row track and Patent's disclosure block size. Feedback lands in 110–300ms and signature moves in 420–720ms. Every world has a reduced-motion path in which every state still appears, but immediately.
+
+- **Patent:**
+  - FIG. 1 draws once (see Elevation and the figure rules). A numeral and its figure part light together, with a 160ms stroke change.
+  - A featured sheet gets a red stamp, rotated -4°, in its margin. It lands in 420ms: scale 1.6, then 0.96, then 1.
+  - A filed brief gets a FILED stamp across the form, with the date, rotated -9°. It lands in 520ms: scale 1.9, then 0.94, then 1.
+  - Audience options press over 120ms.
+  - "File a brief" presses down 1px. While a brief is sending, it pulses on a 1.1s loop.
+  - Under reduced motion, the stamps appear in place and nothing draws.
+- **Laptop lid:**
+  - Lift: 480ms.
+  - Press: the sticker squashes to scale 1.03 × 0.94 over 110ms, and to 1.04 × 0.9 on lifted stickers.
+  - Peel: on flip, the sticker lifts 9px at one corner and turns ±3° over 300ms, then rotates on Y over 720ms.
+  - Slap: a sticker lands from scale 1.45 and opacity 0 over 280ms.
+  - Success: a 200px round orange SENT sticker, rotated -12°, slaps onto the form.
+  - Spinner: 800ms.
+  - Under reduced motion, every transition takes 0ms and every animation is off, including the view-transition group.
+- **Title wall:**
+  - Card grow: 460ms.
+  - Press: 140ms (`--wall-press`). Cards press to 0.97, or to 1.02 while hovered. Controls press to 0.94.
+  - The panel opens in place on a 460ms row track, with content fading over 260ms and moving over 460ms.
+  - Entrances rise 0.4rem over 420ms (260ms for form states).
+  - Copy confirmation pops from scale 0.85 over 260ms.
+  - "Brief sent" slides in like a notification (transform 520ms, opacity 300ms), then leaves on its own.
+  - Spinner: 700ms.
+  - Under reduced motion, transitions are off and only opacity changes.
+- **Plain:**
+  - Duration tokens: `--c-press` 120ms, `--c-fast` 180ms, `--c-draw` 240ms, `--c-slide` 280ms, `--c-slow` 300ms.
+  - The segmented control has one pill that slides to the pressed option. Chips fade their own fill instead.
+  - Swapped content pops in at `--c-slow`.
+  - The sent check draws by wiping its cover off over 420ms, after a 160ms delay.
+  - Spinner: 700ms.
+  - Under reduced motion, nothing moves and states swap.
 
 ## Do's and Don'ts
 
@@ -380,6 +438,7 @@ A single bordered segmented control (`role="group"`, `aria-pressed`) that appear
 - **Do** use `cubic-bezier(0.16, 1, 0.3, 1)` for every transition, and give every motion a reduced-motion path.
 - **Do** keep patent figure numerals equal to real parts of the case (102, 104 and so on). Never pad a range.
 - **Do** choose wall poster ink by computed contrast of at least 4.5:1.
+- **Do** render the audience question, `orderedWork`, and `buyer.cta` in every world, and reorder through a view transition with a reduced-motion fallback that swaps at once.
 
 ### Don't:
 - **Don't** put examiner red on anything in patent except numerals, status, focus and the one action.
@@ -388,3 +447,4 @@ A single bordered segmented control (`role="group"`, `aria-pressed`) that appear
 - **Don't** round patent corners, and don't square lid stickers.
 - **Don't** add a second family to the title wall. Use Archivo's width axis instead.
 - **Don't** let a world drop the audience switch, the brief builder, or the contact form.
+- **Don't** apply an inferred audience without the note that says why it was picked.

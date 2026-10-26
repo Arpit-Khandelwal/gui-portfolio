@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useReportWebVitals } from "next/web-vitals";
 import { setAnalyticsContext, track } from "@/lib/analytics";
 import { pageTypeForPath, postSlugForPath, vitalParams } from "@/lib/analytics-helpers";
+import { recordLanding } from "@/lib/lead-touch";
 import { AB_COHORT_COOKIE, WORLD_SOURCE_COOKIE } from "@/lib/worlds";
 import {
   attachCopyTracking,
@@ -66,6 +67,7 @@ export function SiteTracking() {
   useEffect(() => {
     syncWorld();
     reportExposure();
+    recordLanding();
     // The world switcher changes data-world in place on non-home pages.
     const worldObserver = new MutationObserver(syncWorld);
     worldObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-world"] });

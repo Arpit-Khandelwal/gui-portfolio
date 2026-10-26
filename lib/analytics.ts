@@ -9,6 +9,8 @@
  * visitor never consents, neither script loads and nothing leaves the page.
  * Never put personal data (names, emails, message text) in params.
  */
+import { recordCta } from "./lead-touch";
+
 export const ANALYTICS_EVENTS = [
   "world_switch",
   "ab_exposure",
@@ -178,6 +180,9 @@ function clarity(): ClarityFn {
 
 export function track(name: AnalyticsEventName, params: AnalyticsParams = {}): void {
   if (typeof window === "undefined") return;
+  if (name === "cta_click" && typeof params.cta === "string") {
+    recordCta(params.cta, typeof params.section === "string" ? params.section : undefined);
+  }
   window.dataLayer = window.dataLayer ?? [];
   window.dataLayer.push(buildEventEntry(name, params));
   clarity()("event", name);

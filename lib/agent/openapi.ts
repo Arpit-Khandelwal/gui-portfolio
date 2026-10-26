@@ -208,6 +208,12 @@ const contactRequestSchema = {
       description:
         "The brief itself. Include the user-facing outcome, the external systems involved, the current state of the work, and the deadline.",
     },
+    context: {
+      type: "object",
+      description:
+        "Optional. How the brief was captured on the website (site look, A/B cohort, reader answer, button, landing page, referrer). Browsers send it; agents may omit it. Unknown keys are ignored and values are clipped to 300 characters.",
+      additionalProperties: { type: "string", maxLength: 300 },
+    },
   },
 } as const;
 

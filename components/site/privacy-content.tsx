@@ -1,4 +1,4 @@
-import { privacyMeasured, privacyUpdated } from "@/lib/copy";
+import { privacyContactForm, privacyMeasured, privacyUpdated } from "@/lib/copy";
 
 /**
  * The privacy policy body, rendered by both `/privacy-policy` (canonical) and
@@ -37,11 +37,7 @@ export function PrivacyContent() {
       ))}
 
       <h2 className="mb-2 mt-8 text-lg font-semibold">Contact form</h2>
-      <p className="mb-4">
-        If you submit the contact form, the name, email, and message you enter are delivered to me
-        as a private Telegram notification so I can reply. If you email directly, your message and
-        address reach my inbox. This information is used only to respond to you.
-      </p>
+      <p className="mb-4">{privacyContactForm}</p>
 
       <h2 className="mb-2 mt-8 text-lg font-semibold">Hosting</h2>
       <p className="mb-4">

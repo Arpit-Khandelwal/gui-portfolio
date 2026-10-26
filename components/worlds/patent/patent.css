@@ -562,6 +562,71 @@
   stroke-width: 1.5;
 }
 
+/* Hand-authored block diagrams: block names typed inside, flows labelled. */
+.pf .pf-label {
+  fill: var(--w-ink);
+  stroke: none;
+  font-family: var(--w-label);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pf .pf-ctx-label {
+  fill: var(--w-muted);
+  stroke: none;
+  font-family: var(--w-body);
+  font-size: 15px;
+  font-style: italic;
+}
+
+.pf .is-context > :not(text) {
+  stroke-dasharray: 5 4;
+  stroke-width: 1.25;
+}
+
+.pf .is-container > :first-child,
+.pf .is-container > g:first-child > :first-child {
+  stroke-dasharray: 10 4 2 4;
+}
+
+.pf .pf-node {
+  fill: var(--w-sheet);
+}
+
+.pf .pf-return > path:not(.pf-head) {
+  stroke-dasharray: 7 5;
+}
+
+.pf .pf-head {
+  stroke-linejoin: miter;
+}
+
+.pf .pf-edge-label rect {
+  fill: var(--w-sheet);
+  stroke: none;
+}
+
+.pf .pf-edge-label text {
+  fill: var(--w-ink);
+  stroke: none;
+  font-family: var(--w-body);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.pf .pf-note {
+  fill: var(--w-muted);
+  stroke: none;
+  font-family: var(--w-body);
+  font-size: 14px;
+  font-style: italic;
+}
+
+.pf .pf-part.is-lit .pf-label {
+  fill: var(--w-accent);
+}
+
 /* FIG. 1 draws itself once; everything after it is already inked. */
 @media (prefers-reduced-motion: no-preference) {
   .pt-hero-draw .pf path,
@@ -587,8 +652,13 @@
     animation: pt-fade 0.8s var(--pt-ease) 1s both;
   }
 
-  .pt-hero-draw .pf .pf-num {
+  .pt-hero-draw .pf .pf-num,
+  .pt-hero-draw .pf text {
     animation: pt-fade 0.6s var(--pt-ease) 1.5s both;
+  }
+
+  .pt-hero-draw .pf .pf-edge-label rect {
+    animation: none;
   }
 }
 
@@ -801,7 +871,7 @@
 /* Further embodiments. */
 .pt-embodiments {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 34rem), 1fr));
   margin-inline: max(var(--pt-gutter), calc((100% - 90rem) / 2));
   border: 2px solid var(--w-line);
   background: var(--w-sheet);
