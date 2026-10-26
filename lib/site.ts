@@ -1,3 +1,4 @@
+// Copy follows ISO 24495-1 plain language, with STE-style sentence rules (ASD-STE100).
 import { profile } from "@/components/portfolio/data";
 
 /**
@@ -19,9 +20,9 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.arpitk
 export const SITE_HOSTS = ["www.arpitkhandelwal.com", "arpitkhandelwal.com"] as const;
 
 export const SITE_NAME = "Arpit Khandelwal";
-export const SITE_TITLE = "Arpit Khandelwal | Fractional AI & Backend Engineer";
+export const SITE_TITLE = "Arpit Khandelwal | AI and Backend Engineer";
 export const SITE_DESCRIPTION =
-  "Fractional AI & backend engineer for build sprints across AI agents, backend automation, browser workflows, APIs, and integration-heavy products.";
+  "Arpit Khandelwal leads tech at Reskilll and takes select 2-6 week build sprints: AI agents, backend APIs, browser automation and crypto infrastructure.";
 
 export const CONTACT_EMAIL = profile.email;
 

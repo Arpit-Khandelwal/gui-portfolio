@@ -27,6 +27,7 @@ import {
 } from "./dossier";
 import { DossierDeck } from "./dossier-deck";
 import { SprintReport } from "./sprint-report";
+import { track } from "@/lib/analytics";
 import "./game.css";
 
 const BEST_SCORE_KEY = "arpit-breaker-best";
@@ -42,6 +43,15 @@ const TOAST_SECONDS = 4;
 const LEVEL_CLEAR_SECONDS = 1.5;
 /** Bricks per multiplier step; mirrors COMBO_MULTIPLIER_STEP in the engine. */
 const COMBO_STEP = 4;
+
+/** Why a run ended, as reported on play_end. */
+type RunEndCause = "game_over" | "restart" | "leave";
+
+/** One run, from the first serve to game over, restart or leaving the page. */
+interface RunTracking {
+  readonly startedAt: number;
+  readonly cardsAtStart: number;
+}
 
 const EFFECT_LABELS: ReadonlyArray<{ key: "wideSeconds" | "stickySeconds" | "slowSeconds"; label: string }> = [
   { key: "wideSeconds", label: "Wide" },
@@ -79,13 +89,32 @@ export function BrickBreaker() {
   // finish, not something a lost run takes away.
   const [unlocked, setUnlocked] = useState<ReadonlySet<string>>(() => new Set<string>());
   const [toast, setToast] = useState<DossierCard | null>(null);
+  // Analytics only: the shell reports runs, the engine never knows about them.
+  const runRef = useRef<RunTracking | null>(null);
+  const cardsFoundRef = useRef(0);
+
+  const endRun = useCallback((cause: RunEndCause) => {
+    const run = runRef.current;
+    const game = gameRef.current;
+    if (!run || !game) return;
+    runRef.current = null;
+    track("play_end", {
+      score: game.score,
+      level: game.level,
+      cards_collected: cardsFoundRef.current,
+      cards_new: cardsFoundRef.current - run.cardsAtStart,
+      duration_s: Math.round((performance.now() - run.startedAt) / 1000),
+      cause,
+    });
+  }, []);
 
   const restart = useCallback(() => {
+    endRun("restart");
     const fresh = createGame();
     gameRef.current = fresh;
     setHud({ ...readHud(fresh), best: bestRef.current });
     canvasRef.current?.focus();
-  }, []);
+  }, [endRun]);
 
   const toggleMuted = useCallback(() => {
     setMuted((previous) => {
@@ -124,6 +153,7 @@ export function BrickBreaker() {
     } catch {
       // A corrupt or unavailable store just means starting the deck over.
     }
+    cardsFoundRef.current = found.size;
 
     const resize = () => {
       const cssWidth = canvas.clientWidth;
@@ -225,6 +255,8 @@ export function BrickBreaker() {
     const reveal = (card: DossierCard | null) => {
       if (!card || found.has(card.id)) return;
       found.add(card.id);
+      cardsFoundRef.current = found.size;
+      track("play_card", { card: card.id });
       deckDirty = true;
       try {
         window.localStorage.setItem(CARDS_KEY, JSON.stringify([...found]));
@@ -253,6 +285,14 @@ export function BrickBreaker() {
         accumulator -= STEP_SECONDS;
       }
 
+      // The first serve of a fresh board starts a run; later serves (after a
+      // lost ball or a cleared wall) belong to the same run.
+      if (runRef.current === null && active.status === "playing") {
+        runRef.current = { startedAt: now, cardsAtStart: found.size };
+        track("play_start", { level: active.level });
+      }
+
+      let gameOver = false;
       for (const event of active.events) {
         audio.play(event.kind, event.combo);
 
@@ -267,8 +307,12 @@ export function BrickBreaker() {
           // The floor: someone who never clears a letter still leaves knowing
           // something, because losing a ball is the one thing they will do.
           reveal(nextMissCard(found));
+        } else if (event.kind === "gameOver") {
+          // After any final-ball card, so cards_collected includes it.
+          gameOver = true;
         }
       }
+      if (gameOver) endRun("game_over");
       active.events.length = 0;
 
       if (showingToast) {
@@ -316,7 +360,13 @@ export function BrickBreaker() {
 
     frame = requestAnimationFrame(loop);
 
+    // Closing or leaving the tab mid-run still reports how the run went.
+    const onPageHide = () => endRun("leave");
+    window.addEventListener("pagehide", onPageHide);
+
     return () => {
+      endRun("leave");
+      window.removeEventListener("pagehide", onPageHide);
       cancelAnimationFrame(frame);
       observer.disconnect();
       canvas.removeEventListener("pointerdown", onPointerDown);
@@ -328,7 +378,7 @@ export function BrickBreaker() {
       audioRef.current = null;
       gameRef.current = null;
     };
-  }, []);
+  }, [endRun]);
 
   const activeEffects = EFFECT_LABELS.filter((effect) => hud.effects[effect.key] > 0);
   // The sprint report already reports the collection, so a card revealed by the

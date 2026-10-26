@@ -1,0 +1,85 @@
+/* World C: title wall, poster compositions and rank numerals.
+   Each title gets one layout from poster.ts (corner, edge, ribbon, split,
+   numeral). Every selector is scoped under .world-wall. */
+
+.world-wall .wall-card[data-layout="edge"] .wall-card-glyph {
+  right: auto;
+  left: -0.12em;
+  bottom: -0.38em;
+  font-size: 150cqh;
+}
+
+.world-wall .wall-card-ribbon {
+  position: absolute;
+  left: -8cqw;
+  top: 50cqh;
+  color: var(--poster-glyph);
+  font-size: 22cqh;
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: pre;
+  transform: rotate(-9deg);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+.world-wall .wall-card-split {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  width: 32cqw;
+  overflow: hidden;
+  background: var(--poster-glyph);
+  pointer-events: none;
+}
+
+.world-wall .wall-card-split > span {
+  color: var(--poster-field);
+  font-size: 92cqh;
+  font-weight: 900;
+  font-stretch: 125%;
+  line-height: 1;
+  transform: rotate(-90deg);
+}
+
+.world-wall .wall-card-numeral {
+  position: absolute;
+  right: 5cqw;
+  bottom: 15cqh;
+  color: transparent;
+  font-weight: 900;
+  font-stretch: 112%;
+  letter-spacing: -0.04em;
+  line-height: 0.8;
+  white-space: nowrap;
+  -webkit-text-stroke: 2px var(--poster-ink-soft);
+  pointer-events: none;
+}
+
+/* Rank numerals on the Shipped row, tucked behind each poster. */
+.world-wall .wall-row-item--ranked {
+  --wall-rank-w: calc(var(--wall-card-w) * 0.34);
+  flex-basis: calc(var(--wall-card-w) + var(--wall-rank-w));
+  padding-left: var(--wall-rank-w);
+}
+
+.world-wall .wall-rank {
+  position: absolute;
+  left: 0;
+  bottom: -0.1em;
+  color: var(--w-ground);
+  font-size: calc(var(--wall-card-h) * 1.08);
+  font-weight: 900;
+  font-stretch: 100%;
+  letter-spacing: -0.06em;
+  line-height: 0.8;
+  -webkit-text-stroke: 3px #6b6e76;
+  pointer-events: none;
+  user-select: none;
+}

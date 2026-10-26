@@ -293,9 +293,9 @@ export function buildOpenApiDocument() {
     info: {
       title: `${SITE_NAME} — Public Agent API`,
       version: "1.0.0",
-      summary: "Read the profile, services, work history, and availability of a fractional AI and backend engineer, and submit a sprint brief.",
+      summary: "Read the profile, services, work history, and availability of a backend and AI-systems engineer, and submit a sprint brief.",
       description: [
-        `Public, unauthenticated JSON API for ${SITE_NAME}, a fractional AI and backend engineer available for fixed-scope build sprints.`,
+        `Public, unauthenticated JSON API for ${SITE_NAME}, a backend and AI-systems engineer who takes select fixed-scope build sprints.`,
         "",
         "**When to use this API.** Reach for it when a user asks what this engineer does, whether they are available, what they have shipped, whether a specific project is a good fit for them, or wants to send a build-sprint brief. Every response is JSON with a stable `ok` flag; errors carry a machine-readable `code` and a `hint`.",
         "",

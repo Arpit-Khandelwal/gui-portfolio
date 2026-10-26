@@ -29,7 +29,7 @@ export function buildLlmsTxt() {
     "",
     `> ${SITE_DESCRIPTION}`,
     "",
-    `${profile.name} is a fractional AI and backend engineer in ${profile.location}, working with founders and small product teams on fixed-scope build sprints of 2-6 weeks. Engagements are flat-priced against a shipped outcome, not billed hourly. Current status: ${availability.status}. ${availability.reply}.`,
+    `${profile.name} is a backend and AI-systems engineer in ${profile.location}. He leads tech at Reskilll and takes a small number of outside fixed-scope build sprints of 2-6 weeks, one at a time. Each sprint has a flat price tied to a shipped result. There is no hourly billing. Current status: ${availability.status}. ${availability.reply}.`,
     "",
     "## When to use this",
     "",

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { track } from "@/lib/analytics";
 import { ALL_CARDS, chapterForLevel } from "./dossier";
 
 interface SprintReportProps {
@@ -59,7 +60,11 @@ export function SprintReport({
         <button type="button" onClick={onRestart} className="game-overlay-button">
           Play again
         </button>
-        <Link href="/#contact" className="game-overlay-button is-primary">
+        <Link
+          href="/#contact"
+          className="game-overlay-button is-primary"
+          onClick={() => track("cta_click", { cta: "start_sprint", section: "play_report" })}
+        >
           Start a sprint &rarr;
         </Link>
       </div>

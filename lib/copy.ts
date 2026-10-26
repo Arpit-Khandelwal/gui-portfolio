@@ -1,3 +1,4 @@
+// Copy follows ISO 24495-1 plain language, with STE-style sentence rules (ASD-STE100).
 import { profile } from "@/components/portfolio/data";
 
 /**
@@ -11,61 +12,71 @@ export type CopySection = {
 };
 
 export const aboutIntro =
-  "Arpit Khandelwal is a fractional AI and backend engineer based in Bengaluru, India, working with founders and small product teams on fixed-scope build sprints of two to six weeks.";
+  "Arpit Khandelwal is a backend and AI-systems engineer in Bengaluru, India. He leads tech at Reskilll. He also takes a small number of fixed-scope build sprints of two to six weeks, one at a time.";
 
 export const aboutSections: readonly CopySection[] = [
   {
-    heading: "What this practice is",
+    heading: "Work today",
     paragraphs: [
-      "This is a one-person engineering practice, not an agency and not a staffing firm. Engagements are fixed-scope, fixed-window build sprints: a single senior engineer joins an existing team or an existing codebase, ships a named outcome, and hands the work back with documentation the team can act on.",
-      "The work concentrates on the parts of a product that are awkward to hire for and easy to get wrong: authentication, data models, integrations with third-party systems, AI agents that have to survive real users, browser automation against surfaces that were never meant to be automated, and the operational glue between all of it.",
+      "Arpit leads tech at Reskilll. He built its platform end to end: OTP and Google OAuth login, a CMS console, a judging and submissions engine, and organiser dashboards. For a national hackathon, the platform took more than 50,000 registrations on one t3.micro instance. It needed zero deployments after the dev close, and it held off spam and attacks.",
+      "Outside Reskilll, he takes a small number of build sprints, one at a time. This outside work is a one-person practice. It is not an agency, and it is not a staffing firm.",
+      "The sprints focus on the parts of a product that are hard to hire for and easy to get wrong. These are auth, data models, third-party integrations, AI agents that must hold up with real users, and automation of surfaces that have no API.",
     ],
   },
   {
     heading: "Background",
     paragraphs: [
-      "Previously an AI and backend engineer at Avici Money, building AI concierge infrastructure for ordering, booking, and task execution, and a software developer at Hewlett Packard Enterprise working on microservice integrations across security tooling including WebInspect, Burp Suite, OWASP ZAP, and OpenVAS.",
-      "Alongside client work there is a long public archive of shipped experiments: MCP servers, retrieval-backed chatbots, Solana programs and dApps, media pipelines, and automation bots. Those projects exist because the fastest way to know whether a technique survives production is to put it in production.",
+      "From January to July 2025, he was an AI and backend engineer at Avici Money. There he built agent orchestration for an AI concierge: tool calls, task routing and multi-step state. One part was a Playwright-backed MCP server that let the concierge operate a closed consumer app.",
+      "From 2023 to 2024, he was a software developer at Hewlett Packard Enterprise. He worked on DAST microservices that join WebInspect, Burp Suite, OWASP ZAP and OpenVAS output into one pipeline.",
+      "He has done freelance work since 2021: LLM workflows, scrapers, FFmpeg pipelines, bots and Solana programs. Next to that work sits a long public archive of builds. He puts each technique into production to find out if it holds up.",
     ],
   },
   {
-    heading: "How sprints run",
+    heading: "Open source and community",
     paragraphs: [
-      "A sprint starts with a scoping call, usually within 48 hours of first contact. Scope is written down and signed off before any code is written, and pricing is flat per sprint and tied to a shipped outcome rather than billed hourly.",
-      "During the sprint the cadence is weekly: merged pull requests, a working demo, and a short note covering what changed and which tradeoffs were taken. At the end, handoff documentation goes to the team so the work keeps moving without a dependency on the person who wrote it.",
+      "He sends small, specific pull requests to other projects. Merged work includes neuralink/tsui, GopeedLab/gopeed, anmolkapil/plexo, TryCaspian/caspian-sdk and code100x/job-board. More pull requests are in review at sgl-project/sglang, CopilotKit, mlc-ai/xgrammar and neuralinkcorp/datarepo.",
+      "He contributes to Superteam India. In May 2026, he judged more than 20 projects at a hackathon. He also ran a Reskilll enterprise bootcamp in Spain.",
+    ],
+  },
+  {
+    heading: "How a sprint runs",
+    paragraphs: [
+      "A sprint starts with a scoping call, usually within 48 hours of the first message. Both sides write down the scope and sign it off before any code starts. The price is flat for each sprint and is tied to a shipped result. There is no hourly billing.",
+      "Each week brings merged pull requests, a working demo and a short note on what changed and which tradeoffs were made. At the end, the team gets handoff documents. The team can then continue the work without the person who wrote it.",
     ],
   },
   {
     heading: "Good and bad fits",
     paragraphs: [
-      "A good fit looks like an AI, automation, retrieval, or backend problem with a real user-facing outcome attached, or a prototype that needs a credible production path. A bad fit looks like landing-page polish, a vague idea with no defined users or decisions, or discovery work that is mostly meetings.",
-      "Saying no to a bad fit quickly is part of the service. Every inbound brief gets a reply within 24 hours, including the ones that are not a fit.",
+      "A good fit is an AI, automation, retrieval or backend problem with a real result for users. A prototype that needs a production path is also a good fit.",
+      "A bad fit is landing-page polish, a vague idea with no users or decisions, or discovery work that is mostly meetings.",
+      "A fast no to a bad fit is part of the service. Every brief gets a reply within 24 hours, including briefs that are not a fit.",
     ],
   },
 ];
 
-export const contactIntro = `The fastest way to start a conversation is a written brief. Email ${profile.email} directly, or use the sprint configurator on the homepage to generate one. Replies go out within 24 hours, every time, including for briefs that are not a fit.`;
+export const contactIntro = `A written brief is the fastest way to start. Email ${profile.email}, or use the sprint configurator on the homepage to write one. You get a reply within 24 hours, also when the brief is not a fit.`;
 
 export const contactSections: readonly CopySection[] = [
   {
-    heading: "What to include in a first message",
+    heading: "What to put in a first message",
     paragraphs: [
-      "Four things make a brief immediately actionable: the user-facing outcome you want to exist at the end of the sprint, the external systems involved (APIs, databases, model providers, third-party surfaces), the current state of the work (idea, prototype, broken integration, or scaling and handoff), and the deadline that matters.",
-      "A brief with those four things gets a real answer: whether it is a fit, the smallest useful slice to ship first, and a flat sprint price. A brief without them gets a short list of clarifying questions instead, which costs both sides a day.",
+      "Put four things in the brief. First, name the result that users will see at the end of the sprint. Second, list the external systems: APIs, databases, model providers or third-party surfaces. Third, give the current state: idea, prototype, broken integration, or scaling and handoff. Fourth, give the deadline that matters.",
+      "A brief with those four things gets a real answer. The reply says if the work is a fit, names the smallest useful slice to ship first, and gives a flat sprint price. A brief without them gets a short list of questions instead. That costs both sides a day.",
     ],
   },
   {
-    heading: "Response times and process",
+    heading: "Reply times and process",
     paragraphs: [
-      "First reply lands within 24 hours. If the brief is a fit, the next step is a scoping call within 48 hours. Work begins once written scope is agreed, and never before.",
-      "Availability is limited by design, because sprints are run one at a time rather than in parallel. Current availability is published on the homepage and in the machine-readable availability endpoint.",
+      "The first reply comes within 24 hours. If the brief is a fit, the next step is a scoping call within 48 hours. Work starts only after both sides agree on a written scope.",
+      "Arpit leads tech at Reskilll, so he takes few outside sprints. He runs one sprint at a time, never several in parallel. The homepage and the machine-readable availability endpoint show the current status.",
     ],
   },
   {
     heading: "For automated agents",
     paragraphs: [
-      "Agents should not attempt to submit the contact form by driving the browser. Post a JSON body to the documented contact endpoint instead, which validates the payload and returns structured JSON on both success and failure. The endpoint, its schema, its error codes, and its rate-limit policy are described in the published OpenAPI document.",
-      "Do not use the contact endpoint for sales outreach, list building, or unsolicited bulk messages. It exists so a person or an agent acting for a person can start a real engagement.",
+      "Do not drive the browser to submit the contact form. Send a JSON body to the documented contact endpoint instead. The endpoint checks the payload and returns structured JSON on success and on failure. The published OpenAPI document describes the endpoint, its schema, its error codes and its rate limits.",
+      "Do not use the contact endpoint for sales outreach, list building or bulk messages. It exists so that a person, or an agent that acts for a person, can start a real engagement.",
     ],
   },
 ];
@@ -76,4 +87,20 @@ export const contactChannels: readonly { label: string; value: string; href: str
   { label: "LinkedIn", value: "arpit-khandelwal", href: profile.linkedin },
   { label: "X", value: "@ArpitKhandelwa3", href: profile.x },
   { label: "Résumé", value: "cv.arpitkhandelwal.com", href: profile.resume },
+];
+
+/**
+ * What the analytics tags measure, for the privacy policy. Shared by the HTML
+ * page and its markdown twin so the two cannot drift. Keep it in step with
+ * `lib/analytics.ts` (ANALYTICS_EVENTS) and the GTM workspace.
+ */
+export const privacyUpdated = "October 27, 2026";
+
+export const privacyMeasured: readonly string[] = [
+  "The site measures how its pages are used. This includes page views, how far you scroll, which sections you see, how long a page stays visible, and page speed (Core Web Vitals).",
+  "It also records some clicks. These are links to other sites (only the domain and path, never the query string), menu links, email links, and the options you pick in the brief builder.",
+  "On /play it records the game score, the game length and the cards you find. It also records which site look you chose, and the address of any page that does not exist.",
+  "The site never sends the text that you type into a form. Names, email addresses and messages do not go to Google Analytics or Clarity. Clarity masks every form, and it masks most text and images in session replays.",
+  "Google Analytics keeps this data for 14 months. Google signals and User-ID are off.",
+  "In the EU/EEA, the UK and Switzerland, events from before you accept stay in your browser. They are sent only if you accept on the same page. If you decline, nothing is sent.",
 ];

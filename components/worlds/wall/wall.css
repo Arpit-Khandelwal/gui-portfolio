@@ -1,0 +1,761 @@
+/* World C: title wall. Every selector is scoped under .world-wall.
+   Deep neutral ground; the posters are the only colour; one amber focus ring. */
+
+.world-wall {
+  --wall-gutter: clamp(1rem, 3.4vw, 3rem);
+  --wall-gap: 0.75rem;
+  --wall-card-w: clamp(14.5rem, 21vw, 21rem);
+  --wall-card-h: calc(var(--wall-card-w) * 0.75);
+  --wall-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --wall-edge: #70737b;
+  --wall-strip: rgb(13 14 17 / 0.95);
+  --wall-soft: #c4c6cc;
+
+  min-height: 100dvh;
+  overflow-x: clip;
+  background: var(--w-ground);
+  color: var(--w-ink);
+  font-family: var(--w-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  font-stretch: 100%;
+  scrollbar-color: color-mix(in srgb, var(--w-ink) 30%, transparent) var(--w-ground);
+}
+
+.world-wall :focus-visible {
+  outline: 3px solid var(--w-accent);
+  outline-offset: 3px;
+}
+
+.world-wall main:focus {
+  outline: none;
+}
+
+.world-wall section[id] {
+  scroll-margin-top: 5rem;
+}
+
+.world-wall h1,
+.world-wall h2,
+.world-wall h3,
+.world-wall h4,
+.world-wall p {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Header                                                              */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-skip {
+  position: absolute;
+  top: 0.5rem;
+  left: var(--wall-gutter);
+  z-index: 40;
+  padding: 0.6rem 1rem;
+  border-radius: var(--w-radius);
+  background: var(--w-accent);
+  color: var(--w-accent-ink);
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-160%);
+}
+
+.world-wall .wall-skip:focus-visible {
+  transform: none;
+}
+
+.world-wall .wall-header {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 2rem;
+  padding: 0.85rem var(--wall-gutter);
+  background: var(--w-ground);
+}
+
+.world-wall .wall-mark {
+  font-size: 1.15rem;
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.world-wall .wall-nav ul {
+  display: flex;
+  gap: 0.25rem 1.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.world-wall .wall-nav a {
+  display: inline-block;
+  padding: 0.35rem 0;
+  color: var(--w-muted);
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 160ms var(--wall-ease);
+}
+
+.world-wall .wall-nav a:hover {
+  color: var(--w-ink);
+}
+
+.world-wall .wall-switcher {
+  margin-left: auto;
+}
+
+@media (min-width: 1024px) {
+  .world-wall .wall-header {
+    position: sticky;
+    top: 0;
+    background: rgb(13 14 17 / 0.97);
+    box-shadow: 0 1px 0 var(--w-hair);
+  }
+}
+
+@media (max-width: 760px) {
+  .world-wall .wall-nav {
+    order: 3;
+    width: calc(100% + 2 * var(--wall-gutter));
+    margin-inline: calc(-1 * var(--wall-gutter));
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* Edge fade shows the row continues past the screen edge. */
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent);
+  }
+
+  .world-wall .wall-nav ul {
+    padding-inline: var(--wall-gutter) 3rem;
+  }
+
+  .world-wall .wall-switcher {
+    margin-left: 0;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Buttons                                                             */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0 1.3rem;
+  border: 0;
+  border-radius: var(--w-radius);
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 700;
+  font-stretch: 110%;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 240ms var(--wall-ease),
+    background-color 200ms var(--wall-ease);
+}
+
+.world-wall .wall-button:active {
+  transform: scale(0.98);
+}
+
+.world-wall .wall-button--poster {
+  background: var(--poster-ink);
+  color: var(--poster-field);
+  box-shadow: 0 6px 18px -10px rgb(0 0 0 / 0.55);
+}
+
+.world-wall .wall-button--poster:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -12px rgb(0 0 0 / 0.6);
+}
+
+.world-wall .wall-button--poster-outline {
+  background: transparent;
+  color: var(--poster-ink);
+  box-shadow: inset 0 0 0 2px var(--poster-ink);
+}
+
+.world-wall .wall-button--poster-outline:hover {
+  background: color-mix(in srgb, var(--poster-ink) 14%, transparent);
+}
+
+.world-wall .wall-button--solid {
+  background: var(--w-ink);
+  color: var(--w-ground);
+}
+
+.world-wall .wall-button--solid:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+
+.world-wall .wall-button--solid:disabled {
+  opacity: 0.6;
+  cursor: progress;
+  transform: none;
+}
+
+.world-wall .wall-button--ghost {
+  min-height: 2.5rem;
+  padding: 0 1rem;
+  background: transparent;
+  color: var(--w-ink);
+  font-size: 0.88rem;
+  box-shadow: inset 0 0 0 1px var(--wall-edge);
+}
+
+.world-wall .wall-button--ghost:hover {
+  background: color-mix(in srgb, var(--w-ink) 8%, transparent);
+}
+
+/* ------------------------------------------------------------------ */
+/* Billboard                                                           */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-billboard {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 23rem);
+  gap: clamp(1.25rem, 2.5vw, 2.5rem);
+  height: clamp(30rem, 60svh, 40rem);
+  margin: 0.5rem var(--wall-gutter) 0;
+}
+
+/* Backdrop: the featured hue bleeds into the ground, like a title page. */
+.world-wall .wall-billboard::before {
+  content: "";
+  position: absolute;
+  inset: -5rem calc(-1 * var(--wall-gutter)) -7rem;
+  z-index: -1;
+  background:
+    radial-gradient(60% 75% at 28% 30%, color-mix(in srgb, var(--poster-field) 24%, transparent), transparent 72%),
+    radial-gradient(40% 60% at 85% 10%, color-mix(in srgb, var(--poster-field) 10%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+.world-wall .wall-billboard-poster {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 1rem;
+  min-width: 0;
+  padding: clamp(1.5rem, 3.4vw, 3rem);
+  overflow: hidden;
+  border-radius: var(--w-radius);
+  background: var(--poster-field);
+  color: var(--poster-ink);
+  box-shadow: 0 30px 60px -36px rgb(0 0 0 / 0.8);
+}
+
+.world-wall .wall-billboard-glyph {
+  position: absolute;
+  top: -0.2em;
+  right: -0.05em;
+  z-index: -1;
+  font-size: clamp(11rem, 23vw, 24rem);
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--poster-glyph);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Vignette: corners fall off away from the text block at lower left. */
+.world-wall .wall-billboard-poster::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(140% 120% at 0% 100%, transparent 48%, rgb(0 0 0 / 0.34) 100%),
+    linear-gradient(180deg, rgb(0 0 0 / 0.12), transparent 30%);
+  pointer-events: none;
+}
+
+.world-wall .wall-billboard-title,
+.world-wall .wall-billboard-line,
+.world-wall .wall-billboard-meta,
+.world-wall .wall-billboard-actions {
+  position: relative;
+}
+
+.world-wall .wall-billboard-title {
+  max-width: 11ch;
+  font-size: clamp(2.75rem, 6.4vw, 6rem);
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.035em;
+  line-height: 0.9;
+  text-wrap: balance;
+}
+
+.world-wall .wall-billboard-line {
+  max-width: 48ch;
+  font-size: clamp(1rem, 0.9rem + 0.3vw, 1.15rem);
+  font-weight: 500;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.world-wall .wall-billboard-meta {
+  color: var(--poster-ink-soft);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.world-wall .wall-billboard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.world-wall .wall-billboard-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.35rem;
+  min-width: 0;
+}
+
+.world-wall .wall-billboard-about {
+  color: var(--w-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.world-wall .wall-picker-label {
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-stretch: 112%;
+}
+
+.world-wall .wall-picker-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.world-wall .wall-picker-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--w-muted);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 180ms var(--wall-ease);
+}
+
+.world-wall .wall-picker-option:focus-visible {
+  outline-offset: 4px;
+}
+
+.world-wall .wall-picker-avatar {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--w-radius);
+  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  font-weight: 900;
+  font-stretch: 125%;
+  opacity: 0.55;
+  transition:
+    transform 320ms var(--wall-ease),
+    opacity 220ms var(--wall-ease);
+}
+
+.world-wall .wall-picker-option:hover {
+  color: var(--w-ink);
+}
+
+.world-wall .wall-picker-option:hover .wall-picker-avatar {
+  opacity: 0.85;
+}
+
+.world-wall .wall-picker-option[aria-pressed="true"] {
+  color: var(--w-ink);
+  font-weight: 700;
+}
+
+.world-wall .wall-picker-option[aria-pressed="true"] .wall-picker-avatar {
+  opacity: 1;
+  box-shadow:
+    0 0 0 2px var(--w-ground),
+    0 0 0 4px var(--w-ink);
+}
+
+.world-wall .wall-picker-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.world-wall .wall-billboard-promise {
+  min-height: calc(1.35em * 3);
+  font-size: clamp(1.1rem, 1rem + 0.35vw, 1.3rem);
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.world-wall .wall-billboard-status {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--w-muted);
+  font-size: 0.86rem;
+}
+
+.world-wall .wall-status-dot {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--w-ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--w-ink) 20%, transparent);
+}
+
+@media (max-width: 900px) {
+  .world-wall .wall-billboard {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+  }
+
+  .world-wall .wall-billboard-poster {
+    min-height: 26rem;
+  }
+
+  .world-wall .wall-billboard-glyph {
+    font-size: 11rem;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Rows                                                                */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-row,
+.world-wall .wall-block {
+  margin-top: clamp(2rem, 3.6vw, 3rem);
+}
+
+.world-wall .wall-row-head,
+.world-wall .wall-block-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+  padding-inline: var(--wall-gutter);
+}
+
+.world-wall .wall-row-title {
+  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.6rem);
+  font-weight: 800;
+  font-stretch: 115%;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+.world-wall .wall-row-intro {
+  color: var(--w-muted);
+  font-size: 0.92rem;
+}
+
+.world-wall .wall-row-nav {
+  display: flex;
+  gap: 0.4rem;
+  margin-left: auto;
+  align-self: center;
+}
+
+.world-wall .wall-row-step {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--w-radius);
+  background: transparent;
+  color: var(--w-ink);
+  box-shadow: inset 0 0 0 1px var(--wall-edge);
+  cursor: pointer;
+  transition:
+    background-color 180ms var(--wall-ease),
+    opacity 180ms var(--wall-ease);
+}
+
+.world-wall .wall-row-step:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--w-ink) 10%, transparent);
+}
+
+.world-wall .wall-row-step:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+@media (max-width: 767px), (hover: none) {
+  .world-wall .wall-row-nav {
+    display: none;
+  }
+}
+
+.world-wall .wall-row-list {
+  display: flex;
+  gap: var(--wall-gap);
+  margin: 0;
+  padding: 1rem var(--wall-gutter) 1.4rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  list-style: none;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--wall-gutter);
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--w-ink) 22%, transparent) transparent;
+}
+
+.world-wall .wall-row-list:focus-visible {
+  outline-offset: -3px;
+}
+
+.world-wall .wall-row-item {
+  position: relative;
+  flex: 0 0 var(--wall-card-w);
+  scroll-snap-align: start;
+}
+
+.world-wall .wall-row-item--wide {
+  flex-basis: min(calc(var(--wall-card-w) * 2 + var(--wall-gap)), 86vw);
+}
+
+/* ------------------------------------------------------------------ */
+/* Title card (poster)                                                 */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: var(--wall-card-h);
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--w-radius);
+  container-type: size;
+  background: var(--poster-field);
+  color: var(--poster-ink);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 14px 28px -18px rgb(0 0 0 / 0.75);
+  transition:
+    transform 460ms var(--wall-ease),
+    opacity 320ms var(--wall-ease);
+}
+
+.world-wall .wall-card-glyph {
+  position: absolute;
+  right: -0.04em;
+  bottom: -0.22em;
+  color: var(--poster-glyph);
+  font-size: 118cqh;
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.world-wall .wall-card-title {
+  position: absolute;
+  top: 7cqh;
+  left: 6cqw;
+  right: 6cqw;
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.world-wall .wall-card-foot {
+  position: absolute;
+  left: 6cqw;
+  right: 6cqw;
+  bottom: 7cqh;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  color: var(--poster-ink-soft);
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.world-wall .wall-card-foot > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.world-wall .wall-card-badge {
+  flex: none;
+  padding: 0.18rem 0.45rem;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-stretch: 110%;
+  line-height: 1.1;
+}
+
+.world-wall .wall-card-badge[data-tone="solid"] {
+  background: var(--poster-ink);
+  color: var(--poster-field);
+}
+
+.world-wall .wall-card-badge[data-tone="outline"] {
+  box-shadow: inset 0 0 0 1.5px var(--poster-ink);
+  color: var(--poster-ink);
+}
+
+.world-wall .wall-card-meta {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  display: grid;
+  gap: 0.3rem;
+  max-height: 54%;
+  padding: 0.65rem 6cqw 0.75rem;
+  overflow: hidden;
+  background: var(--wall-strip);
+  color: var(--w-ink);
+  font-size: 0.76rem;
+  line-height: 1.35;
+  transform: translateY(101%);
+  transition: transform 460ms var(--wall-ease);
+}
+
+.world-wall .wall-card-lead {
+  font-size: 0.84rem;
+  font-weight: 650;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.world-wall .wall-card-detail {
+  color: var(--wall-soft);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.world-wall .wall-card-detail-label {
+  color: var(--w-ink);
+  font-weight: 650;
+}
+
+/* Signature: the focused card grows, shows its metadata, and the row dims. */
+.world-wall .wall-card:focus-visible {
+  z-index: 2;
+  outline-offset: 4px;
+}
+
+.world-wall .wall-card:focus-visible:not([aria-expanded="true"]) .wall-card-meta {
+  transform: none;
+}
+
+/* The open case shows its facts in the panel, so its card keeps the poster. */
+.world-wall .wall-card[aria-expanded="true"] {
+  box-shadow:
+    0 0 0 3px var(--w-ground),
+    0 0 0 5px var(--w-ink);
+}
+
+.world-wall .wall-row-item:has(.wall-card:focus-visible) {
+  z-index: 2;
+}
+
+.world-wall .wall-row-list:has(.wall-card:focus-visible) .wall-card:not(:focus-visible) {
+  opacity: 0.42;
+}
+
+@media (hover: hover) {
+  .world-wall .wall-card:hover:not([aria-expanded="true"]) .wall-card-meta {
+    transform: none;
+  }
+
+  .world-wall .wall-row-item:has(.wall-card:hover) {
+    z-index: 2;
+  }
+
+  .world-wall .wall-row-list:has(.wall-card:hover) .wall-card:not(:hover, :focus-visible) {
+    opacity: 0.42;
+  }
+}
+
+/* Touch screens have no hover: link cards (open source, small builds, play)
+   would open before their line was ever read, so their strip stays shown. */
+@media (hover: none) {
+  .world-wall a.wall-card .wall-card-meta {
+    transform: none;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .world-wall .wall-card:hover {
+    transform: scale(1.06);
+    box-shadow: 0 26px 40px -20px rgb(0 0 0 / 0.85);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .world-wall .wall-card:focus-visible {
+    transform: scale(1.06);
+    box-shadow: 0 26px 40px -20px rgb(0 0 0 / 0.85);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world-wall .wall-card,
+  .world-wall .wall-card-meta,
+  .world-wall .wall-button,
+  .world-wall .wall-picker-avatar {
+    transition: opacity 120ms linear;
+  }
+}

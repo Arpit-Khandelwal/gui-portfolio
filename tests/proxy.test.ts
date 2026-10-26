@@ -99,3 +99,45 @@ describe("markdown twins", () => {
     expect(rewriteTarget(call("/privacy", { accept: "text/markdown" }))).toBe("/md/privacy");
   });
 });
+
+describe("world switching", () => {
+  test("serves the default world at / when no world cookie is set", () => {
+    expect(rewriteTarget(call("/", { accept: "text/html" }))).toBeNull();
+  });
+
+  test("rewrites / to the chosen world's prerendered homepage", () => {
+    const response = call("/", { accept: "text/html", cookie: "world=lid" });
+    expect(rewriteTarget(response)).toBe("/w/lid");
+    expect(response.headers.get("vary")).toContain("Accept");
+  });
+
+  test("rewrites RSC requests for / too, so client navigation lands in the same world", () => {
+    expect(rewriteTarget(call("/", { RSC: "1", cookie: "world=wall" }))).toBe("/w/wall");
+  });
+
+  test("ignores the default world and unknown cookie values", () => {
+    expect(rewriteTarget(call("/", { accept: "text/html", cookie: "world=patent" }))).toBeNull();
+    expect(rewriteTarget(call("/", { accept: "text/html", cookie: "world=nope" }))).toBeNull();
+  });
+
+  test("does not rewrite other pages by world", () => {
+    expect(rewriteTarget(call("/about", { accept: "text/html", cookie: "world=lid" }))).toBeNull();
+  });
+
+  test("markdown still wins over the world rewrite", () => {
+    expect(rewriteTarget(call("/", { accept: "text/markdown", cookie: "world=lid" }))).toBe("/md");
+  });
+
+  test("?world= stores the world and redirects to the clean URL", () => {
+    const response = call("/?world=canon");
+    expect(response.status).toBe(307);
+    expect(new URL(response.headers.get("location") ?? "").search).toBe("");
+    expect(response.headers.get("set-cookie")).toContain("world=canon");
+  });
+
+  test("an unknown ?world= value redirects without setting a cookie", () => {
+    const response = call("/about?world=nope");
+    expect(response.status).toBe(307);
+    expect(response.headers.get("set-cookie")).toBeNull();
+  });
+});

@@ -1,0 +1,761 @@
+/* Lid world: process, terms, badges, FAQ, brief, footer, and the responsive and reduced-motion rules (loaded last so they win). */
+
+/* ------------------------------------------------- process: arrow stickers */
+
+/* Each step is an arrow sticker. The next one's notch takes the previous
+   one's point, so the run reads left to right. */
+.world-lid .lid-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 0;
+  padding-right: 34px;
+}
+
+.world-lid .lid-step {
+  position: relative;
+  isolation: isolate;
+  z-index: 1;
+  flex: 1 1 260px;
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  min-height: 190px;
+  margin-right: -34px;
+  padding: 24px 66px 24px 58px;
+  color: var(--fg);
+  transform: rotate(calc(var(--r, 0) * var(--rot-scale) * 1deg));
+}
+
+.world-lid .lid-step-title {
+  font-family: var(--w-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.world-lid .lid-step-text {
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+
+.world-lid .lid-step-when {
+  justify-self: start;
+  margin-top: 4px;
+  padding: 3px 9px 2px;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  font-family: var(--w-label);
+  font-size: 0.64rem;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------ terms: taped spec label */
+
+.world-lid .lid-spec {
+  position: relative;
+  max-width: 760px;
+  margin-top: 10px;
+  padding: 28px clamp(18px, 3vw, 32px) 26px;
+  border-radius: 3px;
+  background: var(--lid-paper);
+  box-shadow: 0 1px 1.5px rgba(22, 24, 28, 0.28), 0 10px 18px -10px rgba(22, 24, 28, 0.45);
+  transform: rotate(calc(var(--r, 0) * var(--rot-scale) * 1deg));
+}
+
+/* Two strips of tape hold the label to the lid. */
+.world-lid .lid-spec::before,
+.world-lid .lid-spec::after {
+  content: "";
+  position: absolute;
+  top: -14px;
+  width: 112px;
+  height: 30px;
+  background: rgba(250, 248, 236, 0.66);
+  box-shadow: 0 1px 2px rgba(22, 24, 28, 0.14);
+}
+
+.world-lid .lid-spec::before {
+  left: 26px;
+  transform: rotate(-5deg);
+}
+
+.world-lid .lid-spec::after {
+  right: 26px;
+  transform: rotate(4deg);
+}
+
+.world-lid .lid-spec-rows {
+  border-top: 4px solid var(--lid-ink);
+  border-bottom: 4px solid var(--lid-ink);
+}
+
+.world-lid .lid-spec-row {
+  display: grid;
+  grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr);
+  gap: 6px 18px;
+  padding: 13px 0;
+}
+
+.world-lid .lid-spec-row + .lid-spec-row {
+  border-top: 1.5px solid var(--lid-ink);
+}
+
+.world-lid .lid-spec-row dt {
+  padding-top: 3px;
+  font-family: var(--w-label);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.world-lid .lid-spec-row dd {
+  margin: 0;
+  font-size: 1.04rem;
+  font-weight: 520;
+  line-height: 1.42;
+  max-width: 58ch;
+}
+
+.world-lid .lid-spec-list {
+  display: grid;
+  gap: 6px;
+}
+
+.world-lid .lid-spec-list li {
+  position: relative;
+  padding-left: 16px;
+}
+
+.world-lid .lid-spec-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 7px;
+  height: 7px;
+  background: var(--lid-ink);
+}
+
+/* ------------------------------------------------------- conference badges */
+
+.world-lid .lid-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 64px 22px;
+  padding-top: 56px;
+}
+
+.world-lid .lid-conf {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 290px);
+  border: 6px solid #ffffff;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: var(--lid-sh-rest);
+  transform-origin: 50% -40px;
+  transform: rotate(calc(var(--r, 0) * var(--rot-scale) * 1deg));
+}
+
+/* The lanyard strap. */
+.world-lid .lid-conf::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -58px;
+  width: 20px;
+  height: 64px;
+  margin-left: -10px;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.22) 0 3px, transparent 3px 9px),
+    var(--strap);
+  box-shadow: 0 2px 3px rgba(22, 24, 28, 0.3);
+}
+
+.world-lid .lid-conf--orange { --strap: var(--lid-orange); --band: var(--lid-orange); --band-fg: #ffffff; }
+.world-lid .lid-conf--blue { --strap: var(--lid-blue); --band: var(--lid-blue); --band-fg: #ffffff; }
+.world-lid .lid-conf--green { --strap: var(--lid-green); --band: var(--lid-green); --band-fg: var(--lid-ink); }
+.world-lid .lid-conf--ink { --strap: var(--lid-ink); --band: var(--lid-ink); --band-fg: #ffffff; }
+
+.world-lid .lid-conf-hole {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: 34px;
+  height: 9px;
+  margin-left: -17px;
+  border-radius: 999px;
+  background: var(--lid-metal);
+  box-shadow: inset 0 1px 2px rgba(22, 24, 28, 0.45);
+  z-index: 1;
+}
+
+.world-lid .lid-conf-band {
+  padding: 26px 16px 10px;
+  border-radius: 10px 10px 0 0;
+  background: var(--band);
+  color: var(--band-fg);
+  font-family: var(--w-label);
+  font-size: 0.72rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.world-lid .lid-conf-body {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px 20px;
+}
+
+.world-lid .lid-conf-photo {
+  width: 72px;
+  height: 72px;
+  margin-bottom: 4px;
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(22, 24, 28, 0.35);
+}
+
+.world-lid .lid-conf-company {
+  font-family: var(--w-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.world-lid .lid-conf-role {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.world-lid .lid-conf-text {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--lid-muted);
+}
+
+.world-lid .lid-about-extra {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 32px 48px;
+  margin-top: 56px;
+}
+
+.world-lid .lid-mini-head {
+  margin-bottom: 14px;
+  font-family: var(--w-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.world-lid .lid-ribbons ul {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+
+.world-lid .lid-ribbon {
+  max-width: 100%;
+  padding: 10px 40px 11px 18px;
+  background: var(--lid-blue);
+  color: #ffffff;
+  font-weight: 650;
+  font-size: 1rem;
+  line-height: 1.35;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 18px) 50%, 100% 100%, 0 100%);
+  transform: rotate(calc(var(--r, 0) * var(--rot-scale) * 1deg));
+}
+
+.world-lid .lid-ribbon:nth-child(3n + 2) {
+  background: var(--lid-orange);
+}
+
+.world-lid .lid-ribbon:nth-child(3n) {
+  background: var(--lid-green);
+  color: var(--lid-ink);
+}
+
+.world-lid .lid-worked ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 10px;
+}
+
+.world-lid .lid-worked li {
+  padding: 8px 16px;
+  font-family: var(--w-display);
+  font-weight: 750;
+}
+
+/* ------------------------------------------------------------------- faq */
+
+.world-lid .lid-faq-list {
+  display: grid;
+  gap: 24px;
+  max-width: 880px;
+}
+
+.world-lid .lid-fold {
+  position: relative;
+  border: 6px solid #ffffff;
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: var(--lid-sh-rest);
+  transform: rotate(calc(var(--r, 0) * var(--rot-scale) * 1deg));
+}
+
+.world-lid .lid-fold:nth-child(even) {
+  margin-left: clamp(0px, 5vw, 64px);
+}
+
+.world-lid .lid-fold summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+  padding: 18px 40px 18px 22px;
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--w-display);
+  font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
+  font-weight: 800;
+  line-height: 1.2;
+  border-radius: 10px;
+}
+
+.world-lid .lid-fold summary::-webkit-details-marker {
+  display: none;
+}
+
+.world-lid .lid-fold-icon {
+  flex: none;
+  transition: transform 420ms var(--lid-ease);
+}
+
+.world-lid .lid-fold[open] .lid-fold-icon {
+  transform: rotate(45deg);
+}
+
+.world-lid .lid-fold p {
+  max-width: 65ch;
+  padding: 0 22px 22px;
+  font-size: 1.03rem;
+  line-height: 1.55;
+}
+
+/* ----------------------------------------------------------------- brief */
+
+.world-lid .lid-brief {
+  padding-bottom: 24px;
+}
+
+.world-lid .lid-brief-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  align-items: start;
+  gap: 32px;
+}
+
+.world-lid .lid-brief-sheet {
+  display: grid;
+  gap: 24px;
+  padding: clamp(20px, 3vw, 32px);
+  border-radius: 22px;
+  background:
+    linear-gradient(160deg, #ffffff 40%, #f3f4f5 100%);
+  box-shadow: 0 2px 3px rgba(22, 24, 28, 0.25), 0 22px 40px -18px rgba(22, 24, 28, 0.5);
+}
+
+.world-lid .lid-dots-label {
+  margin-bottom: 10px;
+  font-family: var(--w-display);
+  font-size: 1.12rem;
+  font-weight: 800;
+}
+
+.world-lid .lid-dots-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.world-lid .lid-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 2px dashed rgba(24, 24, 26, 0.62);
+  border-radius: 999px;
+  background: transparent;
+  font-weight: 620;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transform: rotate(calc(var(--r, 0) * var(--rot-scale) * 1deg));
+  transition: transform 420ms var(--lid-ease);
+}
+
+.world-lid .lid-dot:hover {
+  border-style: solid;
+}
+
+.world-lid .lid-dot[aria-pressed="true"] {
+  border: 4px solid #ffffff;
+  padding: 6px 15px;
+  background: linear-gradient(158deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 45%), var(--bg);
+  color: var(--fg);
+  font-weight: 750;
+  box-shadow: var(--lid-sh-rest);
+  cursor: default;
+}
+
+.world-lid .lid-printout {
+  padding-top: 18px;
+  border-top: 2px dashed rgba(24, 24, 26, 0.25);
+}
+
+.world-lid .lid-printout-text {
+  margin-bottom: 14px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--lid-paper);
+  box-shadow: inset 0 0 0 1.5px rgba(24, 24, 26, 0.16);
+  font-family: var(--w-body);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.world-lid .lid-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-family: var(--w-display);
+  font-size: 1.02rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 300ms var(--lid-ease);
+}
+
+.world-lid .lid-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.world-lid .lid-btn--ghost {
+  border: 2px solid var(--lid-ink);
+  background: #ffffff;
+}
+
+.world-lid .lid-btn--ghost:hover {
+  background: var(--lid-yellow);
+}
+
+.world-lid .lid-form {
+  --lid-focus: var(--lid-yellow);
+  display: grid;
+  gap: 16px;
+  padding: clamp(20px, 3vw, 30px);
+  border: 6px solid #ffffff;
+  border-radius: 24px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 45%), var(--lid-ink);
+  color: #ffffff;
+  box-shadow: var(--lid-sh-rest);
+  transform: rotate(calc(1 * var(--rot-scale) * 1deg));
+}
+
+.world-lid .lid-form-title {
+  font-family: var(--w-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.world-lid .lid-field {
+  display: grid;
+  gap: 6px;
+}
+
+.world-lid .lid-field label {
+  font-weight: 650;
+  font-size: 0.98rem;
+}
+
+.world-lid .lid-field :is(input, textarea) {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #ffffff;
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--lid-ink);
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.world-lid .lid-field textarea {
+  min-height: 210px;
+  resize: vertical;
+}
+
+.world-lid .lid-field :is(input, textarea):focus-visible {
+  outline-offset: 2px;
+}
+
+.world-lid .lid-btn--send {
+  justify-self: start;
+  border: 4px solid #ffffff;
+  background: var(--lid-yellow);
+  color: var(--lid-ink);
+}
+
+.world-lid .lid-btn--send:hover {
+  background: #ffe07a;
+}
+
+.world-lid .lid-btn--send:disabled {
+  cursor: progress;
+  background: #d9d2b4;
+}
+
+.world-lid .lid-form-status {
+  min-height: 1.5em;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  color: #ffffff;
+}
+
+/* ---------------------------------------------------------------- footer */
+
+.world-lid .lid-footer {
+  display: grid;
+  gap: 12px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(72px, 9vw, 120px) var(--lid-gutter) 48px;
+}
+
+.world-lid .lid-footer-name {
+  font-family: var(--w-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.world-lid .lid-footer-name span {
+  margin-left: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--lid-muted);
+}
+
+.world-lid .lid-footer-status {
+  color: var(--lid-muted);
+  font-weight: 520;
+}
+
+.world-lid .lid-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 6px;
+  margin-top: 6px;
+}
+
+.world-lid .lid-footer-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 8px;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.25em;
+}
+
+.world-lid .lid-footer-links a:hover {
+  text-decoration-thickness: 3px;
+}
+
+/* ------------------------------------------------------------ responsive */
+
+/* Below 1100px the lid stacks: badge first, then the builds as a packed,
+   flowing pile. */
+@media (max-width: 1099px) {
+  .world-lid {
+    --off: 0;
+    --rot-scale: 0.6;
+  }
+
+  .world-lid .lid-hero {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    gap: 40px;
+  }
+
+  .world-lid .lid-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    max-width: none;
+    aspect-ratio: auto;
+    padding: 6px 0;
+  }
+
+  .world-lid .lid-hs {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: calc(clamp(138px, 40vw, 208px) * max(1, var(--ratio) * 0.78));
+    max-width: 100%;
+    margin: -3px -5px;
+  }
+
+  .world-lid .lid-hs.lid-shape--pill {
+    aspect-ratio: 1.5;
+  }
+
+  .world-lid .lid-hs-title {
+    font-size: 1rem;
+  }
+
+  .world-lid .lid-hs-proof {
+    font-size: 0.72rem;
+  }
+
+  .world-lid .lid-shape--hexagon {
+    --pad: 6% 16%;
+  }
+
+  .world-lid .lid-brief-grid,
+  .world-lid .lid-about-extra {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .world-lid {
+    --rot-scale: 0.4;
+  }
+
+  .world-lid .lid-header {
+    gap: 10px 12px;
+  }
+
+  /* The nav is one row that scrolls sideways; the fade shows there is more. */
+  .world-lid .lid-nav {
+    order: 3;
+    flex-basis: 100%;
+    min-width: 0;
+  }
+
+  .world-lid .lid-nav ul {
+    flex-wrap: nowrap;
+    gap: 0;
+    overflow-x: auto;
+    padding: 2px 36px 2px 0;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, #000000 calc(100% - 44px), transparent);
+    mask-image: linear-gradient(90deg, #000000 calc(100% - 44px), transparent);
+  }
+
+  .world-lid .lid-nav ul::-webkit-scrollbar {
+    display: none;
+  }
+
+  .world-lid .lid-nav a {
+    padding: 0 9px;
+    white-space: nowrap;
+  }
+
+  .world-lid .lid-nav a:focus-visible {
+    outline-offset: -3px;
+  }
+
+  /* The world switcher keeps all four options on one row. */
+  .world-lid .world-switcher.lid-switcher {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .world-lid .lid-switcher .world-switcher-option {
+    min-height: 40px;
+    padding: 4px 3px;
+    font-size: 0.56rem;
+    line-height: 1.15;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .world-lid .lid-badge {
+    width: 100%;
+  }
+
+  .world-lid .lid-hero-actions {
+    padding-left: 0;
+  }
+
+  .world-lid .lid-send {
+    width: 128px;
+    font-size: 1.12rem;
+  }
+
+  .world-lid .lid-case,
+  .world-lid .lid-case--narrow,
+  .world-lid .lid-case--wide {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 0 24px;
+  }
+
+  .world-lid .lid-case-face {
+    min-height: 0;
+    padding: 26px 26px 22px;
+  }
+
+  .world-lid .lid-steps {
+    padding-right: 0;
+  }
+
+  .world-lid .lid-step {
+    flex-basis: 100%;
+    min-height: 150px;
+    margin-right: 0;
+  }
+
+  .world-lid .lid-spec-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .world-lid .lid-play-card {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 20px;
+  }
+
+  .world-lid .lid-play-art {
+    max-width: 220px;
+  }
+
+  .world-lid .lid-fold:nth-child(even) {
+    margin-left: 0;
+  }
+}
+
+/* Reduced motion: the flip and the lift swap instantly. */
+@media (prefers-reduced-motion: reduce) {
+  .world-lid *,
+  .world-lid *::before,
+  .world-lid *::after {
+    transition-duration: 0ms !important;
+  }
+}

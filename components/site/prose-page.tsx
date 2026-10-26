@@ -19,7 +19,7 @@ export function ProsePage({
   children?: ReactNode;
 }) {
   return (
-    <main className="mx-auto max-w-2xl px-6 py-16 text-sm leading-relaxed">
+    <main id="main" className="prose-main">
       <nav aria-label="Breadcrumb" className="mb-8 text-xs text-[color:var(--muted)]">
         <Link href="/" className="hover:text-[color:var(--accent)]">
           Home

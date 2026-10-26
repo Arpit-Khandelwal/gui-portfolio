@@ -5,7 +5,7 @@ import { findAgentDocument, allAgentDocumentPaths } from "@/lib/agent/markdown";
 import { buildArticleJsonLd } from "@/lib/agent/json-ld";
 import { buildLlmsTxt } from "@/lib/agent/llms-txt";
 import sitemap from "@/app/sitemap";
-import { GET as getRss } from "@/app/writing/rss.xml/route";
+import { GET as getRss } from "@/app/(site)/writing/rss.xml/route";
 import { absoluteUrl, SITE_URL } from "@/lib/site";
 
 describe("parseFrontMatter", () => {

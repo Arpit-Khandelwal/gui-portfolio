@@ -1,3 +1,4 @@
+// Copy follows ISO 24495-1 plain language, with STE-style sentence rules (ASD-STE100).
 import type { LucideIcon } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -61,6 +62,18 @@ export type CaseStudy = {
   stack: readonly string[];
   credibility: string;
   proof: readonly string[];
+  /** 3-5 system part labels (each 3 words or fewer), true to the stack. */
+  parts?: readonly string[];
+};
+
+export type OpenSourceState = "merged" | "in-review";
+
+export type OpenSourcePr = {
+  repo: string;
+  number: number;
+  title: string;
+  href: string;
+  state: OpenSourceState;
 };
 
 export type Experience = {

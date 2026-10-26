@@ -1,0 +1,602 @@
+/* World C: title wall, part two (case panel, about, guide, brief, footer).
+   Every selector is scoped under .world-wall. Tokens live in wall.css. */
+
+/* ------------------------------------------------------------------ */
+/* Inline case panel                                                   */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-panel {
+  display: grid;
+  grid-template-columns: minmax(11rem, 17rem) minmax(0, 1fr);
+  margin: 0.25rem var(--wall-gutter) 0;
+  overflow: hidden;
+  border-radius: var(--w-radius);
+  background: var(--w-sheet);
+  box-shadow: 0 24px 48px -32px rgb(0 0 0 / 0.9);
+  scroll-margin-block: 6rem 2rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .world-wall .wall-panel {
+    animation: wall-panel-in 520ms var(--wall-ease) both;
+  }
+}
+
+@keyframes wall-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.75rem);
+  }
+}
+
+.world-wall .wall-panel-poster {
+  display: flex;
+  align-items: flex-start;
+  padding: 1.5rem;
+  background: var(--poster-field);
+  color: var(--poster-ink);
+}
+
+.world-wall .wall-panel-poster-title {
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+  overflow-wrap: anywhere;
+}
+
+.world-wall .wall-panel-body {
+  display: grid;
+  gap: 1.1rem;
+  justify-items: start;
+  padding: clamp(1.25rem, 2.6vw, 2.25rem);
+}
+
+.world-wall .wall-panel-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem;
+  width: 100%;
+}
+
+.world-wall .wall-panel-title {
+  font-size: clamp(1.4rem, 1.2rem + 0.8vw, 2rem);
+  font-weight: 800;
+  font-stretch: 115%;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.world-wall .wall-panel-sub {
+  grid-row: 2;
+  color: var(--w-muted);
+  font-size: 0.88rem;
+}
+
+.world-wall .wall-panel-close {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--w-radius);
+  background: transparent;
+  color: var(--w-ink);
+  box-shadow: inset 0 0 0 1px var(--wall-edge);
+  cursor: pointer;
+}
+
+.world-wall .wall-panel-close:hover {
+  background: color-mix(in srgb, var(--w-ink) 10%, transparent);
+}
+
+.world-wall .wall-panel-cred {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.world-wall .wall-panel-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 2rem;
+  max-width: 72rem;
+  margin: 0;
+}
+
+.world-wall .wall-panel-facts dt,
+.world-wall .wall-panel-proof h4,
+.world-wall .wall-terms-list dt {
+  margin-bottom: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-stretch: 112%;
+  color: var(--w-muted);
+}
+
+.world-wall .wall-panel-facts dd {
+  max-width: 62ch;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.world-wall .wall-panel-proof ul,
+.world-wall .wall-terms-get {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.world-wall .wall-panel-proof li,
+.world-wall .wall-terms-get li {
+  position: relative;
+  padding-left: 1.1rem;
+}
+
+.world-wall .wall-panel-proof li::before,
+.world-wall .wall-terms-get li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.68em;
+  width: 0.5rem;
+  height: 2px;
+  background: var(--w-ink);
+}
+
+.world-wall .wall-pr-list {
+  display: grid;
+  width: 100%;
+  max-width: 60rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.world-wall .wall-pr {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+  padding: 0.75rem 0.25rem;
+  border-bottom: 1px solid var(--w-hair);
+  color: var(--w-ink);
+  text-decoration: none;
+  transition: background-color 160ms var(--wall-ease);
+}
+
+.world-wall .wall-pr:hover {
+  background: color-mix(in srgb, var(--w-ink) 6%, transparent);
+}
+
+.world-wall .wall-pr-number {
+  color: var(--w-muted);
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.world-wall .wall-pr-title {
+  text-wrap: pretty;
+}
+
+.world-wall .wall-pr-state {
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.world-wall .wall-pr-state[data-state="merged"] {
+  background: var(--w-ink);
+  color: var(--w-ground);
+}
+
+.world-wall .wall-pr-state[data-state="in-review"] {
+  box-shadow: inset 0 0 0 1px var(--wall-edge);
+  color: var(--w-ink);
+}
+
+@media (max-width: 760px) {
+  .world-wall .wall-pr {
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+  }
+
+  .world-wall .wall-pr > svg {
+    display: none;
+  }
+
+  .world-wall .wall-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .world-wall .wall-panel-poster {
+    min-height: 7rem;
+  }
+
+  .world-wall .wall-panel-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* About row (static notes)                                            */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-note {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  height: 100%;
+  min-height: var(--wall-card-h);
+  padding: 1.15rem 1.2rem;
+  border-radius: var(--w-radius);
+  background: var(--w-sheet);
+}
+
+.world-wall .wall-note-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  font-stretch: 120%;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.world-wall .wall-note-sub {
+  color: var(--w-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.world-wall .wall-note-text {
+  margin-top: auto;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.world-wall .wall-note-text--large {
+  font-size: 1.2rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.world-wall .wall-note-list {
+  display: grid;
+  gap: 0.25rem;
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ */
+/* Episode guide, terms, FAQ                                           */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-episodes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 clamp(1rem, 2.4vw, 2rem);
+  margin: 1.25rem 0 0;
+  padding: 0 var(--wall-gutter);
+  list-style: none;
+}
+
+.world-wall .wall-episode {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.15rem 0.9rem;
+  align-content: start;
+  padding-top: 1rem;
+  border-top: 1px solid var(--w-hair);
+}
+
+.world-wall .wall-episode-number {
+  grid-row: 1 / span 3;
+  color: var(--w-muted);
+  font-size: 2.6rem;
+  font-weight: 900;
+  font-stretch: 125%;
+  line-height: 0.9;
+}
+
+.world-wall .wall-episode-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-stretch: 112%;
+  line-height: 1.2;
+}
+
+.world-wall .wall-episode-when {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--w-muted);
+  font-size: 0.8rem;
+}
+
+.world-wall .wall-episode-text {
+  margin-top: 0.35rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.world-wall .wall-terms {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 1.5rem clamp(2rem, 5vw, 5rem);
+  margin-top: 1.25rem;
+  padding-inline: var(--wall-gutter);
+}
+
+.world-wall .wall-terms-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem 2rem;
+  margin: 0;
+}
+
+.world-wall .wall-terms-list dd {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.world-wall .wall-terms-get {
+  align-content: start;
+  font-size: 1.02rem;
+}
+
+.world-wall .wall-faq {
+  max-width: 52rem;
+  margin-top: 1rem;
+  padding-inline: var(--wall-gutter);
+}
+
+.world-wall .wall-faq-item {
+  border-bottom: 1px solid var(--w-hair);
+}
+
+.world-wall .wall-faq-item summary {
+  position: relative;
+  padding: 1rem 2.5rem 1rem 0;
+  font-size: 1.05rem;
+  font-weight: 650;
+  list-style: none;
+  cursor: pointer;
+}
+
+.world-wall .wall-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.world-wall .wall-faq-item summary::after {
+  content: "";
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-right: 2px solid var(--w-ink);
+  border-bottom: 2px solid var(--w-ink);
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform 320ms var(--wall-ease);
+}
+
+.world-wall .wall-faq-item[open] summary::after {
+  transform: translateY(-30%) rotate(225deg);
+}
+
+.world-wall .wall-faq-item summary:hover {
+  color: #ffffff;
+}
+
+.world-wall .wall-faq-item p {
+  max-width: 68ch;
+  padding-bottom: 1.15rem;
+  color: var(--wall-soft);
+  text-wrap: pretty;
+}
+
+@media (max-width: 1023px) {
+  .world-wall .wall-episodes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 1.25rem;
+  }
+
+  .world-wall .wall-terms {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .world-wall .wall-episodes,
+  .world-wall .wall-terms-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Brief                                                               */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-brief-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 2rem clamp(2rem, 4vw, 4rem);
+  margin-top: 1.25rem;
+  padding-inline: var(--wall-gutter);
+}
+
+.world-wall .wall-brief-builder {
+  display: grid;
+  gap: 1.25rem;
+  align-content: start;
+}
+
+.world-wall .wall-segment-label {
+  margin-bottom: 0.5rem;
+  color: var(--w-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-stretch: 112%;
+}
+
+.world-wall .wall-segment-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.world-wall .wall-segment-options button {
+  min-height: 2.6rem;
+  padding: 0 0.95rem;
+  border: 0;
+  border-radius: var(--w-radius);
+  background: transparent;
+  color: var(--w-ink);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: inset 0 0 0 1px var(--wall-edge);
+  cursor: pointer;
+  transition:
+    background-color 180ms var(--wall-ease),
+    color 180ms var(--wall-ease);
+}
+
+.world-wall .wall-segment-options button:hover {
+  background: color-mix(in srgb, var(--w-ink) 9%, transparent);
+}
+
+.world-wall .wall-segment-options button[aria-pressed="true"] {
+  background: var(--w-ink);
+  color: var(--w-ground);
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.world-wall .wall-brief-preview {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: start;
+  padding: 1.15rem 1.25rem 1.25rem;
+  border-radius: var(--w-radius);
+  background: var(--w-sheet);
+}
+
+.world-wall .wall-brief-preview .wall-segment-label {
+  margin: 0;
+}
+
+.world-wall .wall-brief-text {
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.world-wall .wall-form {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  justify-items: start;
+}
+
+.world-wall .wall-field {
+  display: grid;
+  gap: 0.4rem;
+  width: 100%;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-stretch: 112%;
+  color: var(--w-muted);
+}
+
+.world-wall .wall-field input,
+.world-wall .wall-field textarea {
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  border: 0;
+  border-radius: var(--w-radius);
+  background: var(--w-sheet);
+  color: var(--w-ink);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  font-stretch: 100%;
+  line-height: 1.5;
+  box-shadow: inset 0 0 0 1px var(--wall-edge);
+}
+
+.world-wall .wall-field textarea {
+  resize: vertical;
+}
+
+.world-wall .wall-field input:focus-visible,
+.world-wall .wall-field textarea:focus-visible {
+  outline-offset: 1px;
+}
+
+.world-wall .wall-form-status {
+  min-height: 1.5em;
+  color: var(--w-ink);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 900px) {
+  .world-wall .wall-brief-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Footer                                                              */
+/* ------------------------------------------------------------------ */
+
+.world-wall .wall-footer {
+  display: grid;
+  gap: 1rem;
+  margin-top: clamp(3rem, 6vw, 5rem);
+  padding: 2rem var(--wall-gutter) 2.5rem;
+  border-top: 1px solid var(--w-hair);
+}
+
+.world-wall .wall-footer-mark {
+  font-size: 1.4rem;
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.02em;
+}
+
+.world-wall .wall-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.world-wall .wall-footer-links a {
+  display: inline-block;
+  padding: 0.25rem 0;
+  color: var(--w-ink);
+  font-size: 0.92rem;
+  text-decoration-color: var(--wall-edge);
+}
+
+.world-wall .wall-footer-links a:hover {
+  text-decoration-color: var(--w-ink);
+}
+
+.world-wall .wall-footer-note {
+  color: var(--w-muted);
+  font-size: 0.85rem;
+}

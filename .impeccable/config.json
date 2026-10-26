@@ -1,0 +1,18 @@
+{
+  "buildPath": "code",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/canon.html"
+        ],
+        "createdAt": "2026-10-26T20:31:12.612Z",
+        "reason": "Claude: decision-round sketch of the category standard (Geist on purpose); not shipped, not part of the design system"
+      }
+    ]
+  }
+}

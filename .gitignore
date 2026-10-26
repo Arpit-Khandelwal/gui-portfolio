@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Impeccable: review captures and live-mode state are local only
+.impeccable/review/
+.impeccable/live/
+.impeccable/config.local.json

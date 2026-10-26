@@ -1,0 +1,852 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-26T20:30:42.076Z",
+  "title": "Design System: Arpit Khandelwal",
+  "extensions": {
+    "colorMeta": {
+      "patent-ground": {
+        "role": "neutral",
+        "displayName": "Cool Ground",
+        "canonical": "oklch(96.9% 0.004 122)",
+        "tonalRamp": [
+          "oklch(15% 0.001 122)",
+          "oklch(26% 0.002 122)",
+          "oklch(38% 0.003 122)",
+          "oklch(49% 0.004 122)",
+          "oklch(61% 0.004 122)",
+          "oklch(72% 0.003 122)",
+          "oklch(84% 0.002 122)",
+          "oklch(95% 0.001 122)"
+        ],
+        "world": "patent"
+      },
+      "patent-sheet": {
+        "role": "neutral",
+        "displayName": "Bond Sheet",
+        "canonical": "oklch(98.7% 0.004 106)",
+        "tonalRamp": [
+          "oklch(15% 0.001 106)",
+          "oklch(26% 0.002 106)",
+          "oklch(38% 0.003 106)",
+          "oklch(49% 0.004 106)",
+          "oklch(61% 0.004 106)",
+          "oklch(72% 0.003 106)",
+          "oklch(84% 0.002 106)",
+          "oklch(95% 0.001 106)"
+        ],
+        "world": "patent"
+      },
+      "patent-ink": {
+        "role": "neutral",
+        "displayName": "Drawing Ink",
+        "canonical": "oklch(19.1% 0.000 90)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ],
+        "world": "patent"
+      },
+      "patent-muted": {
+        "role": "neutral",
+        "displayName": "Carbon Grey",
+        "canonical": "oklch(41.8% 0.005 122)",
+        "tonalRamp": [
+          "oklch(15% 0.001 122)",
+          "oklch(26% 0.002 122)",
+          "oklch(38% 0.004 122)",
+          "oklch(49% 0.005 122)",
+          "oklch(61% 0.005 122)",
+          "oklch(72% 0.004 122)",
+          "oklch(84% 0.002 122)",
+          "oklch(95% 0.001 122)"
+        ],
+        "world": "patent"
+      },
+      "patent-examiner-red": {
+        "role": "primary",
+        "displayName": "Examiner Red",
+        "canonical": "oklch(54.0% 0.198 30)",
+        "tonalRamp": [
+          "oklch(15% 0.027 30)",
+          "oklch(26% 0.090 30)",
+          "oklch(38% 0.152 30)",
+          "oklch(49% 0.198 30)",
+          "oklch(61% 0.198 30)",
+          "oklch(72% 0.152 30)",
+          "oklch(84% 0.090 30)",
+          "oklch(95% 0.027 30)"
+        ],
+        "world": "patent"
+      },
+      "patent-nonphoto-blue": {
+        "role": "secondary",
+        "displayName": "Non-photo Blue",
+        "canonical": "oklch(73.8% 0.093 234)",
+        "tonalRamp": [
+          "oklch(15% 0.013 234)",
+          "oklch(26% 0.042 234)",
+          "oklch(38% 0.071 234)",
+          "oklch(49% 0.093 234)",
+          "oklch(61% 0.093 234)",
+          "oklch(72% 0.071 234)",
+          "oklch(84% 0.042 234)",
+          "oklch(95% 0.013 234)"
+        ],
+        "world": "patent"
+      },
+      "lid-metal": {
+        "role": "neutral",
+        "displayName": "Brushed Metal",
+        "canonical": "oklch(83.4% 0.008 254)",
+        "tonalRamp": [
+          "oklch(15% 0.001 254)",
+          "oklch(26% 0.004 254)",
+          "oklch(38% 0.006 254)",
+          "oklch(49% 0.008 254)",
+          "oklch(61% 0.008 254)",
+          "oklch(72% 0.006 254)",
+          "oklch(84% 0.004 254)",
+          "oklch(95% 0.001 254)"
+        ],
+        "world": "lid"
+      },
+      "lid-vinyl-white": {
+        "role": "neutral",
+        "displayName": "Vinyl White",
+        "canonical": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ],
+        "world": "lid"
+      },
+      "lid-paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "oklch(98.5% 0.005 95)",
+        "tonalRamp": [
+          "oklch(15% 0.001 95)",
+          "oklch(26% 0.002 95)",
+          "oklch(38% 0.004 95)",
+          "oklch(49% 0.005 95)",
+          "oklch(61% 0.005 95)",
+          "oklch(72% 0.004 95)",
+          "oklch(84% 0.002 95)",
+          "oklch(95% 0.001 95)"
+        ],
+        "world": "lid"
+      },
+      "lid-ink": {
+        "role": "neutral",
+        "displayName": "Matte Black",
+        "canonical": "oklch(21.0% 0.004 286)",
+        "tonalRamp": [
+          "oklch(15% 0.001 286)",
+          "oklch(26% 0.002 286)",
+          "oklch(38% 0.003 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.003 286)",
+          "oklch(84% 0.002 286)",
+          "oklch(95% 0.001 286)"
+        ],
+        "world": "lid"
+      },
+      "lid-muted": {
+        "role": "neutral",
+        "displayName": "Lid Muted",
+        "canonical": "oklch(37.1% 0.009 261)",
+        "tonalRamp": [
+          "oklch(15% 0.001 261)",
+          "oklch(26% 0.004 261)",
+          "oklch(38% 0.007 261)",
+          "oklch(49% 0.009 261)",
+          "oklch(61% 0.009 261)",
+          "oklch(72% 0.007 261)",
+          "oklch(84% 0.004 261)",
+          "oklch(95% 0.001 261)"
+        ],
+        "world": "lid"
+      },
+      "lid-orange": {
+        "role": "primary",
+        "displayName": "Hazard Orange",
+        "canonical": "oklch(62.0% 0.202 37)",
+        "tonalRamp": [
+          "oklch(15% 0.028 37)",
+          "oklch(26% 0.091 37)",
+          "oklch(38% 0.155 37)",
+          "oklch(49% 0.202 37)",
+          "oklch(61% 0.202 37)",
+          "oklch(72% 0.155 37)",
+          "oklch(84% 0.091 37)",
+          "oklch(95% 0.028 37)"
+        ],
+        "world": "lid"
+      },
+      "lid-yellow": {
+        "role": "secondary",
+        "displayName": "Highlighter Yellow",
+        "canonical": "oklch(87.9% 0.162 91)",
+        "tonalRamp": [
+          "oklch(15% 0.022 91)",
+          "oklch(26% 0.073 91)",
+          "oklch(38% 0.124 91)",
+          "oklch(49% 0.162 91)",
+          "oklch(61% 0.162 91)",
+          "oklch(72% 0.124 91)",
+          "oklch(84% 0.073 91)",
+          "oklch(95% 0.022 91)"
+        ],
+        "world": "lid"
+      },
+      "lid-blue": {
+        "role": "tertiary",
+        "displayName": "Hackathon Blue",
+        "canonical": "oklch(54.6% 0.224 264)",
+        "tonalRamp": [
+          "oklch(15% 0.031 264)",
+          "oklch(26% 0.101 264)",
+          "oklch(38% 0.172 264)",
+          "oklch(49% 0.224 264)",
+          "oklch(61% 0.224 264)",
+          "oklch(72% 0.172 264)",
+          "oklch(84% 0.101 264)",
+          "oklch(95% 0.031 264)"
+        ],
+        "world": "lid",
+        "note": "Contract named #2f6bff; the build ships #2860f0 on stickers for 5.2:1 with white text."
+      },
+      "lid-green": {
+        "role": "tertiary",
+        "displayName": "Mint Green",
+        "canonical": "oklch(68.9% 0.168 155)",
+        "tonalRamp": [
+          "oklch(15% 0.023 155)",
+          "oklch(26% 0.076 155)",
+          "oklch(38% 0.128 155)",
+          "oklch(49% 0.168 155)",
+          "oklch(61% 0.168 155)",
+          "oklch(72% 0.128 155)",
+          "oklch(84% 0.076 155)",
+          "oklch(95% 0.023 155)"
+        ],
+        "world": "lid"
+      },
+      "lid-lilac": {
+        "role": "tertiary",
+        "displayName": "Lilac",
+        "canonical": "oklch(94.9% 0.031 308)",
+        "tonalRamp": [
+          "oklch(15% 0.004 308)",
+          "oklch(26% 0.014 308)",
+          "oklch(38% 0.024 308)",
+          "oklch(49% 0.031 308)",
+          "oklch(61% 0.031 308)",
+          "oklch(72% 0.024 308)",
+          "oklch(84% 0.014 308)",
+          "oklch(95% 0.004 308)"
+        ],
+        "world": "lid"
+      },
+      "wall-ground": {
+        "role": "neutral",
+        "displayName": "Screen Black",
+        "canonical": "oklch(16.4% 0.007 271)",
+        "tonalRamp": [
+          "oklch(15% 0.001 271)",
+          "oklch(26% 0.003 271)",
+          "oklch(38% 0.005 271)",
+          "oklch(49% 0.007 271)",
+          "oklch(61% 0.007 271)",
+          "oklch(72% 0.005 271)",
+          "oklch(84% 0.003 271)",
+          "oklch(95% 0.001 271)"
+        ],
+        "world": "wall"
+      },
+      "wall-sheet": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "canonical": "oklch(21.4% 0.010 268)",
+        "tonalRamp": [
+          "oklch(15% 0.001 268)",
+          "oklch(26% 0.005 268)",
+          "oklch(38% 0.008 268)",
+          "oklch(49% 0.010 268)",
+          "oklch(61% 0.010 268)",
+          "oklch(72% 0.008 268)",
+          "oklch(84% 0.005 268)",
+          "oklch(95% 0.001 268)"
+        ],
+        "world": "wall"
+      },
+      "wall-ink": {
+        "role": "neutral",
+        "displayName": "Wall Ink",
+        "canonical": "oklch(96.1% 0.003 106)",
+        "tonalRamp": [
+          "oklch(15% 0.000 106)",
+          "oklch(26% 0.001 106)",
+          "oklch(38% 0.002 106)",
+          "oklch(49% 0.003 106)",
+          "oklch(61% 0.003 106)",
+          "oklch(72% 0.002 106)",
+          "oklch(84% 0.001 106)",
+          "oklch(95% 0.000 106)"
+        ],
+        "world": "wall"
+      },
+      "wall-muted": {
+        "role": "neutral",
+        "displayName": "Silver",
+        "canonical": "oklch(74.2% 0.010 273)",
+        "tonalRamp": [
+          "oklch(15% 0.001 273)",
+          "oklch(26% 0.005 273)",
+          "oklch(38% 0.008 273)",
+          "oklch(49% 0.010 273)",
+          "oklch(61% 0.010 273)",
+          "oklch(72% 0.008 273)",
+          "oklch(84% 0.005 273)",
+          "oklch(95% 0.001 273)"
+        ],
+        "world": "wall"
+      },
+      "wall-soft": {
+        "role": "neutral",
+        "displayName": "Soft Grey",
+        "canonical": "oklch(82.7% 0.009 271)",
+        "tonalRamp": [
+          "oklch(15% 0.001 271)",
+          "oklch(26% 0.004 271)",
+          "oklch(38% 0.007 271)",
+          "oklch(49% 0.009 271)",
+          "oklch(61% 0.009 271)",
+          "oklch(72% 0.007 271)",
+          "oklch(84% 0.004 271)",
+          "oklch(95% 0.001 271)"
+        ],
+        "world": "wall"
+      },
+      "wall-edge": {
+        "role": "neutral",
+        "displayName": "Edge Grey",
+        "canonical": "oklch(55.6% 0.013 269)",
+        "tonalRamp": [
+          "oklch(15% 0.002 269)",
+          "oklch(26% 0.006 269)",
+          "oklch(38% 0.010 269)",
+          "oklch(49% 0.013 269)",
+          "oklch(61% 0.013 269)",
+          "oklch(72% 0.010 269)",
+          "oklch(84% 0.006 269)",
+          "oklch(95% 0.002 269)"
+        ],
+        "world": "wall"
+      },
+      "wall-amber": {
+        "role": "primary",
+        "displayName": "Marquee Amber",
+        "canonical": "oklch(81.2% 0.170 76)",
+        "tonalRamp": [
+          "oklch(15% 0.023 76)",
+          "oklch(26% 0.077 76)",
+          "oklch(38% 0.131 76)",
+          "oklch(49% 0.170 76)",
+          "oklch(61% 0.170 76)",
+          "oklch(72% 0.131 76)",
+          "oklch(84% 0.077 76)",
+          "oklch(95% 0.023 76)"
+        ],
+        "world": "wall"
+      },
+      "canon-ground": {
+        "role": "neutral",
+        "displayName": "Near Black",
+        "canonical": "oklch(15.0% 0.002 286)",
+        "tonalRamp": [
+          "oklch(15% 0.000 286)",
+          "oklch(26% 0.001 286)",
+          "oklch(38% 0.002 286)",
+          "oklch(49% 0.002 286)",
+          "oklch(61% 0.002 286)",
+          "oklch(72% 0.002 286)",
+          "oklch(84% 0.001 286)",
+          "oklch(95% 0.000 286)"
+        ],
+        "world": "canon"
+      },
+      "canon-sheet": {
+        "role": "neutral",
+        "displayName": "Raised Black",
+        "canonical": "oklch(18.3% 0.004 286)",
+        "tonalRamp": [
+          "oklch(15% 0.001 286)",
+          "oklch(26% 0.002 286)",
+          "oklch(38% 0.003 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.003 286)",
+          "oklch(84% 0.002 286)",
+          "oklch(95% 0.001 286)"
+        ],
+        "world": "canon"
+      },
+      "canon-ink": {
+        "role": "neutral",
+        "displayName": "Paper White",
+        "canonical": "oklch(94.6% 0.000 90)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ],
+        "world": "canon"
+      },
+      "canon-muted": {
+        "role": "neutral",
+        "displayName": "Zinc",
+        "canonical": "oklch(71.2% 0.013 286)",
+        "tonalRamp": [
+          "oklch(15% 0.002 286)",
+          "oklch(26% 0.006 286)",
+          "oklch(38% 0.010 286)",
+          "oklch(49% 0.013 286)",
+          "oklch(61% 0.013 286)",
+          "oklch(72% 0.010 286)",
+          "oklch(84% 0.006 286)",
+          "oklch(95% 0.002 286)"
+        ],
+        "world": "canon"
+      },
+      "canon-green": {
+        "role": "primary",
+        "displayName": "Signal Green",
+        "canonical": "oklch(72.3% 0.192 150)",
+        "tonalRamp": [
+          "oklch(15% 0.026 150)",
+          "oklch(26% 0.087 150)",
+          "oklch(38% 0.147 150)",
+          "oklch(49% 0.192 150)",
+          "oklch(61% 0.192 150)",
+          "oklch(72% 0.147 150)",
+          "oklch(84% 0.087 150)",
+          "oklch(95% 0.026 150)"
+        ],
+        "world": "canon"
+      },
+      "canon-green-hover": {
+        "role": "primary",
+        "displayName": "Bright Green",
+        "canonical": "oklch(80.0% 0.182 152)",
+        "tonalRamp": [
+          "oklch(15% 0.025 152)",
+          "oklch(26% 0.082 152)",
+          "oklch(38% 0.139 152)",
+          "oklch(49% 0.182 152)",
+          "oklch(61% 0.182 152)",
+          "oklch(72% 0.139 152)",
+          "oklch(84% 0.082 152)",
+          "oklch(95% 0.025 152)"
+        ],
+        "world": "canon"
+      },
+      "canon-green-ink": {
+        "role": "primary",
+        "displayName": "Deep Green Ink",
+        "canonical": "oklch(16.9% 0.030 157)",
+        "tonalRamp": [
+          "oklch(15% 0.004 157)",
+          "oklch(26% 0.013 157)",
+          "oklch(38% 0.023 157)",
+          "oklch(49% 0.030 157)",
+          "oklch(61% 0.030 157)",
+          "oklch(72% 0.023 157)",
+          "oklch(84% 0.013 157)",
+          "oklch(95% 0.004 157)"
+        ],
+        "world": "canon"
+      }
+    },
+    "typographyMeta": {
+      "patent-display": {
+        "displayName": "Patent Display",
+        "purpose": "Invention title in the margin column."
+      },
+      "patent-headline": {
+        "displayName": "Patent Headline",
+        "purpose": "Section titles on the specification."
+      },
+      "patent-body": {
+        "displayName": "Patent Body",
+        "purpose": "Abstract, descriptions, prose."
+      },
+      "patent-label": {
+        "displayName": "Typed Label",
+        "purpose": "Uppercase typed form-field names, nav, title block."
+      },
+      "patent-numeral": {
+        "displayName": "Reference Numeral",
+        "purpose": "Red numerals in running text that light their figure part."
+      },
+      "lid-badge-name": {
+        "displayName": "Badge Name",
+        "purpose": "Name on the HELLO badge sticker; container-sized."
+      },
+      "lid-badge-caps": {
+        "displayName": "Badge Caps",
+        "purpose": "Rubik Mono One for the HELLO band and small sticker labels."
+      },
+      "lid-body": {
+        "displayName": "Lid Body",
+        "purpose": "Running text at weight 450."
+      },
+      "wall-billboard": {
+        "displayName": "Billboard",
+        "purpose": "Featured build title, 900 at 125% width."
+      },
+      "wall-row-title": {
+        "displayName": "Row Title",
+        "purpose": "Row headings, 800 at 115% width."
+      },
+      "wall-body": {
+        "displayName": "Wall Body",
+        "purpose": "Metadata and reading text at normal width."
+      },
+      "canon-display": {
+        "displayName": "Plain Display",
+        "purpose": "Name at the top of the intro."
+      },
+      "canon-headline": {
+        "displayName": "Plain Headline",
+        "purpose": "Section titles."
+      },
+      "canon-lead": {
+        "displayName": "Plain Lead",
+        "purpose": "One-line role under the name."
+      },
+      "canon-body": {
+        "displayName": "Plain Body",
+        "purpose": "Running text, tabular numerals on."
+      },
+      "canon-mono": {
+        "displayName": "Plain Mono",
+        "purpose": "Code and data only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "lid-rest",
+        "value": "0 1px 1.5px rgba(22,24,28,0.3), 0 7px 14px -5px rgba(22,24,28,0.42)",
+        "purpose": "Every lid sticker at rest."
+      },
+      {
+        "name": "lid-lift",
+        "value": "0 3px 5px rgba(22,24,28,0.2), 0 24px 38px -12px rgba(22,24,28,0.55)",
+        "purpose": "Lifted sticker; lives on ::after, only opacity animates."
+      },
+      {
+        "name": "lid-sheet",
+        "value": "0 0 0 6px #ffffff, 0 2px 3px 6px rgba(0,0,0,0.18), 0 18px 40px rgba(0,0,0,0.16)",
+        "purpose": "Long-form white sticker sheet on inner pages."
+      },
+      {
+        "name": "wall-card-rest",
+        "value": "0 14px 28px -18px rgb(0 0 0 / 0.75)",
+        "purpose": "Poster card at rest."
+      },
+      {
+        "name": "wall-card-grown",
+        "value": "0 26px 40px -20px rgb(0 0 0 / 0.85)",
+        "purpose": "Poster card on hover/focus."
+      },
+      {
+        "name": "wall-billboard",
+        "value": "0 30px 60px -36px rgb(0 0 0 / 0.8)",
+        "purpose": "Featured billboard poster."
+      },
+      {
+        "name": "consent-float",
+        "value": "0 18px 40px rgba(0,0,0,0.22)",
+        "purpose": "Shared consent banner, all worlds."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The one easing curve, every world."
+      },
+      {
+        "name": "patent-ink-draw",
+        "value": "stroke-dashoffset 1400 -> 0, 2.2s; wires +0.7s, leaders +1.1s, numerals fade +1.5s",
+        "purpose": "FIG. 1 draws once; reduced motion shows it drawn."
+      },
+      {
+        "name": "lid-lift",
+        "value": "transform 480ms; shadow opacity 480ms",
+        "purpose": "Sticker lift on hover/focus."
+      },
+      {
+        "name": "lid-flip",
+        "value": "rotateY(180deg) 720ms, perspective 1200px",
+        "purpose": "Sticker flips to its back on activate."
+      },
+      {
+        "name": "wall-card-grow",
+        "value": "transform 460ms (scale 1.06), opacity 320ms (siblings 0.42)",
+        "purpose": "Focused card grows; row dims. Reduced motion: opacity 120ms linear only."
+      },
+      {
+        "name": "canon-fast",
+        "value": "160ms",
+        "purpose": "Plain colour and press transitions."
+      },
+      {
+        "name": "canon-slow",
+        "value": "360ms",
+        "purpose": "Plain disclosure plus rotation."
+      },
+      {
+        "name": "switcher",
+        "value": "background-color, color 160ms",
+        "purpose": "World switcher option states."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "patent-stack",
+        "value": "960px"
+      },
+      {
+        "name": "patent-narrow",
+        "value": "640px"
+      },
+      {
+        "name": "lid-pile",
+        "value": "1099px"
+      },
+      {
+        "name": "lid-narrow",
+        "value": "640px"
+      },
+      {
+        "name": "wall-billboard-stack",
+        "value": "900px"
+      },
+      {
+        "name": "wall-header",
+        "value": "760px"
+      },
+      {
+        "name": "wall-touch",
+        "value": "767px"
+      },
+      {
+        "name": "canon-sm",
+        "value": "40rem"
+      },
+      {
+        "name": "canon-md",
+        "value": "52rem"
+      },
+      {
+        "name": "canon-lg",
+        "value": "56rem"
+      },
+      {
+        "name": "canon-xl",
+        "value": "64rem"
+      },
+      {
+        "name": "consent-row",
+        "value": "640px"
+      }
+    ],
+    "worldContract": {
+      "selector": "html[data-world]",
+      "worlds": [
+        "patent",
+        "lid",
+        "wall",
+        "canon"
+      ],
+      "default": "patent",
+      "cookie": "world",
+      "param": "world",
+      "slots": [
+        "--w-ground",
+        "--w-sheet",
+        "--w-ink",
+        "--w-muted",
+        "--w-line",
+        "--w-hair",
+        "--w-accent",
+        "--w-accent-ink",
+        "--w-construct",
+        "--w-select",
+        "--w-display",
+        "--w-body",
+        "--w-label",
+        "--w-radius"
+      ],
+      "source": "app/globals.css"
+    }
+  },
+  "components": [
+    {
+      "name": "World Switcher",
+      "kind": "nav",
+      "refersTo": "world-switcher",
+      "description": "Shared segmented control in every header; patent skin shown.",
+      "html": "<div class=\"ds-switch\" role=\"group\" aria-label=\"Site look\"><button class=\"ds-switch-opt\" aria-pressed=\"true\">Patent</button><button class=\"ds-switch-opt\" aria-pressed=\"false\">Laptop lid</button><button class=\"ds-switch-opt\" aria-pressed=\"false\">Title wall</button><button class=\"ds-switch-opt\" aria-pressed=\"false\">Plain</button></div>",
+      "css": ".ds-switch{display:inline-flex;border:1px solid #141414;border-radius:0;overflow:hidden;font-family:\"Courier Prime\",\"Courier New\",monospace;background:#fbfbf8}.ds-switch-opt{min-height:2.25rem;padding:0 .7rem;border:0;border-left:1px solid rgba(20,20,20,.22);background:transparent;color:#141414;font:inherit;font-size:.75rem;line-height:1;cursor:pointer;transition:background-color 160ms cubic-bezier(0.16,1,0.3,1),color 160ms cubic-bezier(0.16,1,0.3,1)}.ds-switch-opt:first-child{border-left:0}.ds-switch-opt:hover{background:rgba(20,20,20,.08)}.ds-switch-opt[aria-pressed=\"true\"]{background:#141414;color:#f4f5f2}.ds-switch-opt:focus-visible{outline:2px solid #c8261a;outline-offset:-3px}"
+    },
+    {
+      "name": "Patent File a Brief",
+      "kind": "button",
+      "refersTo": "patent-file-button",
+      "description": "The one examiner-red action; inverts on hover/focus.",
+      "html": "<a class=\"ds-pt-file\" href=\"#\">File a brief<svg width=\"26\" height=\"26\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></a>",
+      "css": ".ds-pt-file{display:inline-flex;align-items:center;justify-content:space-between;gap:1rem;min-width:20rem;border:2px solid #c8261a;background:#c8261a;color:#fff;padding:.9rem 1.1rem;font-family:\"Old Standard TT\",\"Times New Roman\",serif;font-size:1.6rem;font-weight:700;line-height:1.1;text-decoration:none;border-radius:0;transition:background-color 200ms cubic-bezier(0.16,1,0.3,1),color 200ms cubic-bezier(0.16,1,0.3,1)}.ds-pt-file svg{transition:transform 240ms cubic-bezier(0.16,1,0.3,1)}.ds-pt-file:hover,.ds-pt-file:focus-visible{background:#fbfbf8;color:#c8261a}.ds-pt-file:hover svg{transform:translateX(4px)}.ds-pt-file:focus-visible{outline:2px solid #c8261a;outline-offset:3px}"
+    },
+    {
+      "name": "Patent Reference Numeral",
+      "kind": "custom",
+      "refersTo": "patent-numeral",
+      "description": "Red numeral in running text; lit state pairs with its figure part.",
+      "html": "<p class=\"ds-pt-text\">Swiggy MCP Server: AI concierge <button class=\"ds-pt-num\">102</button>, MCP server <button class=\"ds-pt-num is-lit\">104</button>.</p>",
+      "css": ".ds-pt-text{font-family:\"Old Standard TT\",\"Times New Roman\",serif;font-size:1.0625rem;line-height:1.6;color:#141414;background:#fbfbf8;padding:1rem}.ds-pt-num{border:0;border-bottom:1px dotted #c8261a;background:none;padding:0;color:#c8261a;font-family:\"Courier Prime\",\"Courier New\",monospace;font-weight:700;font-size:.95rem;font-variant-numeric:tabular-nums;cursor:pointer}.ds-pt-num:hover,.ds-pt-num.is-lit{border-bottom-style:solid;background:rgba(200,38,26,.12)}.ds-pt-num:focus-visible{outline:2px solid #c8261a;outline-offset:3px}"
+    },
+    {
+      "name": "Patent Audience Switch",
+      "kind": "chip",
+      "refersTo": "patent-audience-option-active",
+      "description": "Ruled four-way audience switch; active is ink, hover tints non-photo blue.",
+      "html": "<div class=\"ds-pt-aud\"><button aria-pressed=\"true\">Founder</button><button aria-pressed=\"false\">AI team</button><button aria-pressed=\"false\">Crypto infra</button><button aria-pressed=\"false\">Recruiter</button></div>",
+      "css": ".ds-pt-aud{display:inline-grid;grid-template-columns:repeat(4,auto);border:1px solid #141414;background:#fbfbf8}.ds-pt-aud button{min-height:2.75rem;padding:0 1.4rem;border:0;border-right:1px solid #141414;background:transparent;color:#141414;font-family:\"Courier Prime\",\"Courier New\",monospace;font-size:.85rem;cursor:pointer;transition:background-color 180ms cubic-bezier(0.16,1,0.3,1),color 180ms cubic-bezier(0.16,1,0.3,1)}.ds-pt-aud button:last-child{border-right:0}.ds-pt-aud button:hover{background:rgba(108,180,220,.18)}.ds-pt-aud button[aria-pressed=\"true\"]{background:#141414;color:#fbfbf8}.ds-pt-aud button:focus-visible{outline:2px solid #c8261a;outline-offset:-3px}"
+    },
+    {
+      "name": "Lid Sticker",
+      "kind": "card",
+      "refersTo": "lid-sticker",
+      "description": "Die-cut vinyl sticker: 6px white border, rotated, lifts on hover/focus.",
+      "html": "<div class=\"ds-lid-ground\"><a class=\"ds-lid-stk\" href=\"#\" style=\"--r:-6\">Swiggy MCP</a><a class=\"ds-lid-stk ds-lid-yellow\" href=\"#\" style=\"--r:4\">Gossip DAO</a></div>",
+      "css": ".ds-lid-ground{display:flex;gap:2rem;padding:2.5rem;background:#c5c9ce}.ds-lid-stk{position:relative;display:inline-flex;align-items:center;padding:.9rem 1.2rem;border:6px solid #fff;border-radius:14px;background:linear-gradient(158deg,rgba(255,255,255,.3) 0%,rgba(255,255,255,0) 40%),#e5480f;color:#fff;font-family:\"Bricolage Grotesque\",system-ui,sans-serif;font-weight:800;font-size:1.3rem;text-decoration:none;box-shadow:0 1px 1.5px rgba(22,24,28,.3),0 7px 14px -5px rgba(22,24,28,.42);transform:rotate(calc(var(--r,0)*1deg));transition:transform 480ms cubic-bezier(0.16,1,0.3,1),box-shadow 480ms cubic-bezier(0.16,1,0.3,1)}.ds-lid-yellow{background:linear-gradient(158deg,rgba(255,255,255,.3) 0%,rgba(255,255,255,0) 40%),#ffd23f;color:#18181a}.ds-lid-stk:hover,.ds-lid-stk:focus-visible{transform:translateY(-7px) rotate(calc(var(--r,0)*.15deg)) scale(1.035);box-shadow:0 3px 5px rgba(22,24,28,.2),0 24px 38px -12px rgba(22,24,28,.55)}.ds-lid-stk:focus-visible{outline:3px solid #18181a;outline-offset:3px}"
+    },
+    {
+      "name": "Lid Mark",
+      "kind": "nav",
+      "refersTo": "lid-mark",
+      "description": "Black pill name sticker in the lid header, rotated -2deg.",
+      "html": "<div class=\"ds-lid-ground2\"><a class=\"ds-lid-mark\" href=\"#\">Arpit Khandelwal</a></div>",
+      "css": ".ds-lid-ground2{padding:1.5rem;background:#c5c9ce}.ds-lid-mark{display:inline-flex;align-items:center;min-height:44px;padding:6px 16px 7px;border:4px solid #fff;border-radius:999px;background:#18181a;color:#fff;font-family:\"Bricolage Grotesque\",system-ui,sans-serif;font-size:1.05rem;font-weight:800;letter-spacing:-.01em;text-decoration:none;box-shadow:0 1px 1.5px rgba(22,24,28,.3),0 7px 14px -5px rgba(22,24,28,.42);transform:rotate(-2deg);transition:transform 480ms cubic-bezier(0.16,1,0.3,1)}.ds-lid-mark:hover{transform:rotate(0)}.ds-lid-mark:focus-visible{outline:3px solid #18181a;outline-offset:3px}"
+    },
+    {
+      "name": "Wall Poster Card",
+      "kind": "card",
+      "refersTo": "wall-card",
+      "description": "Typographic poster card; grows 6% on hover/focus, amber focus ring.",
+      "html": "<div class=\"ds-wall\"><button class=\"ds-wall-card\"><span class=\"ds-wall-glyph\">R</span><span class=\"ds-wall-title\">Reskilll</span></button></div>",
+      "css": ".ds-wall{padding:2rem;background:#0d0e11}.ds-wall-card{position:relative;display:block;width:18rem;height:13.5rem;padding:1rem;overflow:hidden;border:0;border-radius:6px;background:#2a6fdb;color:#fff;text-align:left;font-family:Archivo,system-ui,sans-serif;cursor:pointer;box-shadow:0 14px 28px -18px rgb(0 0 0/.75);transition:transform 460ms cubic-bezier(0.16,1,0.3,1),opacity 320ms cubic-bezier(0.16,1,0.3,1)}.ds-wall-glyph{position:absolute;right:-.04em;bottom:-.22em;font-size:16rem;font-weight:900;font-stretch:125%;line-height:1;color:rgba(255,255,255,.16);pointer-events:none}.ds-wall-title{position:relative;font-size:1.6rem;font-weight:900;font-stretch:125%;letter-spacing:-.03em}.ds-wall-card:hover,.ds-wall-card:focus-visible{transform:scale(1.06);box-shadow:0 26px 40px -20px rgb(0 0 0/.85)}.ds-wall-card:focus-visible{outline:3px solid #ffb000;outline-offset:4px}"
+    },
+    {
+      "name": "Wall Solid Button",
+      "kind": "button",
+      "refersTo": "wall-button-solid",
+      "description": "Ink button on the dark wall; Send a brief.",
+      "html": "<div class=\"ds-wall\"><button class=\"ds-wall-btn\">Send a brief</button> <button class=\"ds-wall-btn ds-wall-ghost\">More</button></div>",
+      "css": ".ds-wall-btn{display:inline-flex;align-items:center;min-height:3rem;padding:0 1.3rem;border:0;border-radius:6px;background:#f2f2f0;color:#0d0e11;font-family:Archivo,system-ui,sans-serif;font-size:.98rem;font-weight:700;font-stretch:110%;line-height:1;cursor:pointer;transition:transform 240ms cubic-bezier(0.16,1,0.3,1),background-color 200ms cubic-bezier(0.16,1,0.3,1)}.ds-wall-btn:hover{background:#fff;transform:translateY(-1px)}.ds-wall-btn:active{transform:scale(.98)}.ds-wall-btn:focus-visible{outline:3px solid #ffb000;outline-offset:3px}.ds-wall-ghost{min-height:2.5rem;padding:0 1rem;background:transparent;color:#f2f2f0;font-size:.88rem;box-shadow:inset 0 0 0 1px #70737b}.ds-wall-ghost:hover{background:rgba(242,242,240,.08)}"
+    },
+    {
+      "name": "Plain Primary and Quiet Buttons",
+      "kind": "button",
+      "refersTo": "canon-button-primary",
+      "description": "Green primary and hairline quiet button in the plain world.",
+      "html": "<div class=\"ds-canon\"><button class=\"ds-c-btn ds-c-primary\">Send a brief</button><button class=\"ds-c-btn ds-c-quiet\">See the work</button></div>",
+      "css": ".ds-canon{display:flex;gap:.75rem;padding:2rem;background:#0b0b0c}.ds-c-btn{display:inline-flex;align-items:center;min-height:2.875rem;padding:0 1.25rem;border:1px solid transparent;border-radius:8px;font-family:\"Hanken Grotesk\",system-ui,sans-serif;font-size:.9375rem;font-weight:600;cursor:pointer;transition:background-color 160ms cubic-bezier(0.16,1,0.3,1),border-color 160ms cubic-bezier(0.16,1,0.3,1),color 160ms cubic-bezier(0.16,1,0.3,1),transform 160ms cubic-bezier(0.16,1,0.3,1)}.ds-c-btn:active{transform:translateY(1px)}.ds-c-btn:focus-visible{outline:2px solid #22c55e;outline-offset:3px}.ds-c-primary{background:#22c55e;color:#04130a}.ds-c-primary:hover{background:#4ade80}.ds-c-quiet{background:transparent;border-color:rgba(237,237,237,.2);color:#ededed}.ds-c-quiet:hover{border-color:#ededed;background:rgba(237,237,237,.06)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "One Archive, Four Rooms",
+    "overview": "The site is a single proof archive rendered as four complete visual worlds. The visitor chooses the room; the content, the brief, and the behaviour never change. Patent (the default, at `/`) files every build as a numbered figure on a bond-paper specification sheet. Laptop lid sticker-bombs the archive onto brushed aluminium. Title wall turns it into a dark streaming wall of typographic posters. Plain is the category-standard dark engineer portfolio, set carefully, for visitors who want no concept.\n\nEach world is a full commitment, not a theme tint. Each one has its own typefaces, its own composition, its own component vocabulary, and its own motion grammar. What they share is a thin token contract (`--w-*`), one switcher, one inner-page shell, and one set of behaviours. Density is high in every world because the archive is deep. No world goes so minimal that the archive disappears, and no world reads as a SaaS landing page.\n\n`<html data-world=\"patent|lid|wall|canon\">` selects the tokens. An inline boot script in `<head>` sets the attribute before first paint: a `/w/<world>` path wins, then the `world` cookie, then `patent`. Choosing a world writes the cookie for one year (`max-age` 31536000, `samesite=lax`). On a homepage the page reloads to `/`, because each world's homepage is a separate prerendered page. Every other page only swaps tokens.",
+    "keyCharacteristics": [
+      "Four worlds, one content set (`components/portfolio/data.ts`, `lib/copy.ts`, `lib/world-copy.ts`), one brief hook (`useBrief`), and one analytics vocabulary.",
+      "A shared `--w-*` contract with 13 slots. Every surface outside the homepage reads only these slots.",
+      "Each homepage world scopes every selector under its own root class (`.world-patent`, `.world-lid`, `.world-wall`, `.world-canon`). All world stylesheets load on every `/w/*` page.",
+      "One easing curve across the whole site: `cubic-bezier(0.16, 1, 0.3, 1)`.",
+      "Each world has a single accent, and that accent is also the world's focus colour. The one exception is Laptop lid, which focuses in ink."
+    ],
+    "rules": [
+      {
+        "name": "The One Content Rule",
+        "body": "Every world renders the same copy and data, the audience switch (Founder, AI team, Crypto infra, Recruiter), the sprint brief builder, and the contact form. Each one uses `useBrief()`: POST to `/api/contact` with a `mailto:` fallback. A world may restyle a behaviour. It may never drop one.",
+        "section": "overview"
+      },
+      {
+        "name": "The Same Instruments Rule",
+        "body": "Every world tags its sections with the same `data-analytics-section` ids: `hero` (or `billboard` in wall), `work`, `experiments`, `open-source`, `archive`, `play`, `about`, `process`, `terms`, `faq`, `brief`, `footer`. Every world fires the same `track()` events: `cta_click`, `nav_click`, `audience_select`, `brief_option`, `brief_copy`, `brief_submit`, `case_link`, `oss_link`, `archive_link`, `faq_open`, `outbound_click`. World-specific signatures add their own event: `figure_part_focus` (patent), `sticker_flip` (lid), `case_open` and `row_scroll` (wall). The switcher fires `world_switch` with `from`, `to` and `path`.",
+        "section": "overview"
+      },
+      {
+        "name": "The One Accent Rule",
+        "body": "Each world has exactly one action colour. It marks the action, live status, and focus, and nothing decorative. In patent, red appears only on numerals and the one action.",
+        "section": "colors"
+      },
+      {
+        "name": "The Amber Is Reserved Rule",
+        "body": "In the title wall, posters may use any hue except 40–110°. Amber always means \"focus is here\".",
+        "section": "colors"
+      },
+      {
+        "name": "The Typed Field Rule",
+        "body": "In patent, anything a clerk would type goes in Courier Prime: numerals, labels, the title block, and nav. Anything an author would write goes in Old Standard TT.",
+        "section": "typography"
+      },
+      {
+        "name": "The Width Is The Voice Rule",
+        "body": "In the title wall, hierarchy comes from Archivo's width axis and weight, never from a second family.",
+        "section": "typography"
+      },
+      {
+        "name": "The Material Decides Rule",
+        "body": "Shadows exist only where the world's material casts them: vinyl on a lid, posters on a wall. Paper sheets and the plain world stay flat.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** read only `--w-*` tokens on any surface outside the homepage, so it follows the active world without extra code.",
+      "**Do** scope every homepage-world selector under its `.world-<id>` root.",
+      "**Do** ship every new section in all four worlds, with the same `data-analytics-section` id and the same `track()` events.",
+      "**Do** use `cubic-bezier(0.16, 1, 0.3, 1)` for every transition, and give every motion a reduced-motion path.",
+      "**Do** keep patent figure numerals equal to real parts of the case (102, 104 and so on). Never pad a range.",
+      "**Do** choose wall poster ink by computed contrast of at least 4.5:1."
+    ],
+    "donts": [
+      "**Don't** put examiner red on anything in patent except numerals, status, focus and the one action.",
+      "**Don't** use a poster hue from 40–110° on the title wall. Amber belongs to focus.",
+      "**Don't** add shadows to patent or plain surfaces. Don't flatten lid stickers or wall posters.",
+      "**Don't** round patent corners, and don't square lid stickers.",
+      "**Don't** add a second family to the title wall. Use Archivo's width axis instead.",
+      "**Don't** let a world drop the audience switch, the brief builder, or the contact form."
+    ]
+  }
+}

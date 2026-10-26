@@ -1,3 +1,5 @@
+import { privacyMeasured, privacyUpdated } from "@/lib/copy";
+
 /**
  * The privacy policy body, rendered by both `/privacy-policy` (canonical) and
  * `/privacy` (the URL agents conventionally probe). One source, so the two can
@@ -6,7 +8,7 @@
 export function PrivacyContent() {
   return (
     <>
-      <p className="mb-4">Last updated: October 17, 2026</p>
+      <p className="mb-4">Last updated: {privacyUpdated}</p>
 
       <p className="mb-4">
         This website (<strong>arpitkhandelwal.com</strong>) is a personal portfolio site. This page
@@ -26,6 +28,13 @@ export function PrivacyContent() {
         in your browser. Everywhere else they load by default. You can block or delete these
         cookies at any time in your browser settings, or with a content blocker.
       </p>
+
+      <h2 className="mb-2 mt-8 text-lg font-semibold">What is measured</h2>
+      {privacyMeasured.map((paragraph) => (
+        <p key={paragraph.slice(0, 40)} className="mb-4">
+          {paragraph}
+        </p>
+      ))}
 
       <h2 className="mb-2 mt-8 text-lg font-semibold">Contact form</h2>
       <p className="mb-4">

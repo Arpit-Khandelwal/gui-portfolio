@@ -1,3 +1,4 @@
+// Copy follows ISO 24495-1 plain language, with STE-style sentence rules (ASD-STE100).
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -8,14 +9,14 @@ import { blockColor, type StampGlyph } from "@/components/game/theme";
 export const metadata: Metadata = {
   title: "Play | Arpit Khandelwal",
   description:
-    "A browser brick-breaker where every wall is a chapter of my CV. Break a letter, catch a tile or lose a ball and it turns over one of 42 cards. Canvas, no dependencies.",
+    "A browser brick-breaker. Each wall spells one part of my CV. Break a letter, catch a tile or lose a ball to turn over one of 42 cards. Canvas only, no dependencies.",
   alternates: { canonical: "/play" },
   openGraph: {
     type: "website",
     url: "/play",
     title: "Play | Arpit Khandelwal",
     description:
-      "A brick-breaker that hands you my CV one card at a time. Break a letter, catch a tile, collect all 42.",
+      "A brick-breaker that gives you my CV one card at a time. Break a letter or catch a tile. Collect all 42.",
   },
 };
 
@@ -36,31 +37,31 @@ const GLYPH_CHARACTERS: Readonly<Record<StampGlyph, string>> = {
 const POWERUPS: readonly PowerupEntry[] = [
   {
     name: "Agents · multiball",
-    description: "Splits your ball into three, fanned out at the same speed.",
+    description: "Splits the ball into three. All three move at the same speed.",
     colorIndex: 0,
     glyph: "x",
   },
   {
     name: "API surface · wide",
-    description: "Paddle grows wider for a few seconds.",
+    description: "Makes the paddle wider for a few seconds.",
     colorIndex: 2,
     glyph: "plus",
   },
   {
     name: "MCP · sticky",
-    description: "Catch the ball on the paddle and re-aim before you serve.",
+    description: "Holds the ball on the paddle. Aim again, then serve.",
     colorIndex: 4,
     glyph: "slash",
   },
   {
     name: "Week 0 · slow-mo",
-    description: "Every ball in play drops to a crawl for a few seconds.",
+    description: "Slows every ball in play for a few seconds.",
     colorIndex: 6,
     glyph: "x",
   },
   {
     name: "Handoff · extra life",
-    description: "One more ball banked for later.",
+    description: "Adds one spare ball for later.",
     colorIndex: 5,
     glyph: "plus",
   },

@@ -14,7 +14,16 @@ import {
   sprintSteps,
 } from "@/components/portfolio/data";
 import { SITE_URL, absoluteUrl, AGENT_ENTRYPOINTS } from "@/lib/site";
-import { aboutIntro, aboutSections, contactIntro, contactSections, contactChannels, type CopySection } from "@/lib/copy";
+import {
+  aboutIntro,
+  aboutSections,
+  contactChannels,
+  contactIntro,
+  contactSections,
+  privacyMeasured,
+  privacyUpdated,
+  type CopySection,
+} from "@/lib/copy";
 import { docsEndpoints, docsEntryPoints, docsErrorCodes, docsIntro, rateLimitSummary } from "@/lib/docs";
 import { publishedPosts, findPost, type Post } from "@/lib/writing/posts";
 
@@ -192,14 +201,17 @@ function privacyMarkdown() {
   return [
     "# Privacy Policy",
     "",
-    "Last updated: October 17, 2026.",
+    `Last updated: ${privacyUpdated}.`,
     "",
-    `This website (${SITE_URL}) is a personal portfolio site for ${profile.name}, a fractional AI and backend engineer. This page explains what is collected when you visit and how you control it.`,
+    `This website (${SITE_URL}) is a personal portfolio site for ${profile.name}, a backend and AI-systems engineer. This page explains what is collected when you visit and how you control it.`,
     "",
     "## Analytics and cookies",
     "",
     "This site uses Google Tag Manager to load Google Analytics 4 and Microsoft Clarity. Google Analytics measures visits, traffic sources, and how pages are used; Clarity records anonymised session analytics (page interactions, heatmaps, and session replay). They set cookies such as `_ga`, `_clck`, and `_clsk`. If you visit from the EU/EEA, the UK, or Switzerland, these tools run only after you choose \"Accept\" in the consent banner; choosing \"Decline\" means no analytics scripts load and no analytics cookies are set, and your choice is stored locally in your browser. Everywhere else they load by default. You can block or delete these cookies at any time in your browser settings, or with a content blocker.",
     "",
+    "## What is measured",
+    "",
+    ...privacyMeasured.flatMap((paragraph) => [paragraph, ""]),
     "## Contact form",
     "",
     "If you submit the contact form, the name, email, and message you enter are delivered as a private Telegram notification so the message can be answered. If you email directly, your message and address reach the inbox. This information is used only to respond to you.",
@@ -251,7 +263,7 @@ function playMarkdown() {
 const documents: readonly AgentDocument[] = [
   {
     path: "/",
-    title: "Arpit Khandelwal — Fractional AI & Backend Engineer",
+    title: "Arpit Khandelwal — AI and Backend Engineer",
     description: "Fixed-scope AI and backend build sprints: services, shipped work, terms, and contact.",
     render: homeMarkdown,
   },

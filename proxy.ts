@@ -7,6 +7,14 @@ import {
   markdownTwinPath,
   normalisePagePath,
 } from "@/lib/agent/routes";
+import {
+  DEFAULT_WORLD,
+  WORLD_COOKIE,
+  WORLD_COOKIE_MAX_AGE,
+  WORLD_PARAM,
+  parseWorld,
+  worldHomePath,
+} from "@/lib/worlds";
 
 /**
  * acceptmarkdown.com content negotiation for page routes.
@@ -44,8 +52,41 @@ function withNegotiationHeaders(response: NextResponse, pagePath: string) {
   return response;
 }
 
+/**
+ * `?world=lid` on any page stores the world and redirects to the clean URL, so
+ * a shared link opens in the sender's world and canonical URLs stay bare.
+ */
+function worldParamRedirect(request: NextRequest): NextResponse | null {
+  const world = parseWorld(request.nextUrl.searchParams.get(WORLD_PARAM));
+  if (!request.nextUrl.searchParams.has(WORLD_PARAM)) return null;
+  const clean = request.nextUrl.clone();
+  clean.searchParams.delete(WORLD_PARAM);
+  const response = NextResponse.redirect(clean, 307);
+  if (world) {
+    response.cookies.set(WORLD_COOKIE, world, {
+      path: "/",
+      maxAge: WORLD_COOKIE_MAX_AGE,
+      sameSite: "lax",
+    });
+  }
+  return response;
+}
+
+/**
+ * The homepage is prerendered once per world. A visitor who picked a world
+ * other than the default is served that world's page under the same `/` URL.
+ */
+function worldHomeRewrite(request: NextRequest): NextResponse | null {
+  const world = parseWorld(request.cookies.get(WORLD_COOKIE)?.value);
+  if (!world || world === DEFAULT_WORLD) return null;
+  return NextResponse.rewrite(new URL(worldHomePath(world), request.url));
+}
+
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  const shared = worldParamRedirect(request);
+  if (shared) return shared;
 
   // Every `.md` path is handed to the markdown handler, including ones with no
   // document behind them, so an unknown twin 404s in markdown rather than
@@ -63,7 +104,7 @@ export function proxy(request: NextRequest) {
   // React Server Component payload requests carry their own media type and
   // must pass through untouched.
   if (request.headers.get("RSC") === "1" || request.headers.has("Next-Router-Prefetch")) {
-    return NextResponse.next();
+    return (pagePath === "/" && worldHomeRewrite(request)) || NextResponse.next();
   }
 
   const negotiation = negotiateMediaType(request.headers.get("accept"));
@@ -82,7 +123,8 @@ export function proxy(request: NextRequest) {
     );
   }
 
-  return withNegotiationHeaders(NextResponse.next(), pagePath);
+  const home = pagePath === "/" ? worldHomeRewrite(request) : null;
+  return withNegotiationHeaders(home ?? NextResponse.next(), pagePath);
 }
 
 export const config = {

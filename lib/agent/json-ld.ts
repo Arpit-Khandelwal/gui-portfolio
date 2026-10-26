@@ -45,7 +45,7 @@ export function buildHomeJsonLd() {
         "@type": "Person",
         "@id": PERSON_ID,
         name: profile.name,
-        jobTitle: "Fractional AI & Backend Engineer",
+        jobTitle: "Backend and AI-systems engineer",
         description: SITE_DESCRIPTION,
         url: SITE_URL,
         email: `mailto:${profile.email}`,
@@ -76,7 +76,7 @@ export function buildHomeJsonLd() {
         knowsAbout: skills.map((skill) => skill.name),
         makesOffer: {
           "@type": "Offer",
-          name: "Fractional build sprint",
+          name: "Fixed-scope build sprint",
           description: `${availability.status}. ${availability.reply}.`,
           availability: "https://schema.org/InStock",
           url: absoluteUrl("/contact"),
